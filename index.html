@@ -4040,7 +4040,7 @@ document.addEventListener('change',function(e){var D=e.target.dataset||{};
 document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.q){e.preventDefault();var q=S.qdraft.trim();if(!q)return;S.qa.push({q:q,a:answer(q)});S.qdraft='';render();}});
 /* ===== Nido · conexión con Firebase ===== */
 var NIDO_CFG={apiKey:"AIzaSyCTDL8onvTFFwsYgmNv7enRetNDOZP2Y24",authDomain:"nido-copartenidad-responsable.firebaseapp.com",projectId:"nido-copartenidad-responsable",storageBucket:"nido-copartenidad-responsable.firebasestorage.app",messagingSenderId:"581401693086",appId:"1:581401693086:web:c4a6eb1991457f69c3e48f"};
-var NIDO_USERS={"philip.fuentes93@gmail.com": "Philip", "correo_de_javiera@gmail.com": "Javiera"};
+var NIDO_USERS={"philip.fuentes93@gmail.com": "Philip", "javi.balma24@gmail.com": "Javiera"};
 var FAM='familias/nido';
 var SYNC_KEYS=['pension','approved','call','sem','pk','bag','pantry','mats','vuelta','work','actaSeq','diario','sch','vacs','hcl','hc','swaps','ov','msgs','gastos','meds','aten','av','checks','qa','phid','lid','avt'];
 var COLLS={log:'registro',bit:'bitacora',photos:'fotos'};
@@ -4115,12 +4115,12 @@ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.c
 
 function nidoBoot(){
   if(typeof firebase==='undefined'){document.body.insertAdjacentHTML('beforeend','<div class="nlog"><div class="nbox"><h1>Nido</h1><p class="nsub">No se pudo cargar la conexión. Revisa tu internet y recarga la página.</p></div></div>');return;}
-  firebase.initializeApp(NIDO_CFG);FB.db=firebase.firestore();
+  firebase.initializeApp(NIDO_CFG);FB.db=firebase.firestore();try{FB.db.settings({experimentalForceLongPolling:true,merge:true});}catch(e){}
   try{FB.db.enablePersistence({synchronizeTabs:true}).catch(function(){});}catch(e){}
   firebase.auth().onAuthStateChanged(function(u){if(!u){hideLoading();showLogin();return;}
     var who=NIDO_USERS[(u.email||'').toLowerCase()];
     if(!who){firebase.auth().signOut();showLogin('Este correo no tiene acceso a Nido.');return;}
-    S.vista=who;hideLogin();showLoading('Cargando los datos de Nido…');
+    S.vista=who;hideLogin();showLoading('Cargando los datos de Nido…');setTimeout(function(){if(!FB.ready&&document.getElementById('nidoLoad'))showLoading('Está tardando en conectar con la base de datos. Si estás en la red del trabajo, prueba desde tu celular con datos móviles.');},15000);
     fbBase().collection('estado').doc('work').get().then(function(s){if(!s.exists){showLoading('Preparando Nido por primera vez…');return fbInit();}})
       .then(fbListen).catch(function(e){console.error(e);hideLoading();showLogin(e&&e.code==='permission-denied'?'Tu cuenta no tiene permiso. Revisa las reglas de Firestore.':'No se pudieron cargar los datos ('+(e&&e.code||'error')+').');});});
 }

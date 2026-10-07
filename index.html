@@ -304,6 +304,50 @@ main.anim>*:nth-child(2){animation-delay:.03s}main.anim>*:nth-child(3){animation
 .qkb{display:inline-flex;align-items:center;gap:6px;background:none;border:none;font:inherit;font-size:13px;font-weight:600;color:var(--p);padding:6px 4px;cursor:pointer}
 .trow{display:flex;align-items:center;border-bottom:1px solid var(--sep)}.trow:last-child{border-bottom:none}.trow .check{flex:1;border-bottom:none}
 .tdel{width:44px;height:44px;flex-shrink:0;background:none;border:none;font-size:22px;color:var(--mut);cursor:pointer}
+/* Mochila ilustrada (estilo con solapa) */
+.mbs{position:relative;background:var(--seg);border-radius:26px;padding:34px 12px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;overflow:hidden}
+.mbcap{position:absolute;top:14px;left:16px;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);max-width:58%}
+.mbcount{position:absolute;top:10px;right:12px;z-index:2;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--card);color:var(--pd);font-variant-numeric:tabular-nums;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.mbs.rdy .mbcount{background:var(--p);color:#fff}
+.mbbag{border:none;background:none;padding:0;cursor:pointer;width:min(300px,80%);-webkit-tap-highlight-color:transparent;border-radius:24px}
+.mbsvg{width:100%;height:auto;display:block;overflow:visible}
+.mbshadow{fill:rgba(0,0,0,.16)}
+.mbbody{transform-box:view-box;transform-origin:150px 312px}
+.mbs:not(.open):not(.rdy) .mbbody{animation:mbbob 2.6s ease-in-out infinite}
+.mbs.sq .mbbody{animation:mbsq .34s ease-out}
+.mbs.rdy .mbbody{animation:mbhappy .7s ease-out}
+@keyframes mbbob{50%{transform:translateY(-5px) rotate(-.8deg)}}
+@keyframes mbsq{40%{transform:scale(1.07,.93)}}
+@keyframes mbhappy{30%{transform:translateY(-14px) scale(.97,1.04)}60%{transform:scale(1.04,.96)}}
+.mbhint{font-size:14px;color:var(--ink2);min-height:22px;text-align:center}
+.mbready{font-family:'Fraunces',Georgia,serif;font-size:20px;color:var(--pd)}
+.mbprep{font-size:12px;color:var(--mut);text-align:center}
+.mbeye{fill:#2B2024;transform-box:fill-box;transform-origin:50% 50%}
+.mbeyeh{fill:none;stroke:#2B2024;stroke-width:4;stroke-linecap:round;opacity:0}
+.mbsmile{fill:none;stroke:#2B2024;stroke-width:4.5;stroke-linecap:round}
+.mbsmileh{fill:#7A2540;opacity:0}
+.mbblush{fill:#FF9DB0;opacity:.7}
+.mbs.rdy .mbeye{transform:scaleY(.1)}.mbs.rdy .mbeyeh{opacity:1}.mbs.rdy .mbsmile{opacity:0}.mbs.rdy .mbsmileh{opacity:1}
+.mbstitch{fill:none;stroke:rgba(255,255,255,.7);stroke-width:2.5;stroke-dasharray:2 7;stroke-linecap:round}
+.mbflap{transform-box:fill-box;transform-origin:50% 0;transition:transform .6s cubic-bezier(.3,1.35,.5,1)}
+.mbs.open .mbflap{transform:scaleY(-.55)}
+.mblens{opacity:0;transition:opacity .25s}.mbs.open .mblens{opacity:1}
+.mbpeek{transition:transform .65s .08s cubic-bezier(.3,1.3,.5,1);transform:translateY(100px)}
+.mbs.open .mbpeek{transform:translateY(var(--rise,34px))}
+.mbtiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.mbt{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:112px;padding:12px;background:var(--card);border:1.5px dashed var(--line2);border-radius:18px;font:inherit;color:var(--ink);text-align:left;cursor:pointer;transition:transform .12s}
+.mbt:active{transform:scale(.97)}
+.mbic{width:40px;height:40px;border-radius:13px;background:var(--pt);color:var(--p);display:flex;align-items:center;justify-content:center}
+.mbtx{display:flex;flex-direction:column;gap:2px;min-width:0}.mbtx b{font-size:14px;line-height:1.25}.mbtx small{font-size:12px;color:var(--mut);line-height:1.3}
+.mbtag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--yt);color:var(--yd)}.mbtag.w{background:var(--rt);color:var(--rd)}
+.mbt[aria-pressed="true"]{border-style:solid;border-color:var(--p);background:var(--pt)}
+.mbt[aria-pressed="true"] .mbic{background:var(--p);color:#fff}
+.mbt[aria-pressed="true"] b{text-decoration:line-through;text-decoration-color:var(--mut)}
+.mbtick{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:11px;border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;color:transparent}
+.mbt[aria-pressed="true"] .mbtick{background:var(--p);border-color:var(--p);color:#fff}
+.mbfly{position:fixed;z-index:50;width:40px;height:40px;border-radius:13px;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;pointer-events:none;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.mbconf{position:fixed;z-index:50;width:9px;height:9px;border-radius:2px;pointer-events:none}
+@media (min-width:480px){.mbtiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
 /* Responsive: tablet y PC */
 @media (min-width:768px){
 .app,nav{max-width:760px}
@@ -3124,6 +3168,10 @@ bag:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 
 I.shirt='<path d="M9 3 3 6l2.5 4L8 9v11h8V9l2.5 1L21 6l-6-3c-.5 1.5-1.7 2.2-3 2.2S9.5 4.5 9 3z"/>';
 I.drop='<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>';
 I.apple='<path d="M12 8c-2-2-6-1-6 4 0 4 2.5 8 4.5 8 1 0 1-.5 1.5-.5s.5.5 1.5.5c2 0 4.5-4 4.5-8 0-5-4-6-6-4z"/><path d="M12 8c0-2 1-4 3-5"/>';
+I.jacket='<path d="M8 3 4 6l1 14h5V9M16 3l4 3-1 14h-5V9M8 3c1 2 2 3 4 3s3-1 4-3M12 6v14"/>';
+I.diaper='<path d="M4 8c4 3 12 3 16 0v5c0 4-4 7-8 7s-8-3-8-7z"/><path d="M9 11.5l3 2.5 3-2.5"/>';
+I.tray='<rect x="3" y="9" width="18" height="9" rx="3"/><path d="M7 9V6h10v3"/>';
+I.star='<path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.7 6.6 19.7l1.1-6.1L3.2 9.4l6.1-.8z"/>';
 I.bottle='<path d="M9 3h6M10 3v3l-2 3v11h8V9l-2-3V3M8 13h8"/>';
 function ic(n,s,w){return '<svg width="'+(s||22)+'" height="'+(s||22)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(w||2)+'" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+I[n]+'</svg>';}
 
@@ -3499,6 +3547,46 @@ function llevarCard(){var i=nextSchoolIdx(),x=dayInfo(i),iso=isoOf(x.d),ti=idxOf
 function semEditor(){var k=S.mkid,nm=k==='agusta'?'Agusta':'Rafaella';
   return '<section><h2>Lo que lleva '+nm+' cada día</h2><div class="list">'+[0,1,2,3,4].map(function(d){var L=S.sem[k][d]||[];return '<div class="row" style="align-items:center;gap:10px"><b style="width:74px;font-size:13px;flex-shrink:0;text-transform:capitalize">'+DNL[d]+'</b><span class="grow" style="display:flex;flex-wrap:wrap;gap:6px">'+(L.length?L.map(function(t,j){return '<button class="semc" data-a="semdel" data-v="'+k+'|'+d+'|'+j+'" aria-label="Quitar '+t+'">'+t+' <span aria-hidden="true">×</span></button>';}).join(''):'<span class="lbl" style="font-size:12px">Nada extra</span>')+'</span></div>';}).join('')+'</div>'+
   '<div class="card" style="margin-top:10px;display:flex;flex-direction:column;gap:10px"><b style="font-size:14px">Agregar algo fijo de la semana</b><div style="display:grid;grid-template-columns:110px 1fr;gap:8px"><select class="inp" data-sm="dia">'+[0,1,2,3,4].map(function(d){return '<option value="'+d+'"'+(+S.semf.dia===d?' selected':'')+'>'+DNL[d].charAt(0).toUpperCase()+DNL[d].slice(1)+'</option>';}).join('')+'</select><input class="inp" type="text" placeholder="Ej: zapatillas para ed. física" data-sm="txt" value="'+S.semf.txt.replace(/"/g,'&quot;')+'"></div><button class="btn" data-a="semadd">Agregar</button><div class="lbl" style="font-size:12px">Aparece en el panel principal la noche anterior, para quien las tenga ese día. Toca un elemento para quitarlo.</div></div></section>';}
+
+var MBK={agusta:['#E8688A','#C24A70','#F6A6BB'],rafaella:['#4F8FD6','#3A72B3','#9CC3EE']};
+function mbIcon(t){t=String(t).toLowerCase();return /pañal|toallita/.test(t)?'diaper':/bandeja/.test(t)?'tray':/chaleco|parka/.test(t)?'jacket':/ropa|muda|buzo|polera|poler/.test(t)?'shirt':/libro|libreta|agenda|cuento/.test(t)?'book':/colaci|fruta|manzana|galleta/.test(t)?'apple':/leche/.test(t)?'bottle':/agua|botella/.test(t)?'drop':/material|cartulina|témpera|disfraz/.test(t)?'clip':'star';}
+function mbItems(k){var out=BAG[k].map(function(it){return {id:'b|'+k+it[0],on:!!S.bag[k+it[0]],t:it[1],s:it[2]||'',i:mbIcon(it[1])};});
+  var ni=nextSchoolIdx(),iso=isoOf(dayInfo(ni).d);
+  paraLlevar(ni,k).forEach(function(x){var key=iso+k+x.t;out.push({id:'p|'+key,on:!!S.pk[key],t:x.t,s:x.src,i:mbIcon(x.t),tag:x.warn?'Falta comprar':'Extra de hoy',star:!x.warn});});
+  return out;}
+function mbAll(k){var L=mbItems(k);return L.length>0&&L.every(function(x){return x.on;});}
+function mbFace(cx,cy,sc){return '<g transform="translate('+cx+' '+cy+') scale('+sc+')"><ellipse class="mbblush" cx="-44" cy="12" rx="11" ry="7"/><ellipse class="mbblush" cx="44" cy="12" rx="11" ry="7"/><ellipse class="mbeye" cx="-24" cy="0" rx="6" ry="7"/><ellipse class="mbeye" cx="24" cy="0" rx="6" ry="7"/><path class="mbeyeh" d="M-32 3q8-12 16 0M16 3q8-12 16 0"/><path class="mbsmile" d="M-14 16q14 16 28 0"/><path class="mbsmileh" d="M-15 15q15 22 30 0z"/></g>';}
+function mbSVG(){return '<svg class="mbsvg" viewBox="0 0 300 330" aria-hidden="true"><defs><clipPath id="mblens"><path d="M64 104Q150 78 236 104L236 192Q150 208 64 192Z"/></clipPath></defs>'+
+  '<ellipse class="mbshadow" cx="150" cy="318" rx="98" ry="9"/><g class="mbbody">'+
+  '<path d="M116 94C112 52 188 52 184 94" fill="none" stroke="var(--bag-d)" stroke-width="11" stroke-linecap="round"/>'+
+  '<rect fill="var(--bag)" x="46" y="88" width="208" height="226" rx="54"/>'+
+  '<rect fill="var(--bag-d)" x="46" y="150" width="15" height="118" rx="7"/><rect fill="var(--bag-d)" x="239" y="150" width="15" height="118" rx="7"/>'+
+  '<path class="mblens" fill="#3A2A33" d="M64 104Q150 78 236 104L236 192Q150 208 64 192Z"/>'+
+  '<g clip-path="url(#mblens)"><g class="mbpeek">'+
+   '<rect x="84" y="112" width="52" height="74" rx="7" fill="#fff"/><path d="M96 130h28M96 142h28M96 154h20" stroke="#BFD6DD" stroke-width="4" stroke-linecap="round"/><rect x="84" y="112" width="9" height="74" rx="4" fill="#4F8FD6"/>'+
+   '<rect x="150" y="100" width="16" height="92" rx="5" fill="#F4C95D"/><path d="M150 112h16M150 124h16" stroke="#C9972E" stroke-width="2"/>'+
+   '<rect x="176" y="108" width="13" height="84" rx="4" fill="#6FB98F"/><path d="M176 108l6.5-12 6.5 12z" fill="#F2D5B0"/></g></g>'+
+  '<g class="mbflap"><path fill="var(--bag-l)" d="M46 122Q46 88 86 88L214 88Q254 88 254 122L254 150Q254 188 216 190L84 190Q46 188 46 150Z"/>'+
+  '<path class="mbstitch" d="M62 150Q62 172 90 174L210 174Q238 172 238 150"/><rect fill="var(--bag-d)" x="130" y="160" width="40" height="30" rx="9"/><circle cx="150" cy="175" r="5.5" fill="#FFE08A"/></g>'+
+  '<rect fill="var(--bag-d)" x="74" y="206" width="152" height="94" rx="30"/>'+
+  '<path d="M90 230Q150 218 210 230" fill="none" stroke="#FFF6E0" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 5"/>'+
+  mbFace(150,262,.95)+
+  '<g transform="translate(212 232)"><path d="M0 0q8 14 0 26" fill="none" stroke="#FFE08A" stroke-width="3"/><path d="m0 26 3.4 7 7.6 1-5.6 5.3 1.4 7.7L0 43l-6.8 4 1.4-7.7L-11 34l7.6-1z" fill="#FFD25E" transform="translate(0 -6) scale(.8)"/></g>'+
+  '<rect id="mbmouth" x="130" y="96" width="40" height="10" fill="none"/></g></svg>';}
+function mbTile(it){return '<button class="mbt" data-a="mbpack" data-v="'+it.id.replace(/"/g,'&quot;')+'" aria-pressed="'+it.on+'"><span class="mbic">'+ic(it.i,22)+'</span><span class="mbtx"><b>'+it.t+'</b>'+(it.s?'<small>'+it.s+'</small>':'')+'</span>'+(it.tag?'<span class="mbtag'+(it.star?'':' w')+'">'+(it.star?'★ ':'')+it.tag+'</span>':'')+'<span class="mbtick">'+ic('check',14)+'</span></button>';}
+function mbStage(k,cuando,fecha,prep){var L=mbItems(k),d=L.filter(function(x){return x.on;}).length,rd=L.length>0&&d===L.length,nm=k==='agusta'?'Agusta':'Rafaella',c=MBK[k],open=!!S.mbOpen&&!rd;
+  return '<div class="mbs'+(open?' open':'')+(rd?' rdy':'')+'" style="--bag:'+c[0]+';--bag-d:'+c[1]+';--bag-l:'+c[2]+';--rise:'+Math.max(0,34-d*5)+'px"><div class="mbcap"><span>'+cuando+' · '+fecha+'</span></div><span class="mbcount">'+d+' de '+L.length+'</span>'+
+  '<button class="mbbag" data-a="mbtog" aria-expanded="'+open+'" aria-label="'+(open?'Cerrar':'Abrir')+' la mochila de '+nm+'">'+mbSVG()+'</button>'+
+  '<div class="mbhint">'+(rd?'<span class="mbready">¡Mochila lista!</span>':(open?'Toca cada cosa para guardarla en la mochila.':'Toca la mochila para abrirla.'))+'</div><div class="mbprep">'+prep+'</div></div>'+
+  (open?'<div class="mbtiles">'+L.map(mbTile).join('')+'</div>':'');}
+function mbSquish(){var e=document.querySelector('.mbs');if(!e)return;e.classList.remove('sq');void e.offsetWidth;e.classList.add('sq');setTimeout(function(){e.classList.remove('sq');},400);}
+function mbFly(r0,html){if(!r0||!document.body.animate||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))return;var m=document.getElementById('mbmouth'),b=m?m.getBoundingClientRect():null;if(!b)return;
+  var el=document.createElement('div');el.className='mbfly';el.innerHTML=html;el.style.left=r0.left+'px';el.style.top=r0.top+'px';document.body.appendChild(el);
+  var dx=b.left+b.width/2-(r0.left+20),dy=b.top+b.height/2-(r0.top+20);
+  el.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate('+dx*.35+'px,'+(Math.min(dy,0)-70)+'px) scale(1.15)',opacity:1,offset:.4},{transform:'translate('+dx+'px,'+dy+'px) scale(.3)',opacity:.15}],{duration:600,easing:'cubic-bezier(.3,.7,.3,1)'}).onfinish=function(){el.remove();mbSquish();};}
+function mbConfetti(){if(!document.body.animate||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))return;var bg=document.querySelector('.mbbag');if(!bg)return;var r=bg.getBoundingClientRect(),cs=['#FFD25E','#EF6B5B','#6FB98F','#4F8FD6','#F6A6BB'];
+  for(var i=0;i<18;i++){var c=document.createElement('div');c.className='mbconf';c.style.background=cs[i%cs.length];c.style.left=(r.left+r.width/2)+'px';c.style.top=(r.top+r.height*.4)+'px';document.body.appendChild(c);var ang=(i/18)*Math.PI*2,dist=90+Math.random()*80;
+    c.animate([{transform:'translate(0,0) rotate(0)',opacity:1},{transform:'translate('+Math.cos(ang)*dist+'px,'+(Math.sin(ang)*dist-30)+'px) rotate('+(Math.random()*360)+'deg)',opacity:0}],{duration:900+Math.random()*300,easing:'cubic-bezier(.2,.8,.3,1)'}).onfinish=(function(n){return function(){n.remove();};})(c);}}
 function mochila(){
   var k=S.mkid,nm=k==='agusta'?'Agusta':'Rafaella',list=BAG[k],done=list.filter(function(it){return S.bag[k+it[0]];}).length;
   var ti=idxOf(todayIso()),ni=nextSchoolIdx(),nx=dayInfo(ni),cuando=ni===ti?'Hoy':(ni===ti+1?'Mañana':'El '+DNL[nx.dow]);
@@ -3511,7 +3599,7 @@ function mochila(){
     '<button class="addb" data-a="matopen">'+ic('plus',18)+'Agregar material</button><div class="lbl" style="font-size:12px;margin-top:8px">Útiles y buzo escolar: 100% papá según el acuerdo. Toca el estado para avanzarlo.</div>';
   var vue='<div class="list" style="box-shadow:none;border:none">'+(S.vuelta.length?S.vuelta.map(function(v,i){return '<button class="check'+(v.ok?' on':'')+'" aria-pressed="'+v.ok+'" data-a="vuelta" data-v="'+i+'"><span class="box">'+ic('check',16,3)+'</span><span class="grow"><span class="cl">'+v.t+'</span><span class="lbl" style="font-size:12px">'+(v.ok?'Devuelto':v.d+' · devolver en el próximo traspaso')+'</span></span></button>';}).join(''):'<div class="lbl" style="padding:8px 0">Nada para devolver.</div>')+'</div>';
   return '<div class="seg"><button class="'+(k==='agusta'?'on':'')+'" data-a="mkid" data-v="agusta">'+kidAv('agusta')+'Agusta</button><button class="'+(k==='rafaella'?'on':'')+'" data-a="mkid" data-v="rafaella">'+kidAv('rafaella')+'Rafaella</button></div>'+
-  '<div class="card" style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><div class="cap">'+cuando+' · '+fdate(isoOf(nx.d)).toUpperCase()+'</div><div style="font-size:17px;font-weight:700">Mochila de '+nm+'</div></div><span class="accp'+(done===list.length?' ok':'')+'">'+done+' de '+list.length+'</span></div>'+tiles+'<div class="lbl" style="font-size:12px">'+prep+' Toca para marcar lo que ya está en la mochila.</div></div>'+
+  mbStage(k,cuando,fdate(isoOf(nx.d)),prep)+
   acc('fijos','spark','y','Lo que lleva '+nm+' cada día',fijos+' fijo'+(fijos===1?'':'s'),fijos===0,semEditor())+
   acc('desp','apple','r','Colaciones y despensa',buy?buy+' por comprar':'Todo al día',!buy,despensa())+
   acc('mats','backpack','m','Materiales pedidos',pend?pend+' pendiente'+(pend>1?'s':''):'Al día',!pend,mats)+
@@ -4227,6 +4315,11 @@ document.addEventListener('click',function(e){
   else if(a==='qkclose2'){S.qkSheet=false;render();}
   else if(a==='qkt'){var cq=qkGet(),ix=cq.indexOf(v);if(ix>=0){if(cq.length<=1){toast('Deja al menos una');return;}cq.splice(ix,1);}else{if(cq.length>=4){toast('Máximo 4: quita una primero');return;}cq.push(v);}qkSet(cq);render();}
   else if(a==='qkreset'){qkSet(['chat','swap','photo','gas']);render();}
+  else if(a==='mbtog'){S.mbOpen=!S.mbOpen;render();mbSquish();}
+  else if(a==='mbpack'){var mk=S.mkid,mwas=mbAll(mk),mic=b.querySelector('.mbic'),mr=mic&&mic.getBoundingClientRect(),mh=mic&&mic.innerHTML,mon;
+    if(v.charAt(0)==='b'){mon=!S.bag[v.slice(2)];S.bag[v.slice(2)]=mon;}else{mon=!S.pk[v.slice(2)];S.pk[v.slice(2)]=mon;}
+    render();if(mon)mbFly(mr,mh);mbSquish();
+    if(!mwas&&mbAll(mk)){setTimeout(function(){S.mbOpen=false;render();mbConfetti();},750);}}
   else if(a==='acc'){S.acc=S.acc||{};S.acc[v]=!S.acc[v];render();}
   else if(a==='matopen'){S.mf.fecha=isoOf(dayInfo(nextSchoolIdx()).d);S.mfOther=false;S.matSheet=true;render();}
   else if(a==='matclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.matSheet=false;render();}

@@ -286,6 +286,20 @@ main.anim>*:nth-child(2){animation-delay:.03s}main.anim>*:nth-child(3){animation
 .chp.on{background:var(--p);border-color:var(--p);color:#fff}
 .qlbl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:-6px}
 .sheet.tall{max-height:90vh;overflow-y:auto}
+/* Más con resumen en vivo y hoja "+" con descripciones */
+.mcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mc{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:104px;padding:14px 14px 48px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);font:inherit;color:var(--ink);text-align:left;cursor:pointer;transition:transform .12s}
+.mc:active{transform:scale(.97)}
+.mct{font-size:16px;font-weight:700;line-height:1.2}
+.mcs1{font-size:13px;color:var(--mut);line-height:1.3}
+.mci{position:absolute;right:12px;bottom:12px;width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center}
+.mc .bd{position:absolute;top:10px;right:12px;min-width:20px;height:20px;border-radius:10px;background:var(--x);color:#fff;font-size:12px;font-style:normal;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.frows{display:flex;flex-direction:column}
+.frow{display:flex;align-items:center;gap:14px;min-height:68px;padding:8px 2px;background:none;border:none;border-bottom:1px solid var(--sep);font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.frow:last-child{border-bottom:none}
+.fri{width:46px;height:46px;border-radius:14px;background:var(--pt);color:var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.frt{flex:1;display:flex;flex-direction:column;gap:2px}.frt b{font-size:16px}.frt span{font-size:13px;color:var(--mut);line-height:1.3}
+.frc{color:var(--mut);display:flex}
 /* Responsive: tablet y PC */
 @media (min-width:768px){
 .app,nav{max-width:760px}
@@ -317,6 +331,7 @@ nav button.on{background:var(--seg)}
 nav .fabw{order:-1;justify-content:flex-start;margin-bottom:10px}
 .fab{width:auto;height:48px;border-radius:12px;border:none;margin-top:0;padding:0 18px;width:100%;box-shadow:none}
 .tiles{grid-template-columns:repeat(5,minmax(0,1fr))}
+.mcs{grid-template-columns:repeat(3,minmax(0,1fr))}
 .toast{bottom:32px;left:calc(50% + 115px)}
 .sheetbg{padding-left:230px}
 }
@@ -3823,21 +3838,28 @@ function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigato
 function instHelpTxt(){return isIOS()?'En Safari toca el botón Compartir (el cuadrado con la flecha hacia arriba) y elige «Agregar a pantalla de inicio».':'Abre el menú del navegador (⋮) y toca «Instalar app» o «Agregar a pantalla de inicio».';}
 function instRow(){if(isStandalone())return '';return '<button data-a="inst" class="row" style="width:100%;background:none;border:none;font:inherit;color:inherit;text-align:left;align-items:center"><span style="color:var(--p)">'+ic('up',20)+'</span><span style="flex:1;font-size:14px;font-weight:600">Instalar la app en el teléfono</span>'+ic('chev',16)+'</button>'+(S.instHelp?'<div style="padding:0 16px 14px;font-size:13px;color:var(--ink2)">'+instHelpTxt()+'</div>':'');}
 function instBanner(){if(isStandalone()||S.instOff||!window._ip)return '';return '<div class="card" style="display:flex;align-items:center;gap:12px;margin:0 0 18px"><span style="width:40px;height:40px;border-radius:13px;background:var(--pt);color:var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic('nest',24)+'</span><span style="flex:1;font-size:14px"><b style="display:block">Instala Nido</b><span class="lbl">Ábrela como una app, sin el navegador.</span></span><button class="btn" style="height:38px;font-size:13px" data-a="inst">Instalar</button><button data-a="instoff" aria-label="Ocultar" style="background:none;border:none;color:var(--mut);font-size:20px;padding:4px 6px">×</button></div>';}
-function fabSheet(){var A=[['camera','Foto','photo'],['gas','Gasto','gas'],['book','Nota del diario','dia'],['list','Actividad','act'],['swap','Cambio de día','swapnow'],['chat','Mensaje','chat']];
-  return '<div class="sheetbg" data-a="fabclose"><div class="sheet" role="dialog" aria-label="Registrar"><div style="width:40px;height:4px;border-radius:2px;background:var(--line2);align-self:center"></div><h2 style="font-family:Fraunces,serif;font-size:22px;margin:0">¿Qué quieres registrar?</h2><div class="tiles">'+
-  A.map(function(a){var inner='<span class="ti" style="background:var(--pt);color:var(--p)">'+ic(a[0],22)+'</span>'+a[1];return a[2]==='photo'?'<label class="tile">'+inner+'<input type="file" accept="image/*" capture="environment" data-photo="act:Foto" data-label="Foto" style="display:none"></label>':'<button class="tile" data-a="fabgo" data-v="'+a[2]+'">'+inner+'</button>';}).join('')+
+function fabSheet(){var A=[['camera','Foto','Guarda una foto con fecha y hora','photo'],['gas','Gasto','Registra un pago y su comprobante','gas'],['book','Nota del diario','Cómo están las niñas hoy','dia'],['list','Actividad','Qué hiciste con ellas','act'],['swap','Cambio de día','Propón un cambio a '+other(),'swapnow'],['chat','Mensaje','Escríbele a '+other(),'chat']];
+  return '<div class="sheetbg" data-a="fabclose"><div class="sheet tall" role="dialog" aria-label="Registrar"><div style="width:40px;height:4px;border-radius:2px;background:var(--line2);align-self:center"></div><h2 style="font-family:Fraunces,serif;font-size:22px;margin:0">¿Qué quieres registrar?</h2><div class="frows">'+
+  A.map(function(a){var inner='<span class="fri">'+ic(a[0],22)+'</span><span class="frt"><b>'+a[1]+'</b><span>'+a[2]+'</span></span><span class="frc">'+ic('chev',16)+'</span>';return a[3]==='photo'?'<label class="frow">'+inner+'<input type="file" accept="image/*" capture="environment" data-photo="act:Foto" data-label="Foto" style="display:none"></label>':'<button class="frow" data-a="fabgo" data-v="'+a[3]+'">'+inner+'</button>';}).join('')+
   '</div><button class="btn sec" style="border:none" data-a="fabclose2">Cerrar</button></div></div>';}
 function bellSheet(){var L=avisosList();
   return '<div class="sheetbg" data-a="bellclose"><div class="sheet" role="dialog" aria-label="Avisos" style="max-height:80vh;overflow-y:auto"><div style="width:40px;height:4px;border-radius:2px;background:var(--line2);align-self:center"></div><h2 style="font-family:Fraunces,serif;font-size:22px;margin:0">Avisos</h2>'+
   (L.length?'<div class="list">'+L.map(function(a){return '<div class="row"><span class="t" style="width:96px">'+a[0]+'</span><div class="grow"><span style="font-size:14px">'+a[1]+'</span><span class="lbl" style="font-size:12px">'+a[2]+'</span></div></div>';}).join('')+'</div>':'<div class="card lbl">Sin avisos.</div>')+
   '<button class="btn sec" data-a="bellcfg">Configurar avisos</button><button class="btn sec" style="border:none" data-a="bellclose2">Cerrar</button></div></div>';}
 function analisis(){return '<div class="seg"><button class="'+(S.anaTab==='periodo'?'on':'')+'" data-a="anat" data-v="periodo">Por período</button><button class="'+(S.anaTab==='mes'?'on':'')+'" data-a="anat" data-v="mes">Mes a mes</button></div>'+(S.anaTab==='periodo'?resumen():equilibrio());}
-function mas(){
+function masSub(){var me2=whoMe(),ti=todayIso(),n;
+  var buy=S.pantry.filter(function(x){return x.st>0;}).length,pm=pendingMine(),meds=S.meds.filter(function(m){return m.kid==='agusta'||m.kid==='rafaella';}).length;
+  var vp=S.vacs.filter(function(v){return v.estado==='Pendiente'&&v.who!==me2;}).length,nsn=(S.nosch||[]).filter(function(x){return x.iso>=ti;}).length;
+  var nh=Object.keys(HOL).sort().filter(function(d){return d>=ti;})[0],rd=RUT.filter(function(r){return S.checks[r[0]];}).length,ld=S.diario.slice().sort(function(a,b){return (a.iso+a.hm)<(b.iso+b.hm)?1:-1;})[0];
+  return {fic:'Agusta y Rafaella',sal:meds?meds+' medicamento'+(meds>1?'s':'')+' activo'+(meds>1?'s':''):'Sin medicamentos activos',dia:ld?'Último: '+fdate(ld.iso):'Sin notas aún',moc:buy?buy+' por comprar':'Todo al día',rut:rd+' de '+RUT.length+' pasos hoy',alb:S.photos.length+(S.photos.length===1?' foto':' fotos'),
+    bit:pm?pm+' por firmar':'Todo firmado',act:S.log.length+' registros',vac:vp?vp+' por responder':(S.vacs.length?S.vacs.length+' propuesta'+(S.vacs.length>1?'s':''):'Sin propuestas'),acu:'Transacción revisada',esc:nsn?nsn+' día'+(nsn>1?'s':'')+' sin clases':(nh?'Feriado: '+fdate(nh):'Sin feriados'),
+    gas:S.pension?'Pensión pagada':'Pensión por pagar',tra:'Horario y alertas',ana:'Cómo se repartió',ask:'Pregunta lo que necesites',inf:'PDF para el tribunal'};}
+function mas(){var SB=masSub();
   var G=[['Las niñas','var(--agt)','var(--ag)',[['fic','fic','Fichas'],['sal','heart','Salud'],['dia','book','Diario'],['moc','backpack','Mochila'],['rut','rut','Rutinas'],['alb','image','Álbum']]],
     ['Acuerdos y registros','var(--pt)','var(--p)',[['bit','pen','Bitácora',pendingMine()],['act','list','Actividades'],['vac','sun','Vacaciones'],['acu','note','El acuerdo'],['esc','school','Colegio y feriados']]],
     ['Dinero y trabajo','var(--mt)','var(--m)',[['gas','gas','Gastos'],['tra','bag','Trabajo']]],
     ['Análisis e informes','var(--abt)','var(--ab)',[['ana','scale','Análisis'],['ask','spark','Asistente'],['inf','report','Informe tribunal']]]];
-  return G.map(function(g){return '<section><h2>'+g[0]+'</h2><div class="tiles">'+g[3].map(function(t){return '<button class="tile" data-a="tab" data-v="'+t[0]+'"><span class="ti" style="background:'+g[1]+';color:'+g[2]+'">'+ic(t[1],22)+'</span>'+t[2]+(t[3]?'<i class="bd">'+t[3]+'</i>':'')+'</button>';}).join('')+'</div></section>';}).join('')+
+  return G.map(function(g){return '<section><h2>'+g[0]+'</h2><div class="mcs">'+g[3].map(function(t){return '<button class="mc" data-a="tab" data-v="'+t[0]+'"><span class="mct">'+t[2]+'</span><span class="mcs1">'+(SB[t[0]]||'')+'</span><span class="mci" style="background:'+g[1]+';color:'+g[2]+'">'+ic(t[1],24)+'</span>'+(t[3]?'<i class="bd">'+t[3]+'</i>':'')+'</button>';}).join('')+'</div></section>';}).join('')+
   '<section><h2>Ajustes</h2><div class="list">'+instRow()+'<button data-a="tab" data-v="per" class="row" style="width:100%;background:none;border:none;font:inherit;color:inherit;text-align:left;align-items:center"><span class="avs">'+av('Papá',24,true)+av('Mamá',24,true)+av('agusta',24,true)+av('rafaella',24,true)+'</span><span style="flex:1;font-size:14px;font-weight:600">Perfiles y fotos</span>'+ic('chev',16)+'</button><button data-a="tab" data-v="avi" class="row" style="width:100%;background:none;border:none;font:inherit;color:inherit;text-align:left;align-items:center"><span style="color:var(--p)">'+ic('bell',20)+'</span><span style="flex:1;font-size:14px;font-weight:600">Avisos y recordatorios</span>'+ic('chev',16)+'</button>'+
   '<div class="row" style="align-items:center"><span style="font-size:14px;font-weight:600">Apariencia</span><div class="seg" style="grid-template-columns:repeat(3,1fr);width:200px;padding:3px">'+[['auto','Auto'],['light','Claro'],['dark','Oscuro']].map(function(o){return '<button style="height:32px;font-size:12px" class="'+(S.theme===o[0]?'on':'')+'" data-a="theme" data-v="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div></div>'+
   '<div class="row" style="align-items:center"><span style="font-size:14px;font-weight:600">Modo demo: ver como</span>'+vistaSel()+'</div></div></section>';

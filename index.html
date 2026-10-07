@@ -247,6 +247,10 @@ main.anim>*:nth-child(2){animation-delay:.03s}main.anim>*:nth-child(3){animation
 .tlsec .tlbody>section>h2{display:none}
 .hl>section{margin-bottom:20px}
 .hl>.cdown{margin:16px 0!important}
+.fltc{width:100%;display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 14px;margin:0 0 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);font:inherit;font-size:14px;color:var(--ink);text-align:left;cursor:pointer}
+.fltc .fk{font-size:12px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.fltc b{flex:1;font-weight:600}
+.fltc .fc{font-size:13px;font-weight:700;color:var(--p)}
 /* Responsive: tablet y PC */
 @media (min-width:768px){
 .app,nav{max-width:760px}
@@ -263,6 +267,8 @@ main{padding-left:8px;padding-right:8px}
 }
 @media (min-width:1100px){
 body{padding-left:230px}
+.cgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.cgrid .cr{margin-top:56px}
 .app{max-width:1100px}
 .hgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
 .tlt{display:none}
@@ -3129,7 +3135,9 @@ function softRewrite(t){var x=t;if(t.replace(/[^A-Z]/g,'').length>t.replace(/[^a
   x=x.charAt(0).toUpperCase()+x.slice(1);if(!/^(hola|buen)/i.test(x))x='Hola. '+x;if(!/(gracias|saludos)/i.test(x))x+=' Gracias.';return x;}
 function swapOwner(sw){var mine=sw.de==='Papá'?'papa':'mama',oth=mine==='papa'?'mama':'papa';return sw.tipo==='pide'?mine:oth;}
 function phById(id){for(var i=0;i<S.photos.length;i++)if(S.photos[i].id===id)return S.photos[i];return null;}
-function dateFilter(){var f=S.flt;
+function dateFilter(){if(S.fltOpen)return '<div>'+dateFilterFull()+'<button class="btn sec" style="width:100%;margin:-4px 0 14px" data-a="fltt">Listo</button></div>';
+  return '<button class="fltc" data-a="fltt" aria-label="Cambiar período"><span class="fk">Período</span><b>'+fLabel()+'</b><span class="fc">Cambiar</span></button>';}
+function dateFilterFull(){var f=S.flt;
   return '<div class="card" style="padding:12px;display:flex;flex-direction:column;gap:10px"><div class="seg"><button class="'+(f.mode==='dia'?'on':'')+'" data-a="dfm" data-v="dia">Por día</button><button class="'+(f.mode==='rango'?'on':'')+'" data-a="dfm" data-v="rango">Desde – hasta</button></div>'+
   (f.mode==='dia'?'<label class="fld">Día<input class="inp" type="date" data-df="dia" value="'+f.dia+'"></label>':'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><label class="fld">Desde<input class="inp" type="date" data-df="desde" value="'+f.desde+'"></label><label class="fld">Hasta<input class="inp" type="date" data-df="hasta" value="'+f.hasta+'"></label></div>')+
   '<div class="fchips">'+[['hoy','Hoy'],['sem','Esta semana'],['mes','Este mes'],['30','Últimos 30 días']].map(function(q){return '<button data-a="dfq" data-v="'+q[0]+'">'+q[1]+'</button>';}).join('')+'</div></div>';
@@ -3246,12 +3254,12 @@ function cal(){
   var dayCard='<div class="card cflat"><div class="cah"><b>'+s.label+'</b><span class="chip '+(s.type==='mama'?'cm':'cp')+'">'+s.who+'</span></div>'+(s.hol?'<div class="chip" style="background:var(--rt);color:var(--rd);display:inline-block;margin-bottom:8px">Feriado: '+s.hol+'</div>':'')+daySched(S.sel,380)+
     '<div class="cev">'+s.ev.map(function(e){return '<div class="cevr"><span class="tm">'+e[0]+'</span><span class="dt" style="background:'+whoCol(e[2])+'"></span><span class="tx">'+e[1]+'<small>'+e[2]+'</small></span></div>';}).join('')+'</div>'+
   (function(){var x=impact(s.dow,pf(S.sel));if(!x.lost||s.hol)return '';var t=[];if(x.late)t.push('llegas '+hhmm(x.arrive)+(x.unauth?' (−'+hrs(x.late)+')':' con permiso'));if(!x.unauth)return '<div class="alert" style="margin-top:10px;padding:10px 12px;background:var(--pt)"><span style="color:var(--pd);flex-shrink:0">'+ic('check',18)+'</span><span style="font-size:13px"><b>Trabajo:</b> '+t.join(' y ')+'</span></div>';if(x.early)t.push('sales '+hhmm(x.leave)+' (−'+hrs(x.early)+')');return '<div class="alert r" style="margin-top:10px;padding:10px 12px"><span style="color:var(--rd);flex-shrink:0">'+ic('alert',18)+'</span><span style="font-size:13px"><b>Choque con trabajo:</b> '+t.join(' y ')+'</span></div>';})()+
-    '<button class="btn sec" style="width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px" data-a="swap">'+ic('swap',18)+'Proponer cambio para este día</button></div>';
-  return '<div class="seg" style="grid-template-columns:repeat(4,1fr)">'+[['mes','Mes'],['semana','Semana'],['agenda','Agenda'],['recuerdos','Recuerdos']].map(function(v){return '<button class="'+(S.calView===v[0]?'on':'')+'" data-a="calv" data-v="'+v[0]+'">'+v[1]+'</button>';}).join('')+'</div>'+view+
+    '<button class="btn" style="width:100%;margin-top:12px;min-height:50px;display:flex;align-items:center;justify-content:center;gap:8px" data-a="swap">'+ic('swap',18)+'Proponer cambio para este día</button></div>';
+  return '<div class="cgrid"><div class="cl">'+'<div class="seg" style="grid-template-columns:repeat(4,1fr)">'+[['mes','Mes'],['semana','Semana'],['agenda','Agenda'],['recuerdos','Recuerdos']].map(function(v){return '<button class="'+(S.calView===v[0]?'on':'')+'" data-a="calv" data-v="'+v[0]+'">'+v[1]+'</button>';}).join('')+'</div>'+view+'</div><div class="cr">'+
   (S.calView==='mes'||S.calView==='semana'?dayCard:(S.calView==='recuerdos'?memCard(S.sel):''))+
   swapsList()+
   (S.calView==='lista'&&per?'<section><h2>Agenda del período · '+fLabel()+'</h2><div class="list">'+per+'</div></section>':'')+
-  '<section><h2>Fechas especiales</h2><div class="list">'+fe.map(function(f){return '<div class="row"><span style="font-size:14px">'+f[0]+'</span><span style="font-size:13px;font-weight:600;color:'+(f[1]==='Papá'?'var(--p)':(f[1]==='Mamá'?'var(--m)':'var(--mut)'))+'">'+f[1]+'</span></div>';}).join('')+'</div></section>';
+  '<section><button class="fltc" data-a="fet" aria-expanded="'+(S.feOpen?'true':'false')+'"><b>Fechas especiales</b><span class="fc">'+(S.feOpen?'Ocultar':'Ver')+'</span></button>'+(S.feOpen?'<div class="list">':'<div class="list" style="display:none">')+fe.map(function(f){return '<div class="row"><span style="font-size:14px">'+f[0]+'</span><span style="font-size:13px;font-weight:600;color:'+(f[1]==='Papá'?'var(--p)':(f[1]==='Mamá'?'var(--m)':'var(--mut)'))+'">'+f[1]+'</span></div>';}).join('')+'</div></section></div></div>';
 }
 var RUT=[['retiro','Retiro de Agusta y Rafaella','15:30 y 16:00'],['once','Once / cena','En casa de papá'],['bano','Baño','Ambas niñas'],['pijama','Pijama y ropa de mañana lista',''],['dientes','Lavado de dientes',''],['cuento','Cuento o momento tranquilo',''],['entrega','Acostadas en casa de mamá','20:00 aprox. · marca entrega']];
 function rut(){RUT[0]=PK(1)==='Papá'?['retiro','Retiro de Agusta y Rafaella',S.work.salidaA+' y '+S.work.salidaR]:['retiro','Recibir a las niñas',PK(1)+' las retira · tú llegas '+hhmm(tm(S.work.fin)+(+S.work.viaje||0))];
@@ -3290,14 +3298,14 @@ function gas(){
   var vest=G.filter(function(g){return g.cat==='Vestimenta (papá)';}).reduce(function(a,g){return a+g.monto;},0);
   var cats=['Extraordinario 50/50','Pensión','Vestimenta (papá)','Útiles y buzo (papá)','Cumpleaños','Otro'];
   var gf=S.gf;
-  return dateFilter()+
-  '<div class="card" style="background:var(--hc);border-color:var(--hc);color:var(--onhc)"><div class="cap" style="color:#B9C3C6">Saldo 50/50 · '+fLabel()+'</div><div style="font-family:Fraunces,serif;font-size:30px;font-weight:600">'+money(Math.abs(debeP))+'</div><div style="font-size:14px;color:#DCE3E5">'+(debeP>0?'Papá le debe a mamá':(debeP<0?'Mamá le debe a papá':'Sin saldo pendiente'))+'</div><div style="display:flex;gap:16px;margin-top:10px;font-size:13px;color:#DCE3E5"><span>Pagó papá: <b style="color:#fff">'+money(tot['Papá']||0)+'</b></span><span>Pagó mamá: <b style="color:#fff">'+money(tot['Mamá']||0)+'</b></span></div></div>'+
-  '<section><h2>Aportes de papá</h2><div class="card" style="display:flex;flex-direction:column;gap:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><b style="font-size:15px">Pensión de alimentos</b><div class="lbl">$500.000 = 6,971459 UTM (sep 2026) · desde oct 2026 · del 1 al 5 · Cuenta Vista BancoEstado de mamá</div></div><button class="btn'+(S.pension?' ok':'')+'" data-a="pension">'+(S.pension?'Pagada ✓':'Marcar pagada')+'</button></div><div style="height:1px;background:var(--sep)"></div>'+
-  '<div><div style="display:flex;justify-content:space-between;margin-bottom:8px"><b style="font-size:15px">Vestuario y calzado</b><span class="lbl">'+money(vest)+' de $50.000</span></div><div class="prog"><div style="width:'+Math.min(100,vest/500)+'%"></div></div></div></div></section>'+
-  '<section><h2>Movimientos del período</h2>'+(G.length?'<div class="list">'+G.slice().sort(function(a,b){return a.iso<b.iso?1:-1;}).map(function(g){var ph=(g.ph||[]).map(phById).filter(Boolean);return '<div class="row"><div class="grow"><b style="font-size:14px">'+g.t+'</b><span class="lbl" style="font-size:12px">'+fdate(g.iso)+' · '+g.cat+' · pagó '+g.pago+'</span><span class="chip '+(g.comp||ph.length?'cp':'cm')+'">'+(g.comp||ph.length?'Con comprobante':'Falta comprobante')+'</span>'+(ph.length?'<div style="display:flex;gap:6px;margin-top:4px">'+ph.map(function(x){return '<img src="'+x.url+'" alt="Comprobante" style="width:48px;height:48px;border-radius:8px;object-fit:cover">';}).join('')+'</div>':'')+'</div><div style="text-align:right"><b style="font-size:14px">'+money(g.monto)+'</b>'+(g.cat==='Extraordinario 50/50'?'<div class="lbl" style="font-size:12px">50%: '+money(g.monto/2)+'</div>':'')+'</div></div>';}).join('')+'</div>':'<div class="card lbl">No hay gastos en este período.</div>')+'</section>'+
+  return '<div class="card" style="background:var(--hc);border-color:var(--hc);color:var(--onhc)"><div class="cap" style="color:#B9C3C6">Saldo 50/50 · '+fLabel()+'</div><div style="font-family:Fraunces,serif;font-size:30px;font-weight:600">'+money(Math.abs(debeP))+'</div><div style="font-size:14px;color:#DCE3E5">'+(debeP>0?'Papá le debe a mamá':(debeP<0?'Mamá le debe a papá':'Sin saldo pendiente'))+'</div><div style="display:flex;gap:16px;margin-top:10px;font-size:13px;color:#DCE3E5"><span>Pagó papá: <b style="color:#fff">'+money(tot['Papá']||0)+'</b></span><span>Pagó mamá: <b style="color:#fff">'+money(tot['Mamá']||0)+'</b></span></div></div>'+
+  dateFilter()+
   '<section><h2>Registrar gasto</h2><div class="card" style="display:flex;flex-direction:column;gap:10px"><input class="inp" type="text" placeholder="Concepto (ej: consulta pediatra)" data-g="t" value="'+gf.t.replace(/"/g,'&quot;')+'"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input class="inp" type="number" inputmode="numeric" placeholder="Monto $" data-g="monto" value="'+gf.monto+'"><select class="inp" data-g="cat">'+cats.map(function(c){return '<option'+(gf.cat===c?' selected':'')+'>'+c+'</option>';}).join('')+'</select></div>'+
   (gf.ph.length?'<div style="display:flex;gap:6px">'+gf.ph.map(phById).filter(Boolean).map(function(x){return '<img src="'+x.url+'" alt="Comprobante" style="width:56px;height:56px;border-radius:10px;object-fit:cover">';}).join('')+'</div>':'')+
   '<div style="display:flex;gap:8px"><label class="btn sec upl" style="flex:1">'+ic('camera',18)+'Foto boleta<input type="file" accept="image/*" capture="environment" data-photo="gas:nuevo" data-label="Comprobante de gasto"></label><button class="btn" style="flex:1" data-a="addgasto">Guardar gasto</button></div><div class="lbl" style="font-size:12px">Extraordinarios: se avisa por correo con respaldo y el otro paga su 50% dentro de 30 días.</div></div></section>'+
+  '<section><h2>Aportes de papá</h2><div class="card" style="display:flex;flex-direction:column;gap:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><b style="font-size:15px">Pensión de alimentos</b><div class="lbl">$500.000 = 6,971459 UTM (sep 2026) · desde oct 2026 · del 1 al 5 · Cuenta Vista BancoEstado de mamá</div></div><button class="btn'+(S.pension?' ok':'')+'" data-a="pension">'+(S.pension?'Pagada ✓':'Marcar pagada')+'</button></div><div style="height:1px;background:var(--sep)"></div>'+
+  '<div><div style="display:flex;justify-content:space-between;margin-bottom:8px"><b style="font-size:15px">Vestuario y calzado</b><span class="lbl">'+money(vest)+' de $50.000</span></div><div class="prog"><div style="width:'+Math.min(100,vest/500)+'%"></div></div></div></div></section>'+
+  '<section><h2>Movimientos del período</h2>'+(G.length?'<div class="list">'+G.slice().sort(function(a,b){return a.iso<b.iso?1:-1;}).map(function(g){var ph=(g.ph||[]).map(phById).filter(Boolean);return '<div class="row"><div class="grow"><b style="font-size:14px">'+g.t+'</b><span class="lbl" style="font-size:12px">'+fdate(g.iso)+' · '+g.cat+' · pagó '+g.pago+'</span><span class="chip '+(g.comp||ph.length?'cp':'cm')+'">'+(g.comp||ph.length?'Con comprobante':'Falta comprobante')+'</span>'+(ph.length?'<div style="display:flex;gap:6px;margin-top:4px">'+ph.map(function(x){return '<img src="'+x.url+'" alt="Comprobante" style="width:48px;height:48px;border-radius:8px;object-fit:cover">';}).join('')+'</div>':'')+'</div><div style="text-align:right"><b style="font-size:14px">'+money(g.monto)+'</b>'+(g.cat==='Extraordinario 50/50'?'<div class="lbl" style="font-size:12px">50%: '+money(g.monto/2)+'</div>':'')+'</div></div>';}).join('')+'</div>':'<div class="card lbl">No hay gastos en este período.</div>')+'</section>'+
   '<section><h2>Próximos</h2>'+rows([['Cumpleaños de Agusta · [fecha]','Papá mín. $100.000'],['Cumpleaños de Rafaella · [fecha]','Papá mín. $100.000']])+'</section>';
 }
 function tm(x){var p=String(x).split(':');return (+p[0])*60+(+p[1]||0);}
@@ -4048,6 +4056,8 @@ document.addEventListener('click',function(e){
   else if(a==='bellcfg'){S.bell=false;S.tab='avi';render();}
   else if(a==='pend')set({pendOpen:!S.pendOpen});
   else if(a==='tlt')set({tlOpen:!S.tlOpen});
+  else if(a==='fltt')set({fltOpen:!S.fltOpen});
+  else if(a==='fet')set({feOpen:!S.feOpen});
   else if(a==='anat')set({anaTab:v});
   else if(a==='theme')set({theme:v});
   else if(a==='calv')set({calView:v});

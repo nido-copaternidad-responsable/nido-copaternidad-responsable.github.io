@@ -19,7 +19,7 @@ window.addEventListener('unhandledrejection',function(e){var r=e&&e.reason;show(
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&family=Caveat:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F5F1EA;--card:#FFFFFF;--ink:#1D2629;--ink2:#3E484C;--mut:#5B6468;--mut2:#8A9296;--line:#E4DDD2;--line2:#D6CEC2;--sep:#EFEAE2;--seg:#ECE6DC;
 --p:#0E6F78;--pd:#0B4F55;--pt:#DCEEF0;--ptb:#BFDCDE;--p2:#7CC3CA;--pc:#008C9E;
@@ -328,6 +328,9 @@ main.anim>*:nth-child(2){animation-delay:.03s}main.anim>*:nth-child(3){animation
 .mbsmileh{fill:#7A2540;opacity:0}
 .mbblush{fill:#FF9DB0;opacity:.7}
 .mbs.rdy .mbeye{transform:scaleY(.1)}.mbs.rdy .mbeyeh{opacity:1}.mbs.rdy .mbsmile{opacity:0}.mbs.rdy .mbsmileh{opacity:1}
+.mbname{transition:opacity .2s}.mbs.open .mbname{opacity:0}
+.mbpatch{fill:none;stroke:var(--bag-d);stroke-width:2;stroke-dasharray:3 4;stroke-linecap:round}
+.mbnt{font:700 29px Caveat,'Segoe Script',cursive;fill:var(--bag-d)}
 .mbstitch{fill:none;stroke:rgba(255,255,255,.7);stroke-width:2.5;stroke-dasharray:2 7;stroke-linecap:round}
 .mbflap{transform-box:fill-box;transform-origin:50% 0;transition:transform .6s cubic-bezier(.3,1.35,.5,1)}
 .mbs.open .mbflap{transform:scaleY(-.55)}
@@ -3556,7 +3559,8 @@ function mbItems(k){var out=BAG[k].map(function(it){return {id:'b|'+k+it[0],on:!
   return out;}
 function mbAll(k){var L=mbItems(k);return L.length>0&&L.every(function(x){return x.on;});}
 function mbFace(cx,cy,sc){return '<g transform="translate('+cx+' '+cy+') scale('+sc+')"><ellipse class="mbblush" cx="-44" cy="12" rx="11" ry="7"/><ellipse class="mbblush" cx="44" cy="12" rx="11" ry="7"/><ellipse class="mbeye" cx="-24" cy="0" rx="6" ry="7"/><ellipse class="mbeye" cx="24" cy="0" rx="6" ry="7"/><path class="mbeyeh" d="M-32 3q8-12 16 0M16 3q8-12 16 0"/><path class="mbsmile" d="M-14 16q14 16 28 0"/><path class="mbsmileh" d="M-15 15q15 22 30 0z"/></g>';}
-function mbSVG(){return '<svg class="mbsvg" viewBox="0 0 300 330" aria-hidden="true"><defs><clipPath id="mblens"><path d="M64 104Q150 78 236 104L236 192Q150 208 64 192Z"/></clipPath></defs>'+
+function mbStar(x,y,sc){return '<path transform="translate('+x+' '+y+') scale('+sc+')" d="M0 -9 L2.6 -3.2 L8.6 -2.8 L4 1.2 L5.3 7.3 L0 4.2 L-5.3 7.3 L-4 1.2 L-8.6 -2.8 L-2.6 -3.2 Z" fill="#FFD25E" stroke="#D9A02A" stroke-width="1.2" stroke-linejoin="round"/>';}
+function mbSVG(nm){return '<svg class="mbsvg" viewBox="0 0 300 330" aria-hidden="true"><defs><clipPath id="mblens"><path d="M64 104Q150 78 236 104L236 192Q150 208 64 192Z"/></clipPath></defs>'+
   '<ellipse class="mbshadow" cx="150" cy="318" rx="98" ry="9"/><g class="mbbody">'+
   '<path d="M116 94C112 52 188 52 184 94" fill="none" stroke="var(--bag-d)" stroke-width="11" stroke-linecap="round"/>'+
   '<rect fill="var(--bag)" x="46" y="88" width="208" height="226" rx="54"/>'+
@@ -3568,6 +3572,7 @@ function mbSVG(){return '<svg class="mbsvg" viewBox="0 0 300 330" aria-hidden="t
    '<rect x="176" y="108" width="13" height="84" rx="4" fill="#6FB98F"/><path d="M176 108l6.5-12 6.5 12z" fill="#F2D5B0"/></g></g>'+
   '<g class="mbflap"><path fill="var(--bag-l)" d="M46 122Q46 88 86 88L214 88Q254 88 254 122L254 150Q254 188 216 190L84 190Q46 188 46 150Z"/>'+
   '<path class="mbstitch" d="M62 150Q62 172 90 174L210 174Q238 172 238 150"/><rect fill="var(--bag-d)" x="130" y="160" width="40" height="30" rx="9"/><circle cx="150" cy="175" r="5.5" fill="#FFE08A"/></g>'+
+  '<g class="mbname"><rect x="72" y="106" width="156" height="42" rx="14" fill="#FFF6E0"/><rect class="mbpatch" x="77" y="111" width="146" height="32" rx="10"/>'+mbStar(95,127,1)+mbStar(205,127,1)+'<text x="150" y="136" text-anchor="middle" class="mbnt">'+nm+'</text></g>'+
   '<rect fill="var(--bag-d)" x="74" y="206" width="152" height="94" rx="30"/>'+
   '<path d="M90 230Q150 218 210 230" fill="none" stroke="#FFF6E0" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 5"/>'+
   mbFace(150,262,.95)+
@@ -3576,7 +3581,7 @@ function mbSVG(){return '<svg class="mbsvg" viewBox="0 0 300 330" aria-hidden="t
 function mbTile(it){return '<button class="mbt" data-a="mbpack" data-v="'+it.id.replace(/"/g,'&quot;')+'" aria-pressed="'+it.on+'"><span class="mbic">'+ic(it.i,22)+'</span><span class="mbtx"><b>'+it.t+'</b>'+(it.s?'<small>'+it.s+'</small>':'')+'</span>'+(it.tag?'<span class="mbtag'+(it.star?'':' w')+'">'+(it.star?'★ ':'')+it.tag+'</span>':'')+'<span class="mbtick">'+ic('check',14)+'</span></button>';}
 function mbStage(k,cuando,fecha,prep){var L=mbItems(k),d=L.filter(function(x){return x.on;}).length,rd=L.length>0&&d===L.length,nm=k==='agusta'?'Agusta':'Rafaella',c=MBK[k],open=!!S.mbOpen&&!rd;
   return '<div class="mbs'+(open?' open':'')+(rd?' rdy':'')+'" style="--bag:'+c[0]+';--bag-d:'+c[1]+';--bag-l:'+c[2]+';--rise:'+Math.max(0,34-d*5)+'px"><div class="mbcap"><span>'+cuando+' · '+fecha+'</span></div><span class="mbcount">'+d+' de '+L.length+'</span>'+
-  '<button class="mbbag" data-a="mbtog" aria-expanded="'+open+'" aria-label="'+(open?'Cerrar':'Abrir')+' la mochila de '+nm+'">'+mbSVG()+'</button>'+
+  '<button class="mbbag" data-a="mbtog" aria-expanded="'+open+'" aria-label="'+(open?'Cerrar':'Abrir')+' la mochila de '+nm+'">'+mbSVG(nm)+'</button>'+
   '<div class="mbhint">'+(rd?'<span class="mbready">¡Mochila lista!</span>':(open?'Toca cada cosa para guardarla en la mochila.':'Toca la mochila para abrirla.'))+'</div><div class="mbprep">'+prep+'</div></div>'+
   (open?'<div class="mbtiles">'+L.map(mbTile).join('')+'</div>':'');}
 function mbSquish(){var e=document.querySelector('.mbs');if(!e)return;e.classList.remove('sq');void e.offsetWidth;e.classList.add('sq');setTimeout(function(){e.classList.remove('sq');},400);}

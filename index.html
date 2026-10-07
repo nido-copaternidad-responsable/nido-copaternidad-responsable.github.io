@@ -269,6 +269,7 @@ main.anim>*:nth-child(2){animation-delay:.03s}main.anim>*:nth-child(3){animation
 .accp.ok{background:var(--pt);color:var(--pd)}
 .accc{color:var(--mut);transition:transform .15s;display:flex}.acc.open .accc{transform:rotate(90deg)}
 .accb{padding:2px 14px 14px}.accb h2{display:none}.accb section{margin:0}.accb .row{padding-left:0;padding-right:0}
+.accb .card,.accb .list{box-shadow:none}
 .bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
 .bt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 4px;min-height:84px;border:1.5px dashed var(--line2);border-radius:14px;background:var(--card);font:inherit;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer}
 .bt.on{border-style:solid;border-color:var(--p);background:var(--pt);color:var(--pd)}
@@ -3317,7 +3318,8 @@ function rut(){RUT[0]=PK(1)==='Papá'?['retiro','Retiro de Agusta y Rafaella',S.
 }
 var KIDS={agusta:['Agusta Isabella','AI','5 años','Colegio Regina Mundi','Kínder B'],rafaella:['Rafaella Eliette','RE','2 años','Jardín Esperanza','Medio menor']};
 function rows(a){return '<div class="list">'+a.map(function(r){return '<div class="row"><span class="lbl">'+r[0]+'</span><span class="val">'+r[1]+'</span></div>';}).join('')+'</div>';}
-function fic(){var k=KIDS[S.child];
+function fic(){return foldAll(fic_0(),{'Colegio':{k:'fcol',i:'school',t:'p',p:KIDS[S.child][3],ok:true,o:true},'Salud':{k:'fsal',i:'heart',t:'r',p:'',ok:true},'Documentos compartidos':{k:'fdoc',i:'clip',t:'y',p:'4 archivos',ok:true},'Contactos de emergencia':{k:'fcon',i:'alert',t:'m',p:'3 contactos',ok:true}});}
+function fic_0(){var k=KIDS[S.child];
   return '<div class="seg"><button class="'+(S.child==='agusta'?'on':'')+'" data-a="kid" data-v="agusta">'+kidAv('agusta')+'Agusta</button><button class="'+(S.child==='rafaella'?'on':'')+'" data-a="kid" data-v="rafaella">'+kidAv('rafaella')+'Rafaella</button></div>'+
   '<div class="card" style="display:flex;align-items:center;gap:14px">'+kidAv(S.child,true)+'<div><div style="font-size:18px;font-weight:700">'+k[0]+'</div><div class="lbl" style="font-size:14px">'+k[2]+' · Fuentes Munizaga</div></div></div>'+
   '<section><h2>Colegio</h2>'+rows([['Establecimiento',k[3]],['Nivel',k[4]],['Horario de salida',S.child==='agusta'?S.work.salidaA:S.work.salidaR],['Apoderados titulares','Papá y mamá']])+'</section>'+
@@ -3325,7 +3327,8 @@ function fic(){var k=KIDS[S.child];
   '<section><h2>Documentos compartidos</h2><div class="list">'+[['Certificado de nacimiento','Copia digital · ambos'],['Cédula de identidad','Copia digital · ambos'],['Carnet de vacunas','[actualizado al …]'],['Informe de desarrollo / notas','[semestre]']].map(function(d){return '<div class="row" style="align-items:center"><div class="grow"><b style="font-size:14px">'+d[0]+'</b><span class="lbl" style="font-size:12px">'+d[1]+'</span></div><button class="btn sec" style="height:36px" data-a="doc">Ver</button></div>';}).join('')+'</div><div class="lbl" style="font-size:12px;margin-top:8px">Originales bajo resguardo de mamá. Ambos pueden ver y descargar copias.</div></section>'+
   '<section><h2>Contactos de emergencia</h2>'+rows([['Papá · Philip','[teléfono]'],['Mamá · Javiera','[teléfono]'],['[Familiar de confianza]','[teléfono]']])+'</section>';
 }
-function gas(){
+function gas(){return foldAll(gas_0(),{'Registrar gasto':{k:'gre',i:'plus',t:'p',p:'',o:true},'Aportes de papá':{k:'gap',i:'gas',t:'y',p:S.pension?'Pensión pagada':'Pensión por pagar',ok:S.pension},'Movimientos del período':{k:'gmo',i:'list',t:'m',p:S.gastos.filter(function(g){return inF(g.iso);}).length+' movimientos',ok:true,o:true},'Próximos':{k:'gpr',i:'cal',t:'r',p:'2 fechas',ok:true}});}
+function gas_0(){
   var G=S.gastos.filter(function(g){return inF(g.iso);});
   var ex=G.filter(function(g){return g.cat==='Extraordinario 50/50';});
   var debeP=0;ex.forEach(function(g){debeP+=g.pago==='Mamá'?g.monto/2:-g.monto/2;});
@@ -3368,7 +3371,8 @@ function impact(dow,papaFinde){
 function weekStats(papaFinde){var r={auth:0,unauth:0,mornP:0,lost:0,late:0,early:0,out:0,saved:0,helpDays:0,days:[],lateDays:0,earlyDays:0};
   for(var d=0;d<7;d++){var x=impact(d,papaFinde);r.days.push(x);r.lost+=x.lost;r.late+=x.late;r.early+=x.early;r.out+=x.out;r.saved+=x.saved;r.auth+=x.auth;r.unauth+=x.unauth;if(x.mornP)r.mornP++;if(x.helper)r.helpDays++;if(x.late)r.lateDays++;if(x.early)r.earlyDays++;}
   return r;}
-function trabajo(){
+function trabajo(){return foldAll(trabajo_0(),{'Tu semana, 06:00 a 22:00':{k:'tse',i:'chart',t:'p',p:'',o:true},'Alertas':{k:'tal',i:'alert',t:'y',p:function(b){var n=(b.match(/class="alert (r|a)/g)||[]).length;return n?n+' por revisar':'En orden';},ok:function(b){return !/class="alert (r|a)/.test(b);},o:true},'Reparto de traslados · semana':{k:'tre',i:'swap',t:'m',p:'',ok:true},'Fuera de horario laboral':{k:'tfu',i:'chart',t:'y',p:'',ok:true},'¿Quién las lleva en la mañana?':{k:'tmo',i:'school',t:'p',p:'',ok:true},'Horario temprano (martes y jueves)':{k:'tte',i:'sun',t:'y',p:'',ok:true},'¿Quién retira en la tarde?':{k:'tta',i:'backpack',t:'m',p:'',ok:true},'Mi horario laboral':{k:'tmi',i:'list',t:'p',p:'',ok:true},'Red de apoyo':{k:'tra',i:'heart',t:'r',p:'',ok:true},'Horario laboral de mamá':{k:'tma',i:'list',t:'m',p:'',ok:true}});}
+function trabajo_0(){
   var W=S.work,ini=tm(W.ini),fin=tm(W.fin),jornada=(fin-ini)*5,real=0,extra=0;for(var dd=0;dd<5;dd++){var mk0=MK(dd)==='Papá';var st0=tm(iniD(dd)),fn0=tm(finD(dd));if(mk0&&!TD(dd))st0=Math.max(st0,tm(W.llegada));real+=fn0-st0;if(!TD(dd)&&W.compOn&&W.comp[dd])extra+=tm(W.comp[dd])-fin;}
   var a=weekStats(true),b=weekStats(false),cur=S.wk==='papa'?a:b;
   var pct=Math.round(cur.lost/jornada*100),mes=(a.lost+b.lost)/2*4.33;
@@ -3488,8 +3492,9 @@ function mochila(){
   acc('mats','backpack','m','Materiales pedidos',pend?pend+' pendiente'+(pend>1?'s':''):'Al día',!pend,mats)+
   acc('vuel','swap','p','Va y vuelve entre casas',vuel?vuel+' por devolver':'Todo devuelto',!vuel,vue);
 }
-function acc(key,ico,tone,title,pill,ok,body){var open=!!(S.acc&&S.acc[key]);return '<div class="acc'+(open?' open':'')+'"><button class="acch" data-a="acc" data-v="'+key+'" aria-expanded="'+open+'"><span class="acci '+tone+'">'+ic(ico,20)+'</span><span class="acct">'+title+'</span>'+(pill?'<span class="accp'+(ok?' ok':'')+'">'+pill+'</span>':'')+'<span class="accc">'+ic('chev',18)+'</span></button>'+(open?'<div class="accb">'+body+'</div>':'')+'</div>';}
+function acc(key,ico,tone,title,pill,ok,body,dflt){var open=S.acc&&S.acc[key]!==undefined?!!S.acc[key]:!!dflt;return '<div class="acc'+(open?' open':'')+'"><button class="acch" data-a="acc" data-v="'+key+'" aria-expanded="'+open+'"><span class="acci '+tone+'">'+ic(ico,20)+'</span><span class="acct">'+title+'</span>'+(pill?'<span class="accp'+(ok?' ok':'')+'">'+pill+'</span>':'')+'<span class="accc">'+ic('chev',18)+'</span></button>'+(open?'<div class="accb">'+body+'</div>':'')+'</div>';}
 var DS3=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+function foldAll(html,cfg){return html.replace(/<section><h2>([^<]*)<\/h2>([^]*?)<\/section>/g,function(m,t,body){t=t.trim();var c=cfg[t];if(!c)return m;var pill=typeof c.p==='function'?c.p(body):c.p,ok=typeof c.ok==='function'?c.ok(body):c.ok;return acc(c.k,c.i||'list',c.t||'p',t,pill,ok,body,c.o);});}
 function dayChips(cur,act,oth,othOn){var d=new Date(),out=[];for(var i=0;i<14&&out.length<5;i++){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()+i),dw=x.getDay();if(i>1&&(dw===0||dw===6))continue;var iso=isoOf(x),lb=i===0?'Hoy':(i===1?'Mañana':DS3[dw]+' '+x.getDate());out.push('<button class="chp'+(!othOn&&cur===iso?' on':'')+'" data-a="'+act+'" data-v="'+iso+'">'+lb+'</button>');}
   out.push('<button class="chp'+(othOn?' on':'')+'" data-a="'+oth+'">Otra fecha</button>');return out.join('');}
 function sheetTop(t){return '<div style="width:40px;height:4px;border-radius:2px;background:var(--line2);align-self:center"></div><h2 style="font-family:Fraunces,serif;font-size:22px;margin:0">'+t+'</h2>';}
@@ -3536,7 +3541,8 @@ function bitacora(){
     return '<div class="card" style="padding:14px"><button data-a="bopen" data-v="'+i+'" style="width:100%;background:none;border:none;padding:0;text-align:left;font:inherit;color:inherit;display:flex;flex-direction:column;gap:6px"><span style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span class="cap">'+b.tipo+' · '+b.fecha+'</span>'+(b.files.length?'<span class="lbl" style="display:flex;align-items:center;gap:3px;font-size:12px">'+ic('clip',14)+b.files.length+'</span>':'')+'</span><b style="font-size:15px">'+b.t+'</b><span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="lbl" style="font-size:12px">Registró '+b.autor+'</span><span style="display:flex;gap:6px">'+(b.acta?'<span class="pill pg">Acta ✓</span>':'')+'<span class="pill '+st[1]+'">'+st[0]+'</span></span></span></button>'+body+'</div>';}).join('')+'</div>';
   return h;
 }
-function salud(){
+function salud(){return foldAll(salud_0(),{'Medicamentos activos':{k:'smed',i:'heart',t:'r',p:S.meds.filter(function(m){return m.kid===S.child;}).length+' activos',ok:true,o:true},'Controles y vacunas':{k:'sctl',i:'cal',t:'p',p:'',ok:true},'Atenciones y documentos médicos':{k:'sate',i:'report',t:'m',p:'',ok:true}});}
+function salud_0(){
   var k=S.child,kn=k==='agusta'?'Agusta':'Rafaella';
   var meds=S.meds.map(function(m,i){return [m,i];}).filter(function(x){return x[0].kid===k;});
   var h='<div class="seg"><button class="'+(k==='agusta'?'on':'')+'" data-a="kid" data-v="agusta">'+kidAv('agusta')+'Agusta</button><button class="'+(k==='rafaella'?'on':'')+'" data-a="kid" data-v="rafaella">'+kidAv('rafaella')+'Rafaella</button></div>';
@@ -3565,7 +3571,8 @@ function avisosList(){
   if(S.av.colac)L.push(['Dom 4 oct 18:00','Revisar colaciones de la semana','Papá']);
   return L;
 }
-function avisos(){
+function avisos(){return foldAll(avisos_0(),{'Próximos avisos':{k:'apr',i:'bell',t:'y',p:'',ok:true,o:true},'Configurar avisos':{k:'acf',i:'list',t:'p',p:'',ok:true}});}
+function avisos_0(){
   var L=avisosList();
   return '<section><h2>Próximos avisos</h2>'+(L.length?'<div class="list">'+L.map(function(a){return '<div class="row"><span class="t" style="width:96px">'+a[0]+'</span><div class="grow"><span style="font-size:14px">'+a[1]+'</span><span class="chip '+chipC(a[2]==='Mamá'?'Mamá':(a[2]==='Papá'||a[2]==='Philip'?'Papá':'x'))+'">'+a[2]+'</span></div></div>';}).join('')+'</div>':'<div class="card lbl">No hay avisos activos.</div>')+'</section>'+
   '<section><h2>Configurar avisos</h2><div class="list">'+AV.map(function(a){var on=S.av[a[0]];return '<div class="row" style="align-items:center"><div class="grow"><b style="font-size:14px">'+a[1]+'</b><span class="lbl" style="font-size:12px">'+a[2]+' · para: '+a[3]+'</span></div><button class="sw'+(on?' on':'')+'" role="switch" aria-checked="'+on+'" aria-label="'+a[1]+'" data-a="avt" data-v="'+a[0]+'"></button></div>';}).join('')+'</div><div class="lbl" style="font-size:12px;margin-top:8px">En la app real llegan como notificación al celular de cada uno.</div></section>';
@@ -3597,7 +3604,8 @@ function initSig(){var c=document.getElementById('sigpad');if(!c)return;var r=c.
   c.addEventListener('pointerdown',function(e){dr=true;var p=pt(e);x.beginPath();x.moveTo(p[0],p[1]);c.setPointerCapture(e.pointerId);});
   c.addEventListener('pointermove',function(e){if(!dr)return;var p=pt(e);x.lineTo(p[0],p[1]);x.stroke();window._sd=true;});
   c.addEventListener('pointerup',function(){dr=false;});}
-function acuerdo(){
+function acuerdo(){return foldAll(acuerdo_0(),{'Cuidado personal y patria potestad':{k:'acp',i:'heart',t:'r',p:'',ok:true,o:true},'Régimen ordinario':{k:'arg',i:'cal',t:'p',p:'',ok:true},'Fechas especiales':{k:'afe',i:'spark',t:'y',p:'',ok:true},'Dinero':{k:'adi',i:'gas',t:'m',p:'',ok:true},'Otros':{k:'aot',i:'list',t:'p',p:'',ok:true}});}
+function acuerdo_0(){
   var sec=function(t,r){return '<section><h2>'+t+'</h2><div class="list">'+r.map(function(x){return '<div class="row"><span style="font-size:14px;flex:1">'+x+'</span></div>';}).join('')+'</div></section>';};
   return '<div class="card" style="display:flex;flex-direction:column;gap:6px"><div class="cap">Transacción · Juzgado de Familia de Santiago</div><b style="font-size:16px">Materias relativas a Agusta y Rafaella</b><div class="lbl">Revisada por las abogadas de ambos. Estado: por presentar al tribunal.</div><button class="btn sec" style="margin-top:6px" data-a="tab" data-v="bit">Ver documento y firmas</button></div>'+
   sec('Cuidado personal y patria potestad',['Cuidado personal: mamá. Las niñas viven en su domicilio.','Patria potestad compartida. Ambos son apoderados en el colegio y el jardín.','Ambos reciben toda la información de salud. Tratamientos no urgentes: consentimiento de ambos.'])+
@@ -3679,7 +3687,8 @@ function makeICS(){var r=fRange(),a=idxOf(r[0]),b=idxOf(r[1]),out=['BEGIN:VCALEN
   out.push('END:VCALENDAR');return out.join('\r\n');}
 function vacDays(v){return idxOf(v.hasta)-idxOf(v.desde)+1;}
 var EXT=['Permiso notarial firmado por ambos','Itinerario completo compartido','Contactos de emergencia','Direcciones donde se alojarán','Fechas exactas de salida y regreso','Pasaportes o cédulas vigentes'];
-function vacaciones(){var f=S.vf,nd=f.desde&&f.hasta?vacDays(f):0,tot={Papá:0,Mamá:0};S.vacs.forEach(function(v){if(v.estado==='Aceptada')tot[v.who]+=vacDays(v);});
+function vacaciones(){return foldAll(vacaciones_0(),{'Proponer vacaciones':{k:'vpr',i:'sun',t:'y',p:'',ok:true},'Propuestas':{k:'vls',i:'list',t:'p',p:S.vacs.length+(S.vacs.length===1?' propuesta':' propuestas'),ok:true,o:true}});}
+function vacaciones_0(){var f=S.vf,nd=f.desde&&f.hasta?vacDays(f):0,tot={Papá:0,Mamá:0};S.vacs.forEach(function(v){if(v.estado==='Aceptada')tot[v.who]+=vacDays(v);});
   var overlap=S.vacs.filter(function(v){return v.estado!=='Rechazada'&&!(v.hasta<f.desde||v.desde>f.hasta);});
   return '<div class="card" style="font-size:13px;color:var(--pd);background:var(--pt);border-color:var(--ptb)">Según la transacción: se organizan con anticipación, máximo 1 semana con cada uno y, una vez iniciadas, no se interrumpen.</div>'+
   '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="card" style="padding:14px"><div style="font-family:Fraunces,serif;font-size:26px;font-weight:600;color:var(--p)">'+tot['Papá']+'</div><div class="lbl" style="font-size:12px">días acordados con papá</div></div><div class="card" style="padding:14px"><div style="font-family:Fraunces,serif;font-size:26px;font-weight:600;color:var(--m)">'+tot['Mamá']+'</div><div class="lbl" style="font-size:12px">días acordados con mamá</div></div></div>'+

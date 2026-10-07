@@ -236,6 +236,17 @@ main.anim>*:nth-child(2){animation-delay:.03s}main.anim>*:nth-child(3){animation
 .sigimg{height:44px;border-bottom:1px solid var(--line2);background:#fff;border-radius:6px}
 #sigpad{width:100%;height:180px;border:1.5px dashed var(--line2);border-radius:12px;background:#fff;touch-action:none;display:block}
 .vista button{border:none;background:none;color:var(--p);font-weight:700;font-size:12px;text-decoration:underline}
+/* Hoy rediseñada: acciones rápidas, por hacer y línea del día plegable */
+.qa{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0 18px}
+.qb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:88px;padding:10px 4px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);text-align:center;cursor:pointer;transition:transform .12s}
+.qb:active{transform:scale(.96)}
+.qb .ti{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:var(--pt);color:var(--p)}
+.pcount{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;margin-left:6px;border-radius:10px;background:var(--x);color:#fff;font-size:12px;font-weight:700;vertical-align:1px}
+.tlt{width:100%;min-height:52px;display:flex;align-items:center;justify-content:center;gap:10px;margin:6px 0 10px;border-radius:14px;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);font:inherit;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.tlsec .tlbody{display:none}.tlsec .tlbody.open{display:block}
+.tlsec .tlbody>section>h2{display:none}
+.hl>section{margin-bottom:20px}
+.hl>.cdown{margin:16px 0!important}
 /* Responsive: tablet y PC */
 @media (min-width:768px){
 .app,nav{max-width:760px}
@@ -246,13 +257,18 @@ main.anim>*:nth-child(2){animation-delay:.03s}main.anim>*:nth-child(3){animation
 header{padding-left:24px;padding-right:24px}
 main{padding-left:8px;padding-right:8px}
 .toast{bottom:100px}
-.cdown{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));overflow:visible;margin:0}
+.cdown{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));overflow:visible;margin:0}
 .cdc{flex:none}
 .fchips{flex-wrap:wrap;overflow:visible}
 }
 @media (min-width:1100px){
 body{padding-left:230px}
-.app{max-width:900px}
+.app{max-width:1100px}
+.hgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+.tlt{display:none}
+.tlsec .tlbody{display:block}
+.tlsec .tlbody>section>h2{display:block}
+.hr{position:sticky;top:130px}
 header{padding-left:32px;padding-right:32px}
 nav{top:0;bottom:auto;left:0;right:auto;width:230px;max-width:none;height:100vh;margin:0;display:flex!important;flex-direction:column;justify-content:flex-start;gap:6px;padding:24px 12px;border-top:none;border-right:1px solid var(--line)}
 nav button{flex-direction:row;justify-content:flex-start;gap:12px;font-size:15px!important;height:48px;padding:0 16px;border-radius:12px;text-align:left}
@@ -3703,9 +3719,11 @@ function hoy(){
   if(!S.pension&&me2==='Papá')P.push(['gas','Pensión del mes: transferir antes del 5','gas']);
   var cp=S.pantry.filter(function(q){return q.st>0;}).length;if(cp)P.push(['backpack',cp+' producto(s) de colación por comprar','moc']);
   var mp=S.mats.filter(function(m){return m.st===0;}).length;if(mp)P.push(['school',mp+' material(es) pedido(s) pendiente(s)','moc']);
-  var pend='<div class="card" style="padding:0"><button data-a="pend" style="width:100%;display:flex;align-items:center;gap:12px;padding:16px;background:none;border:none;font:inherit;color:inherit;text-align:left"><span style="width:40px;height:40px;border-radius:20px;background:var(--yt);color:var(--yd);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic('list',20)+'</span><span style="flex:1"><b style="font-size:15px;display:block">Pendientes</b><span class="lbl">'+P.length+' cosas por hacer</span></span><span style="color:var(--mut);transform:rotate('+(S.pendOpen?90:0)+'deg);transition:transform .15s">'+ic('chev',18)+'</span></button>'+
-    (S.pendOpen?'<div style="padding:0 16px 8px">'+P.map(function(q){return '<button data-a="tab" data-v="'+q[2]+'" class="row" style="width:100%;background:none;border:none;border-top:1px solid var(--sep);font:inherit;color:inherit;text-align:left;align-items:center"><span style="color:var(--p)">'+ic(q[0],18)+'</span><span style="flex:1;font-size:14px">'+q[1]+'</span><span style="color:var(--mut)">'+ic('chev',16)+'</span></button>';}).join('')+'</div>':'')+'</div>';
-  return hero+countdowns()+llevarCard()+tl+pend+lastDiario();
+  var pend='<section><h2>Por hacer'+(P.length?' <span class="pcount">'+P.length+'</span>':'')+'</h2>'+(P.length?'<div class="card" style="padding:0 16px">'+P.map(function(q,k){return '<button data-a="tab" data-v="'+q[2]+'" class="row" style="width:100%;background:none;border:none;'+(k?'border-top:1px solid var(--sep);':'')+'font:inherit;color:inherit;text-align:left;align-items:center;min-height:56px"><span style="color:var(--p)">'+ic(q[0],20)+'</span><span style="flex:1;font-size:14px">'+q[1]+'</span><span style="color:var(--mut)">'+ic('chev',16)+'</span></button>';}).join('')+'</div>':'<div class="card" style="display:flex;align-items:center;gap:10px;color:var(--p)">'+ic('check',20)+'<b style="font-size:14px">Todo al día</b></div>')+'</section>';
+  var QA=[['chat','Mensaje','chat'],['swap','Cambio de día','swapnow'],['camera','Foto','photo'],['gas','Gasto','gas']];
+  var quick='<div class="qa">'+QA.map(function(a){var inner='<span class="ti">'+ic(a[0],24)+'</span><span>'+a[1]+'</span>';return a[2]==='photo'?'<label class="qb">'+inner+'<input type="file" accept="image/*" capture="environment" data-photo="act:Foto" data-label="Foto" style="display:none"></label>':'<button class="qb" data-a="fabgo" data-v="'+a[2]+'">'+inner+'</button>';}).join('')+'</div>';
+  var tlw='<div class="tlsec"><button class="tlt" data-a="tlt" aria-expanded="'+(S.tlOpen?'true':'false')+'">'+ic('cal',20)+'<span>'+(S.tlOpen?'Ocultar':'Ver')+' la línea del día</span></button><div class="tlbody'+(S.tlOpen?' open':'')+'">'+tl+'</div></div>';
+  return '<div class="hgrid"><div class="hl">'+hero+quick+pend+llevarCard()+countdowns()+lastDiario()+'</div><div class="hr">'+tlw+'</div></div>';
 }
 function fabSheet(){var A=[['camera','Foto','photo'],['gas','Gasto','gas'],['book','Nota del diario','dia'],['list','Actividad','act'],['swap','Cambio de día','swapnow'],['chat','Mensaje','chat']];
   return '<div class="sheetbg" data-a="fabclose"><div class="sheet" role="dialog" aria-label="Registrar"><div style="width:40px;height:4px;border-radius:2px;background:var(--line2);align-self:center"></div><h2 style="font-family:Fraunces,serif;font-size:22px;margin:0">¿Qué quieres registrar?</h2><div class="tiles">'+
@@ -4029,6 +4047,7 @@ document.addEventListener('click',function(e){
   else if(a==='bellclose'||a==='bellclose2')set({bell:false});
   else if(a==='bellcfg'){S.bell=false;S.tab='avi';render();}
   else if(a==='pend')set({pendOpen:!S.pendOpen});
+  else if(a==='tlt')set({tlOpen:!S.tlOpen});
   else if(a==='anat')set({anaTab:v});
   else if(a==='theme')set({theme:v});
   else if(a==='calv')set({calView:v});

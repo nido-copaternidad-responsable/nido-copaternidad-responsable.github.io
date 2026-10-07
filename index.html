@@ -6,6 +6,12 @@
 <title>Nido · Copaternidad responsable</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="manifest" href="manifest.webmanifest">
+<script>
+/* Aviso de error visible: si algo falla al cargar, la app lo muestra en pantalla en vez de quedar en blanco */
+(function(){var shown=false;function show(m){if(shown)return;shown=true;try{var d=document.createElement('div');d.id='nidoErr';d.setAttribute('role','alert');d.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:100000;background:#7A1F1A;color:#fff;padding:12px 14px;border-radius:12px;font:13px/1.4 system-ui,sans-serif;display:flex;gap:10px;align-items:center';d.innerHTML='<span style="flex:1">Algo falló al cargar Nido: '+String(m).replace(/</g,'&lt;').slice(0,220)+'</span><button style="border:0;border-radius:8px;padding:8px 12px;font:inherit;font-weight:700;background:#fff;color:#7A1F1A" onclick="(async function(){try{var k=await caches.keys();await Promise.all(k.map(function(x){return caches.delete(x);}));var r=await navigator.serviceWorker.getRegistrations();await Promise.all(r.map(function(x){return x.unregister();}));}catch(e){}location.reload();})()">Recargar</button>';document.documentElement.appendChild(d);}catch(e){}}
+window.addEventListener('error',function(e){if(e&&e.message&&!/ResizeObserver/.test(e.message))show(e.message+(e.lineno?' (línea '+e.lineno+')':''));});
+window.addEventListener('unhandledrejection',function(e){var r=e&&e.reason;show((r&&(r.message||r.code))||'error de conexión');});})();
+</script>
 <meta name="theme-color" content="#0E6F78">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">

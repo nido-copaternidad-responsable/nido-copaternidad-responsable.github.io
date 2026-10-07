@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nido · Copaternidad responsable</title>
 <meta name="robots" content="noindex,nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0E6F78">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nido">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F5F1EA;--card:#FFFFFF;--ink:#1D2629;--ink2:#3E484C;--mut:#5B6468;--mut2:#8A9296;--line:#E4DDD2;--line2:#D6CEC2;--sep:#EFEAE2;--seg:#ECE6DC;
@@ -3731,8 +3739,13 @@ function hoy(){
   var QA=[['chat','Mensaje','chat'],['swap','Cambio de día','swapnow'],['camera','Foto','photo'],['gas','Gasto','gas']];
   var quick='<div class="qa">'+QA.map(function(a){var inner='<span class="ti">'+ic(a[0],24)+'</span><span>'+a[1]+'</span>';return a[2]==='photo'?'<label class="qb">'+inner+'<input type="file" accept="image/*" capture="environment" data-photo="act:Foto" data-label="Foto" style="display:none"></label>':'<button class="qb" data-a="fabgo" data-v="'+a[2]+'">'+inner+'</button>';}).join('')+'</div>';
   var tlw='<div class="tlsec"><button class="tlt" data-a="tlt" aria-expanded="'+(S.tlOpen?'true':'false')+'">'+ic('cal',20)+'<span>'+(S.tlOpen?'Ocultar':'Ver')+' la línea del día</span></button><div class="tlbody'+(S.tlOpen?' open':'')+'">'+tl+'</div></div>';
-  return '<div class="hgrid"><div class="hl">'+hero+quick+pend+llevarCard()+countdowns()+lastDiario()+'</div><div class="hr">'+tlw+'</div></div>';
+  return '<div class="hgrid"><div class="hl">'+instBanner()+hero+quick+pend+llevarCard()+countdowns()+lastDiario()+'</div><div class="hr">'+tlw+'</div></div>';
 }
+function isStandalone(){return window.matchMedia&&matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;}
+function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
+function instHelpTxt(){return isIOS()?'En Safari toca el botón Compartir (el cuadrado con la flecha hacia arriba) y elige «Agregar a pantalla de inicio».':'Abre el menú del navegador (⋮) y toca «Instalar app» o «Agregar a pantalla de inicio».';}
+function instRow(){if(isStandalone())return '';return '<button data-a="inst" class="row" style="width:100%;background:none;border:none;font:inherit;color:inherit;text-align:left;align-items:center"><span style="color:var(--p)">'+ic('up',20)+'</span><span style="flex:1;font-size:14px;font-weight:600">Instalar la app en el teléfono</span>'+ic('chev',16)+'</button>'+(S.instHelp?'<div style="padding:0 16px 14px;font-size:13px;color:var(--ink2)">'+instHelpTxt()+'</div>':'');}
+function instBanner(){if(isStandalone()||S.instOff||!window._ip)return '';return '<div class="card" style="display:flex;align-items:center;gap:12px;margin:0 0 18px"><span style="width:40px;height:40px;border-radius:13px;background:var(--pt);color:var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic('nest',24)+'</span><span style="flex:1;font-size:14px"><b style="display:block">Instala Nido</b><span class="lbl">Ábrela como una app, sin el navegador.</span></span><button class="btn" style="height:38px;font-size:13px" data-a="inst">Instalar</button><button data-a="instoff" aria-label="Ocultar" style="background:none;border:none;color:var(--mut);font-size:20px;padding:4px 6px">×</button></div>';}
 function fabSheet(){var A=[['camera','Foto','photo'],['gas','Gasto','gas'],['book','Nota del diario','dia'],['list','Actividad','act'],['swap','Cambio de día','swapnow'],['chat','Mensaje','chat']];
   return '<div class="sheetbg" data-a="fabclose"><div class="sheet" role="dialog" aria-label="Registrar"><div style="width:40px;height:4px;border-radius:2px;background:var(--line2);align-self:center"></div><h2 style="font-family:Fraunces,serif;font-size:22px;margin:0">¿Qué quieres registrar?</h2><div class="tiles">'+
   A.map(function(a){var inner='<span class="ti" style="background:var(--pt);color:var(--p)">'+ic(a[0],22)+'</span>'+a[1];return a[2]==='photo'?'<label class="tile">'+inner+'<input type="file" accept="image/*" capture="environment" data-photo="act:Foto" data-label="Foto" style="display:none"></label>':'<button class="tile" data-a="fabgo" data-v="'+a[2]+'">'+inner+'</button>';}).join('')+
@@ -3748,7 +3761,7 @@ function mas(){
     ['Dinero y trabajo','var(--mt)','var(--m)',[['gas','gas','Gastos'],['tra','bag','Trabajo']]],
     ['Análisis e informes','var(--abt)','var(--ab)',[['ana','scale','Análisis'],['ask','spark','Asistente'],['inf','report','Informe tribunal']]]];
   return G.map(function(g){return '<section><h2>'+g[0]+'</h2><div class="tiles">'+g[3].map(function(t){return '<button class="tile" data-a="tab" data-v="'+t[0]+'"><span class="ti" style="background:'+g[1]+';color:'+g[2]+'">'+ic(t[1],22)+'</span>'+t[2]+(t[3]?'<i class="bd">'+t[3]+'</i>':'')+'</button>';}).join('')+'</div></section>';}).join('')+
-  '<section><h2>Ajustes</h2><div class="list"><button data-a="tab" data-v="per" class="row" style="width:100%;background:none;border:none;font:inherit;color:inherit;text-align:left;align-items:center"><span class="avs">'+av('Papá',24,true)+av('Mamá',24,true)+av('agusta',24,true)+av('rafaella',24,true)+'</span><span style="flex:1;font-size:14px;font-weight:600">Perfiles y fotos</span>'+ic('chev',16)+'</button><button data-a="tab" data-v="avi" class="row" style="width:100%;background:none;border:none;font:inherit;color:inherit;text-align:left;align-items:center"><span style="color:var(--p)">'+ic('bell',20)+'</span><span style="flex:1;font-size:14px;font-weight:600">Avisos y recordatorios</span>'+ic('chev',16)+'</button>'+
+  '<section><h2>Ajustes</h2><div class="list">'+instRow()+'<button data-a="tab" data-v="per" class="row" style="width:100%;background:none;border:none;font:inherit;color:inherit;text-align:left;align-items:center"><span class="avs">'+av('Papá',24,true)+av('Mamá',24,true)+av('agusta',24,true)+av('rafaella',24,true)+'</span><span style="flex:1;font-size:14px;font-weight:600">Perfiles y fotos</span>'+ic('chev',16)+'</button><button data-a="tab" data-v="avi" class="row" style="width:100%;background:none;border:none;font:inherit;color:inherit;text-align:left;align-items:center"><span style="color:var(--p)">'+ic('bell',20)+'</span><span style="flex:1;font-size:14px;font-weight:600">Avisos y recordatorios</span>'+ic('chev',16)+'</button>'+
   '<div class="row" style="align-items:center"><span style="font-size:14px;font-weight:600">Apariencia</span><div class="seg" style="grid-template-columns:repeat(3,1fr);width:200px;padding:3px">'+[['auto','Auto'],['light','Claro'],['dark','Oscuro']].map(function(o){return '<button style="height:32px;font-size:12px" class="'+(S.theme===o[0]?'on':'')+'" data-a="theme" data-v="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div></div>'+
   '<div class="row" style="align-items:center"><span style="font-size:14px;font-weight:600">Modo demo: ver como</span>'+vistaSel()+'</div></div></section>';
 }
@@ -4059,6 +4072,8 @@ document.addEventListener('click',function(e){
   else if(a==='fltt')set({fltOpen:!S.fltOpen});
   else if(a==='fet')set({feOpen:!S.feOpen});
   else if(a==='alt')set({alOpen:!S.alOpen});
+  else if(a==='inst'){if(window._ip){var ip=window._ip;window._ip=null;ip.prompt();ip.userChoice.then(function(){render();});}else set({instHelp:!S.instHelp});}
+  else if(a==='instoff')set({instOff:true});
   else if(a==='anat')set({anaTab:v});
   else if(a==='theme')set({theme:v});
   else if(a==='calv')set({calView:v});
@@ -4182,6 +4197,9 @@ function nidoBoot(){
       .then(fbListen).catch(function(e){console.error(e);hideLoading();showLogin(e&&e.code==='permission-denied'?'Tu cuenta no tiene permiso. Revisa las reglas de Firestore.':'No se pudieron cargar los datos ('+(e&&e.code||'error')+').');});});
 }
 
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window._ip=e;if(FB&&FB.ready)render();});
+window.addEventListener('appinstalled',function(){window._ip=null;toast('Nido instalada');});
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 nidoBoot();
 </script>
 </body>

@@ -437,6 +437,27 @@ main.anim>*:nth-child(2){animation-delay:.03s}main.anim>*:nth-child(3){animation
 .pch .ph{font-size:11.5px;font-weight:600;opacity:.8}.pch b{font-size:14px}
 .pch.cp{background:var(--abt);color:var(--abd);border-color:var(--abt)}.pch.ca{background:var(--yt);color:var(--yd);border-color:var(--yb)}.pch.cm{background:var(--rt);color:var(--rd);border-color:var(--rb)}
 .cmph{background:var(--card);border:1px solid var(--yb);border-radius:16px;padding:12px}
+/* Tiempo con papá y con mamá */
+.tpc{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px;width:100%;font:inherit;color:var(--ink);text-align:left}
+.tpcc{cursor:pointer;gap:10px;margin-bottom:0}
+.tph{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.tph b{font-family:'Fraunces',Georgia,serif;font-size:18px;font-weight:600}.tph span{font-size:12px;color:var(--mut);font-weight:600}
+.tpch{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.tpch::-webkit-scrollbar{display:none}
+.tpch button{flex:0 0 auto;min-height:38px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line2);background:none;font:inherit;font-size:13px;font-weight:700;color:var(--mut);cursor:pointer}
+.tpch button.on{background:var(--p);border-color:var(--p);color:#fff}
+.tpduel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tpside{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:16px}
+.tpside.p{background:color-mix(in srgb,var(--pc) 14%,var(--card));border:1px solid color-mix(in srgb,var(--pc) 35%,var(--line))}
+.tpside.m{background:color-mix(in srgb,var(--mc) 14%,var(--card));border:1px solid color-mix(in srgb,var(--mc) 35%,var(--line))}
+.tpn{font-family:'Fraunces',Georgia,serif;font-size:38px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.tpside.p .tpn{color:var(--pc)}.tpside.m .tpn{color:var(--m)}
+.tpl{font-size:14px;font-weight:700;margin-top:2px}.tps{font-size:12.5px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.tpbar{display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px;background:var(--seg)}
+.tpbar i{display:block;min-width:2px}.tpbar i.p{background:var(--pc)}.tpbar i.m{background:var(--mc)}
+.tpb4{height:12px}
+.tpdiff{font-size:14px;line-height:1.45;color:var(--ink2)}
+.tp2{display:flex;flex-direction:column;gap:8px;padding-top:4px;border-top:1px solid var(--sep)}.tp2h{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);margin-top:6px}
+.tpleg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink2)}.tpleg span{display:inline-flex;align-items:center;gap:5px;font-variant-numeric:tabular-nums}.tpleg i{width:10px;height:10px;border-radius:5px;display:inline-block}
+.tpmini{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2)}.tpmini b{font-family:'Fraunces',Georgia,serif;font-size:22px;margin-right:4px;color:var(--ink)}
 @media (min-width:480px){.mbtiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
 /* Fichas por período, estados vacíos y ajustes */
 .pcs{display:flex;gap:10px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}.pcs::-webkit-scrollbar{display:none}
@@ -519,10 +540,10 @@ nav .fabw{order:-1;justify-content:flex-start;margin-bottom:10px}
 <script>
 var S={tab:'hoy',sel:0,child:'agusta',rut:'rutina',call:false,approved:false,em:false,emType:null,pension:false,vista:'Philip',toast:'',wk:'papa',mkid:'agusta',sem:{agusta:{0:['Libro de la biblioteca'],2:['Zapatillas para educación física'],4:['Cuento o juguete para compartir']},rafaella:{0:['Pañales y toallitas para la semana'],4:['Traer de vuelta la muda usada']}},semf:{dia:'0',txt:''},pk:{},
 bag:{},alist:{},cfg:{test:true},vuSheet:false,vuf:{t:'',d:'En casa de papá'},clr:null,cf:null,alMiss:null,acc:{},tarP:'',tarHide:false,agP:'',tareas:[],tarf:{t:'',who:'Papá',iso:''},tarOther:false,tarFilter:'mias',nosch:[],nsf:{kids:'Ambas',iso:'',why:'Paro',care:'Por definir'},mfOther:false,nsOther:false,mf:{txt:'',kid:'agusta',fecha:'2026-10-02',tipo:'espo'},
-pantry:[{t:'Barras de cereal',k:'Ambas',st:0},{t:'Galletas',k:'Ambas',st:0},{t:'Yogurt',k:'Ambas',st:1},{t:'Leche',k:'Ambas',st:0},{t:'Pañales',k:'Rafaella',st:1},{t:'Toallitas húmedas',k:'Rafaella',st:2}],pf:'',pfh:{p:true,m:true},
+pantry:[{t:'Barras de cereal',k:'Ambas',st:0},{t:'Galletas',k:'Ambas',st:0},{t:'Yogurt',k:'Ambas',st:1},{t:'Leche',k:'Ambas',st:0},{t:'Pañales',k:'Rafaella',st:1},{t:'Toallitas húmedas',k:'Rafaella',st:2}],tpP:'mes',pf:'',pfh:{p:true,m:true},
 mats:[{t:'[Material pedido por el colegio]',k:'Agusta',f:'2026-10-02',st:0},{t:'Pañales y toallitas húmedas',k:'Rafaella',f:'2026-10-05',st:1},{t:'Delantal marcado con nombre',k:'Agusta',f:'2026-10-07',st:2}],
 vuelta:[{t:'Polerón de Agusta',d:'En casa de papá',ok:false},{t:'Chaleco y muda de Rafaella',d:'En casa de papá',ok:false},{t:'Botella de agua',d:'En casa de mamá',ok:true}],
-work:{ini:'08:30',fin:'17:00',llegada:'10:00',salidaA:'15:30',salidaR:'16:00',viaje:'30',pick:{1:'papa',2:'mama',3:'papa',4:'abm'},comp:{0:'19:15',4:'19:15'},compOn:true,wedDrop:'20:00',temp:{on:true,aprob:false,dias:[1,3],ini:'06:30',fin:'15:00',pA:'16:00',pR:'16:30'},morn:{0:'papa',1:'mama',2:'papa',3:'mama',4:'papa'},authHasta:'10:00',jav9:false},
+work:{ini:'08:30',fin:'17:00',llegada:'10:00',salidaA:'15:30',salidaR:'16:00',viaje:'30',pick:{1:'papa',2:'mama',3:'papa',4:'abm'},comp:{0:'19:15',4:'19:15'},compOn:true,wedDrop:'20:00',entrega:'21:00',temp:{on:true,aprob:false,dias:[1,3],ini:'06:30',fin:'15:00',pA:'16:00',pR:'16:30'},morn:{0:'papa',1:'mama',2:'papa',3:'mama',4:'papa'},authHasta:'10:00',jav9:false},
 photos:[],phid:0,lid:0,avt:{},agN:21,actaSeq:2,fab:false,bell:false,pendOpen:false,anaTab:'periodo',theme:'auto',calView:'mes',calM:0,wkOff:0,_lt:'',eqm:'2026-10',eqTab:false,qa:[],qdraft:'',dkid:'ambas',ddraft:{sue:'',ani:'',com:'',t:''},diario:[{iso:'2026-10-01',hm:'20:10',who:'Papá',kid:'rafaella',sue:'',ani:'Feliz',com:'Comió bien',t:'Dijo "papá, mira" señalando un avión. Primera frase de 3 palabras.',ej:true},{iso:'2026-10-02',hm:'07:20',who:'Mamá',kid:'ambas',sue:'Regular',ani:'Cansada',com:'',t:'Rafaella despertó 2 veces en la noche.',ej:true}],
 sch:[{iso:'2026-12-04',t:'Término de clases (entre 4 y 18 dic, confirmar con el colegio)',kid:'Agusta'},{iso:'2026-10-21',t:'[Reunión de apoderados]',kid:'Agusta',ej:true}],schf:{iso:'',t:'',kid:'Agusta'},
 vacs:[],vf:{desde:'2027-01-11',hasta:'2027-01-17',dest:'',ext:false},hcl:[],hc:{},edit:null,swaps:[],ov:{},swf:null,cdraft:'',tone:null,
@@ -674,7 +695,7 @@ function dayInfo(i){
     else if(dow===3&&TD(3)){ev.push(['07:30','Traslado al colegio',mk]);}
     else if(dow===3){ev.push(['07:00','Despertar, vestir y desayuno en casa de papá',P]);ev.push(['07:45',mk==='Papá'?'Traslado al colegio':mk+' las busca en casa de papá y las lleva al colegio',mk]);}
     else ev.push(['07:30',mk==='Papá'?'Retiro en casa de mamá y traslado al colegio':(mk==='Mamá'?'Mamá las lleva al colegio':mk+' las retira y las lleva al colegio'),mk]); }
-  if(dow===1||dow===3){ev.push([pickT(dow)[0],'Retiro de Agusta',PK(dow)]);ev.push([pickT(dow)[1],'Retiro de Rafaella',PK(dow)]);recibe(ev,dow);ev.push(['Tarde','Rutina: once, baño y pijama',P]);ev.push(['21:00','Las dejas en casa de mamá',P]);}
+  if(dow===1||dow===3){ev.push([pickT(dow)[0],'Retiro de Agusta',PK(dow)]);ev.push([pickT(dow)[1],'Retiro de Rafaella',PK(dow)]);recibe(ev,dow);ev.push(['Tarde','Rutina: once, baño y pijama',P]);ev.push([S.work.entrega||'21:00','Las dejas en casa de mamá',P]);}
   else if(dow===2){ev.push([pickT(dow)[0],'Retiro de Agusta',PK(dow)]);ev.push([pickT(dow)[1],'Retiro de Rafaella',PK(dow)]);recibe(ev,dow);if(PK(dow)==='Mamá'){ev.push(['Noche','Pijama, cuento y duermen en casa de papá',P]);}else{ev.push(['Tarde','Actividades, cena y baño',P]);ev.push(['Noche','Duermen en casa de papá',P]);}}
   else if(type==='finde'){ if(dow===4){ev.push([S.work.salidaA,'Retiro de Agusta · inicia fin de semana',PK(dow)]);ev.push([S.work.salidaR,'Retiro de Rafaella',PK(dow)]);recibe(ev,dow);ev.push(['Noche','Duermen en casa de papá',P]);}
     else if(dow===5)ev.push(['Todo el día','Fin de semana con papá',P]);
@@ -912,6 +933,7 @@ function trabajo_0(){
    '<label class="fld">Llegada los días que las llevo<input class="inp" type="time" data-w="llegada" value="'+W.llegada+'"></label>'+
    '<label class="fld">Permiso del empleador hasta<input class="inp" type="time" data-w="authHasta" value="'+W.authHasta+'"></label>'+
    '<label class="fld">Salida lunes (compensa)<input class="inp" type="time" data-cp="0" value="'+W.comp[0]+'"></label><label class="fld">Salida viernes (compensa)<input class="inp" type="time" data-cp="4" value="'+W.comp[4]+'"></label>'+
+   '<label class="fld">Martes y jueves: las dejas a las<input class="inp" type="time" data-w="entrega" value="'+(W.entrega||'21:00')+'"></label>'+
    '<label class="fld">Miércoles: mamá las deja a las<input class="inp" type="time" data-w="wedDrop" value="'+W.wedDrop+'"></label>'+
    '<label class="fld">Salida Agusta<input class="inp" type="time" data-w="salidaA" value="'+W.salidaA+'"></label>'+
    '<label class="fld">Salida Rafaella<input class="inp" type="time" data-w="salidaR" value="'+W.salidaR+'"></label>'+
@@ -1528,16 +1550,16 @@ function asistente(){var ex=['¿Con quién están el 18 de diciembre?','¿Quién
   '<div class="lbl" style="font-size:12px">Asistente básico de la maqueta: responde con los datos guardados en Nido. En la app real se conecta a IA para preguntas libres.</div>';}
 function longToday(){var d=new Date();return ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][d.getDay()]+' '+d.getDate()+' de '+meses[d.getMonth()];}
 function nightOwnerI(i){var x=dayInfo(i);return (x.type==='noche'||(x.type==='finde'&&x.dow!==6))?'Papá':'Mamá';}
-function dayBlocks(i){var x=dayInfo(i),B=[],mo=nightOwnerI(i-1);if(x.dow===3&&TD(3)&&mo==='Papá'&&MK(3)!=='Papá'&&!x.swap&&!x.hol){B.push([0,360,'Papá']);B.push([360,450,'Abuela paterna']);B.push([450,480,MK(3)]);var pt3=pickT(3),pa3=Math.min(tm(pt3[0]),tm(pt3[1]));B.push([480,pa3,'Colegio']);B.push([pa3,1260,PK(3)]);B.push([1260,1440,'Mamá']);return B;}
+function dayBlocks(i){var x=dayInfo(i),B=[],mo=nightOwnerI(i-1),ent=tm(S.work.entrega||'21:00');if(x.dow===3&&TD(3)&&mo==='Papá'&&MK(3)!=='Papá'&&!x.swap&&!x.hol){B.push([0,360,'Papá']);B.push([360,450,'Abuela paterna']);B.push([450,480,MK(3)]);var pt3=pickT(3),pa3=Math.min(tm(pt3[0]),tm(pt3[1]));B.push([480,pa3,'Colegio']);B.push([pa3,ent,PK(3)]);B.push([ent,1440,'Mamá']);return B;}
   if(x.swap){return [[0,1440,x.type==='mama'?'Mamá':'Papá']];}
   var school=x.dow<=4&&!x.hol;
   if(school){var mk=MK(x.dow),pt=pickT(x.dow),pa=Math.min(tm(pt[0]),tm(pt[1]));B.push([0,450,mo]);B.push([450,480,mk]);B.push([480,pa,'Colegio']);
     var pick=(x.dow>=1&&x.dow<=3)||(x.dow===4&&x.type==='finde'),pw=pick?PK(x.dow):'Mamá',home=tm(S.work.fin)+(+S.work.viaje||0);
     if(pick&&pw!=='Papá'&&pw!=='Mamá'){B.push([pa,home,pw]);pa=home;pw='Papá';}
-    if(x.type==='tarde'){B.push([pa,1260,pw]);B.push([1260,1440,'Mamá']);}else if(x.type==='noche'&&pw==='Mamá'){var wd=tm(S.work.wedDrop);B.push([pa,wd,'Mamá']);B.push([wd,1440,'Papá']);}else if(x.type==='noche'||x.type==='finde'){B.push([pa,1440,pw]);}else B.push([pa,1440,'Mamá']);}
+    if(x.type==='tarde'){B.push([pa,ent,pw]);B.push([ent,1440,'Mamá']);}else if(x.type==='noche'&&pw==='Mamá'){var wd=tm(S.work.wedDrop);B.push([pa,wd,'Mamá']);B.push([wd,1440,'Papá']);}else if(x.type==='noche'||x.type==='finde'){B.push([pa,1440,pw]);}else B.push([pa,1440,'Mamá']);}
   else if(x.type==='finde'){if(x.dow===6){B.push([0,1080,'Papá']);B.push([1080,1440,'Mamá']);}else B.push([0,1440,'Papá']);}
   else if(x.type==='noche')B.push([0,1440,'Papá']);
-  else if(x.type==='tarde'){B.push([0,960,'Mamá']);B.push([960,1260,'Papá']);B.push([1260,1440,'Mamá']);}
+  else if(x.type==='tarde'){B.push([0,960,'Mamá']);B.push([960,ent,'Papá']);B.push([ent,1440,'Mamá']);}
   else B.push([0,1440,'Mamá']);
   return B;}
 function whoCol(w){return w==='Papá'?'var(--pc)':(w==='Mamá'?'var(--mc)':(w==='Colegio'?'var(--tlw)':'var(--ab)'));}
@@ -1574,7 +1596,7 @@ function hoy(){
     if(a[0]==='call')return '<button class="qb"'+st+' data-a="call">'+inner+'</button>';
     return '<button class="qb"'+st+' data-a="fabgo" data-v="'+a[3]+'">'+inner+'</button>';}).join('')+'</div><div style="text-align:right;margin:-8px 0 14px"><button class="qkb" data-a="qkopen">'+ic('pen',14)+'Personalizar</button></div>';
   var tlw='<div class="tlsec"><button class="tlt" data-a="tlt" aria-expanded="'+(S.tlOpen?'true':'false')+'">'+ic('cal',20)+'<span>'+(S.tlOpen?'Ocultar':'Ver')+' la línea del día</span></button><div class="tlbody'+(S.tlOpen?' open':'')+'">'+tl+'</div></div>';
-  return '<div class="hgrid"><div class="hl">'+instBanner()+hero+nsNote()+quick+pend+llevarCard()+countdowns()+lastDiario()+'</div><div class="hr">'+tlw+'</div></div>';
+  return '<div class="hgrid"><div class="hl">'+instBanner()+hero+nsNote()+quick+pend+'<section style="margin-top:-4px">'+tiempoCard(true)+'</section>'+llevarCard()+countdowns()+lastDiario()+'</div><div class="hr">'+tlw+'</div></div>';
 }
 function isStandalone(){return window.matchMedia&&matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;}
 function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
@@ -1589,7 +1611,33 @@ function bellSheet(){var L=avisosList();
   return '<div class="sheetbg" data-a="bellclose"><div class="sheet" role="dialog" aria-label="Avisos" style="max-height:80vh;overflow-y:auto"><div style="width:40px;height:4px;border-radius:2px;background:var(--line2);align-self:center"></div><h2 style="font-family:Fraunces,serif;font-size:22px;margin:0">Avisos</h2>'+
   (L.length?'<div class="list">'+L.map(function(a){return '<div class="row"><span class="t" style="width:96px">'+a[0]+'</span><div class="grow"><span style="font-size:14px">'+a[1]+'</span><span class="lbl" style="font-size:12px">'+a[2]+'</span></div></div>';}).join('')+'</div>':emptyCard('avisos','Sin avisos','Estás al día.',null,null,1))+
   '<button class="btn sec" data-a="bellcfg">Configurar avisos</button><button class="btn sec" style="border:none" data-a="bellclose2">Cerrar</button></div></div>';}
-function analisis(){return '<div class="seg"><button class="'+(S.anaTab==='periodo'?'on':'')+'" data-a="anat" data-v="periodo">Por período</button><button class="'+(S.anaTab==='mes'?'on':'')+'" data-a="anat" data-v="mes">Mes a mes</button></div>'+(S.anaTab==='periodo'?resumen():equilibrio());}
+
+function tpRange(){var ti=idxOf(todayIso()),w=weekIso(),P=S.tpP||'mes',t=new Date();
+  if(P==='sem')return [w.we-6,w.we];
+  if(P==='30')return [ti-29,ti];
+  if(P==='prox')return [ti,ti+29];
+  return [idxOf(isoOf(new Date(t.getFullYear(),t.getMonth(),1))),idxOf(isoOf(new Date(t.getFullYear(),t.getMonth()+1,0)))];}
+function tpStats(r){var o={P:0,M:0,C:0,A:0,nP:0,nM:0,dias:r[1]-r[0]+1};
+  for(var i=r[0];i<=r[1];i++){dayBlocks(i).forEach(function(b){var m=b[1]-b[0],w=b[2];if(w==='Papá')o.P+=m;else if(w==='Mamá')o.M+=m;else if(w==='Colegio')o.C+=m;else o.A+=m;});if(nightOwnerI(i)==='Papá')o.nP++;else o.nM++;}
+  return o;}
+function tpH(m){return Math.round(m/60).toLocaleString('es-CL')+' h';}
+function tpD(m){return (m/1440).toFixed(1).replace('.',',')+' días';}
+var TPL={sem:'Esta semana',mes:'Este mes','30':'Últimos 30 días',prox:'Próximos 30 días'};
+function tpMine(){return whoMe()==='Mamá'?'M':'P';}
+function tiempoCard(compact){var r=tpRange(),o=tpStats(r),par=o.P+o.M,pp=par?Math.round(o.P/par*100):0,pm=par?100-pp:0,me=tpMine(),tot=o.P+o.M+o.C+o.A||1;
+  var side=function(k){var m=k==='P'?o.P:o.M,pc=k==='P'?pp:pm,nm=k==='P'?'Papá':'Mamá',n=k==='P'?o.nP:o.nM;
+    return '<div class="tpside '+(k==='P'?'p':'m')+'"><span class="tpn">'+pc+'%</span><span class="tpl">'+nm+(me===k?' (tú)':'')+'</span><span class="tps">'+tpH(m)+' · '+tpD(m)+'</span><span class="tps">'+n+(n===1?' noche':' noches')+'</span></div>';};
+  var sides=me==='P'?side('P')+side('M'):side('M')+side('P');
+  var bar='<div class="tpbar" role="img" aria-label="Papá '+pp+'%, mamá '+pm+'%">'+(me==='P'?'<i class="p" style="flex:'+(pp||.001)+'"></i><i class="m" style="flex:'+(pm||.001)+'"></i>':'<i class="m" style="flex:'+(pm||.001)+'"></i><i class="p" style="flex:'+(pp||.001)+'"></i>')+'</div>';
+  var chips='<div class="tpch" role="group" aria-label="Período">'+['sem','mes','30','prox'].map(function(k){return '<button class="'+((S.tpP||'mes')===k?'on':'')+'" data-a="tpp" data-v="'+k+'" aria-pressed="'+((S.tpP||'mes')===k)+'">'+TPL[k]+'</button>';}).join('')+'</div>';
+  if(compact)return '<button class="tpc tpcc" data-a="tab" data-v="ana"><div class="tph"><b>Tiempo con las niñas</b><span>'+TPL[S.tpP||'mes'].toLowerCase()+'</span></div><div class="tpmini"><span><b>'+pp+'%</b> Papá</span><span><b>'+pm+'%</b> Mamá</span></div>'+bar+'</button>';
+  var dif=Math.abs(o.P-o.M),dpt=Math.abs(pp-pm),mas=o.P>o.M?'Papá':'Mamá',menos=o.P>o.M?'mamá':'papá';
+  var seg=[['P','Papá','var(--pc)',o.P],['M','Mamá','var(--mc)',o.M],['C','Colegio','var(--kc)',o.C],['A','Abuelas','var(--ab)',o.A]];
+  return '<div class="tpc"><div class="tph"><b>Tiempo con las niñas</b><span>según el régimen acordado</span></div>'+chips+
+    (par?'<div class="tpduel">'+sides+'</div>'+bar+'<div class="tpdiff">'+(dif<30?'Reparto parejo: casi la misma cantidad de tiempo con cada uno.':mas+' pasa '+Math.max(1,Math.round(dpt/2))+' puntos más que '+menos+' (≈ '+tpD(dif)+' más en el período).')+'</div>':'<div class="tpdiff">No hay datos en este período.</div>')+
+    '<div class="tp2"><div class="tp2h">Cómo se reparten las 24 horas de cada día</div><div class="tpbar tpb4">'+seg.map(function(x){return '<i style="flex:'+(x[3]||.001)+';background:'+x[2]+'"></i>';}).join('')+'</div><div class="tpleg">'+seg.map(function(x){return '<span><i style="background:'+x[2]+'"></i>'+x[1]+' <b>'+Math.round(x[3]/tot*100)+'%</b> · '+tpH(x[3])+'</span>';}).join('')+'</div></div>'+
+    '<div class="lbl" style="font-size:12px;text-transform:none;letter-spacing:0;font-weight:500;line-height:1.4">La comparación entre papá y mamá no cuenta el colegio ni a las abuelas. Los días con cambios acordados y vacaciones aceptadas ya están incluidos. Son horas según el régimen, no un registro de cada minuto.</div></div>';}
+function analisis(){return tiempoCard(false)+'<div class="seg"><button class="'+(S.anaTab==='periodo'?'on':'')+'" data-a="anat" data-v="periodo">Por período</button><button class="'+(S.anaTab==='mes'?'on':'')+'" data-a="anat" data-v="mes">Mes a mes</button></div>'+(S.anaTab==='periodo'?resumen():equilibrio());}
 function masSub(){var me2=whoMe(),ti=todayIso(),n;
   var buy=S.pantry.filter(function(x){return x.st>0;}).length,pm=pendingMine(),meds=S.meds.filter(function(m){return m.kid==='agusta'||m.kid==='rafaella';}).length;
   var vp=S.vacs.filter(function(v){return v.estado==='Pendiente'&&v.who!==me2;}).length,nsn=(S.nosch||[]).filter(function(x){return x.iso>=ti;}).length;
@@ -1937,6 +1985,7 @@ document.addEventListener('click',function(e){
   else if(a==='bellcfg'){S.bell=false;S.tab='avi';render();}
   else if(a==='pend')set({pendOpen:!S.pendOpen});
   else if(a==='tlt')set({tlOpen:!S.tlOpen});
+  else if(a==='tpp')set({tpP:v});
   else if(a==='fltt')set({fltOpen:!S.fltOpen});
   else if(a==='fet')set({feOpen:!S.feOpen});
   else if(a==='alt')set({alOpen:!S.alOpen});

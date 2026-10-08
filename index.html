@@ -909,13 +909,13 @@ function tm(x){var p=String(x).split(':');return (+p[0])*60+(+p[1]||0);}
 function h12(m){m=Math.round(m)%1440;var h=Math.floor(m/60),n=m%60,ap=h<12?'a.m.':'p.m.';h=h%12||12;return h+(n?':'+String(n).padStart(2,'0'):'')+' '+ap;}
 function hhmm(m){m=Math.round(m);return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
 function hrs(m){var h=Math.round(m/6)/10;return String(h).replace('.',',')+' h';}
-function finD(dow){var W=S.work;if(TD(dow))return W.temp.fin;if(W.compOn&&W.comp[dow])return W.comp[dow];return W.fin;}
-function iniD(dow){return TD(dow)?S.work.temp.ini:S.work.ini;}
+function finD(dow,pf){var W=S.work,h=(W.hp||{})[dow];if(h){var v=(pf===undefined?S.wk==='papa':pf)?(h.c||h.s):(h.s||h.c);if(v)return v;}if(TD(dow))return W.temp.fin;if(W.compOn&&W.comp[dow])return W.comp[dow];return W.fin;}
+function iniD(dow){var h=(S.work.hp||{})[dow];if(h&&h.e)return h.e;return TD(dow)?S.work.temp.ini:S.work.ini;}
 function TD(dow){var T=S.work.temp;return T.on&&T.dias.indexOf(dow)>=0;}
 function pickT(dow){return TD(dow)?[S.work.temp.pA,S.work.temp.pR]:[S.work.salidaA,S.work.salidaR];}
 function firstOut(dow){var t=dow===undefined?[S.work.salidaA,S.work.salidaR]:pickT(dow);return Math.min(tm(t[0]),tm(t[1]));}
 function impact(dow,papaFinde){
-  var W=S.work,td=TD(dow),ini=tm(iniD(dow)),fin=tm(finD(dow)),lleg=tm(W.llegada),leave=firstOut(dow)-(+W.viaje||0);
+  var W=S.work,td=TD(dow),ini=tm(iniD(dow)),fin=tm(finD(dow,papaFinde)),lleg=tm(W.llegada),leave=firstOut(dow)-(+W.viaje||0);
   var school=dow<=4,pick=(dow>=1&&dow<=3)||(dow===4&&papaFinde);
   var helper=pick&&PK(dow)!=='Papá',home=fin+(+W.viaje||0);
   var mornP=school&&MK(dow)==='Papá',late=mornP?Math.max(0,lleg-ini):0,auth=Math.min(late,Math.max(0,tm(W.authHasta)-ini)), early=(pick&&!helper)?Math.max(0,fin-leave):0, saved=helper?Math.max(0,fin-leave):0;
@@ -936,21 +936,22 @@ var RED0=[['Abuela materna','Retiros de los viernes'],['Miércoles','Mamá las r
 function javL(){if(!S.jav)S.jav=JAV.map(function(r){return r.slice();});return S.jav;}
 function redL(){if(!S.red)S.red=RED0.map(function(r){return r.slice();});return S.red;}
 function javDow(r){return DNL.indexOf(String(r[0]).toLowerCase());}
-function tsSheet(){var f=S.tsh,jv=f.k==='jav',q=function(k){return String(f[k]||'').replace(/"/g,'&quot;');};
-  return '<div class="sheetbg" data-a="tsclose"><div class="sheet tall" role="dialog" aria-label="'+(jv?'Horario de mamá':'Red de apoyo')+'">'+sheetTop(jv?'Horario de mamá':'Red de apoyo')+
+function tsSheet(){var f=S.tsh,jv=f.k==='jav'||f.k==='hp',q=function(k){return String(f[k]||'').replace(/"/g,'&quot;');};
+  return '<div class="sheetbg" data-a="tsclose"><div class="sheet tall" role="dialog" aria-label="'+(jv?'Horario de '+(f.k==='hp'?'papá':'mamá'):'Red de apoyo')+'">'+sheetTop(jv?'Horario de '+(f.k==='hp'?'papá':'mamá'):'Red de apoyo')+
   (jv?'<div class="qlbl">Día</div><div class="chps">'+['Lunes','Martes','Miércoles','Jueves','Viernes'].map(function(d){return '<button class="chp'+(f.a===d?' on':'')+'" data-a="tsday" data-v="'+d+'">'+d+'</button>';}).join('')+'</div>'+
-   '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"><label class="fld">Entrada<input class="inp" type="time" data-ts="b" value="'+q('b')+'"></label><label class="fld">Salida S/F<input class="inp" type="time" data-ts="c" value="'+q('c')+'"></label><label class="fld">Salida C/F<input class="inp" type="time" data-ts="d" value="'+q('d')+'"></label></div><div class="mthelp">S/F = semana sin fin de semana con las niñas · C/F = con fin de semana. Si el día ya existe, se reemplaza.</div>'
+   '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"><label class="fld">Entrada<input class="inp" type="time" data-ts="b" value="'+q('b')+'"></label><label class="fld">Salida S/F<input class="inp" type="time" data-ts="c" value="'+q('c')+'"></label><label class="fld">Salida C/F<input class="inp" type="time" data-ts="d" value="'+q('d')+'"></label></div><div class="mthelp">S/F = semana sin fin de semana con las niñas · C/F = con fin de semana.'+(f.k==='hp'?' Solo cambia ese día; lo demás sigue tu horario general.':' Si el día ya existe, se reemplaza.')+'</div>'
   :'<div class="qlbl">¿Quién o qué?</div><input class="inp" type="text" placeholder="Ej: Tía Carla · Maipú" data-ts="a" value="'+q('a')+'"><div class="qlbl">Detalle</div><input class="inp" type="text" placeholder="Ej: respaldo si no puedo retirarlas" data-ts="b" value="'+q('b')+'">')+
   '<button class="btn" style="height:50px" data-a="tssave">Guardar</button><button class="btn sec" style="border:none" data-a="tsclose">Cancelar</button></div></div>';}
 function hlBody(fieldsFn){var who=S.hl==='m'?'m':'p';
   var seg='<div class="seg" style="grid-template-columns:1fr 1fr"><button class="'+(who==='p'?'on':'')+'" data-a="hlw" data-v="p">Papá</button><button class="'+(who==='m'?'on':'')+'" data-a="hlw" data-v="m">Mamá</button></div>';
   return seg+(who==='m'?hlMama():hlPapa()+'<button class="addb" data-a="hled">'+ic('pen',18)+(S.hlEdit?'Ocultar ajustes de mi horario':'Ajustar mi horario')+'</button>'+(S.hlEdit?fieldsFn():''));}
+function hlHead(){return '<div class="row" style="font-size:12px;color:var(--mut);font-weight:700"><span style="width:84px">Día</span><span style="flex:1">Entrada</span><span style="flex:1">Salida S/F</span><span style="flex:1">Salida C/F</span></div>';}
 function hlPapa(){var W=S.work;
-  return '<div class="list"><div class="row" style="font-size:12px;color:var(--mut);font-weight:700"><span style="width:84px">Día</span><span style="flex:1">Entrada</span><span style="flex:1">Salida</span><span style="flex:1">Nota</span></div>'+
-  [0,1,2,3,4].map(function(d){var td=TD(d),dr=MK(d)==='Papá'&&!td,ent=td?W.temp.ini:(dr?W.llegada:W.ini),sal=finD(d),nota=td?'Temprano':((W.compOn&&W.comp[d])?'Compensa':(dr?'Con permiso':''));
-    return '<div class="row" style="font-size:14px;align-items:center"><b style="width:84px">'+DNL[d].charAt(0).toUpperCase()+DNL[d].slice(1)+'</b><span style="flex:1">'+ent+'</span><span style="flex:1">'+sal+'</span><span style="flex:1;font-size:12px;color:var(--mut)">'+nota+'</span></div>';}).join('')+'</div>'+
-  '<div class="lbl" style="font-size:12px;margin-top:8px">Entrada: los días que las llevas llegas a las '+W.llegada+' con permiso del empleador (hasta las '+W.authHasta+'). Para cambiar horas o compensación, toca «Ajustar mi horario».</div>';}
-function hlMama(){return '<div class="list"><div class="row" style="font-size:12px;color:var(--mut);font-weight:700"><span style="width:84px">Día</span><span style="flex:1">Entrada</span><span style="flex:1">Salida S/F</span><span style="flex:1">Salida C/F</span></div>'+javL().map(function(j,ji){var dw=javDow(j),free=tm(j[3])+30<=firstOut();return '<div class="row" style="font-size:14px;align-items:center;gap:4px"><button data-a="jvopen" data-v="'+ji+'" style="flex:1;display:flex;align-items:center;background:none;border:none;font:inherit;color:inherit;text-align:left;padding:0"><b style="width:84px">'+j[0]+'</b><span style="flex:1">'+(dw>=0&&MK(dw)==='Mamá'?'09:00'+(S.work.jav9?'':' (pend.)'):j[1])+'</span><span style="flex:1">'+j[2]+'</span><span style="flex:1;color:'+(free?'var(--pd)':'inherit')+';font-weight:'+(free?'700':'400')+'">'+j[3]+(free?' ✓':'')+'</span></button>'+delb('jav',ji,j[0])+'</div>';}).join('')+'</div><button class="addb" data-a="jvopen" data-v="">'+ic('plus',18)+'Agregar o cambiar un día</button><div class="lbl" style="font-size:12px;margin-top:8px">Contrato de 44 h semanales. ✓ = alcanza a retirar a las '+hhmm(firstOut())+'. Entra a las 08:00; los días que lleva a las niñas pide entrar a las 09:00.</div>';}
+  return '<div class="list">'+hlHead()+[0,1,2,3,4].map(function(d){var dr=MK(d)==='Papá'&&!TD(d),ov=!!(W.hp&&W.hp[d]);
+    return '<div class="row" style="font-size:14px;align-items:center;gap:4px"><button data-a="hpopen" data-v="'+d+'" style="flex:1;display:flex;align-items:center;background:none;border:none;font:inherit;color:inherit;text-align:left;padding:0"><b style="width:84px">'+DNL[d].charAt(0).toUpperCase()+DNL[d].slice(1)+'</b><span style="flex:1">'+iniD(d)+(dr?'<small style="display:block;font-size:11px;color:var(--mut)">llegas '+W.llegada+'</small>':'')+'</span><span style="flex:1">'+finD(d,false)+'</span><span style="flex:1">'+finD(d,true)+'</span></button>'+(ov?delb('hp',d,'tu horario del '+DNL[d]):'<span style="width:34px"></span>')+'</div>';}).join('')+'</div>'+
+  '<button class="addb" data-a="hpopen" data-v="">'+ic('plus',18)+'Cambiar un día</button>'+
+  '<div class="lbl" style="font-size:12px;margin-top:8px">Toca un día para cambiar su entrada y salidas. S/F = semana sin fin de semana con las niñas · C/F = con fin de semana. Los días que las llevas llegas a las '+W.llegada+' con permiso (hasta las '+W.authHasta+'). La papelera vuelve el día a tu horario general.</div>';}
+function hlMama(){return '<div class="list">'+hlHead()+javL().map(function(j,ji){var dw=javDow(j),free=tm(j[3])+30<=firstOut();return '<div class="row" style="font-size:14px;align-items:center;gap:4px"><button data-a="jvopen" data-v="'+ji+'" style="flex:1;display:flex;align-items:center;background:none;border:none;font:inherit;color:inherit;text-align:left;padding:0"><b style="width:84px">'+j[0]+'</b><span style="flex:1">'+(dw>=0&&MK(dw)==='Mamá'?'09:00'+(S.work.jav9?'':' (pend.)'):j[1])+'</span><span style="flex:1">'+j[2]+'</span><span style="flex:1;color:'+(free?'var(--pd)':'inherit')+';font-weight:'+(free?'700':'400')+'">'+j[3]+(free?' ✓':'')+'</span></button>'+delb('jav',ji,j[0])+'</div>';}).join('')+'</div><button class="addb" data-a="jvopen" data-v="">'+ic('plus',18)+'Agregar o cambiar un día</button><div class="lbl" style="font-size:12px;margin-top:8px">Contrato de 44 h semanales. ✓ = alcanza a retirar a las '+hhmm(firstOut())+'. Entra a las 08:00; los días que lleva a las niñas pide entrar a las 09:00.</div>';}
 function trabajo_0(){
   var W=S.work,ini=tm(W.ini),fin=tm(W.fin),jornada=(fin-ini)*5,real=0,extra=0;for(var dd=0;dd<5;dd++){var mk0=MK(dd)==='Papá';var st0=tm(iniD(dd)),fn0=tm(finD(dd));if(mk0&&!TD(dd))st0=Math.max(st0,tm(W.llegada));real+=fn0-st0;if(!TD(dd)&&W.compOn&&W.comp[dd])extra+=tm(W.comp[dd])-fin;}
   var a=weekStats(true),b=weekStats(false),cur=S.wk==='papa'?a:b;
@@ -1129,11 +1130,11 @@ function historial(){uLoad();var L=UNDO.slice().reverse();
 
 function canDel(t){return ({msg:1,bit:1,foto:1})[t]?!!(S.cfg&&S.cfg.test):true;}
 function delb(t,i,lab,cls){if(!canDel(t))return '';return '<button class="delb'+(cls?' '+cls:'')+'" data-a="del" data-v="'+t+'|'+i+'" aria-label="Eliminar'+(lab?' '+String(lab).replace(/"/g,''):'')+'">'+ic('trash',cls==='mini'?13:17)+'</button>';}
-function delGet(t,i){var A={jav:javL(),red:redL(),vuel:S.vuelta,gasto:S.gastos,dia:S.diario,mat:S.mats,prod:S.pantry,sch:S.sch,vac:S.vacs,med:S.meds,aten:S.aten,msg:S.msgs,bit:S.bit};
+function delGet(t,i){var A={jav:javL(),hp:(S.work.hp||{}),red:redL(),vuel:S.vuelta,gasto:S.gastos,dia:S.diario,mat:S.mats,prod:S.pantry,sch:S.sch,vac:S.vacs,med:S.meds,aten:S.aten,msg:S.msgs,bit:S.bit};
   if(t==='swap'){return S.swaps.filter(function(w){return w.id===i;})[0]||null;}if(t==='foto'){return S.photos.filter(function(x){return x.id===i;})[0]||null;}
   return A[t]?A[t][+i]||null:null;}
 function delName(t,i){var it=delGet(t,i);if(!it)return '';
-  switch(t){case 'gasto':return it.t+' ('+money(it.monto)+')';case 'dia':return 'nota del '+fdate(it.iso)+(it.t?': '+it.t.slice(0,30):'');case 'mat':case 'prod':case 'sch':case 'vuel':return it.t;case 'jav':return 'el horario del '+it[0].toLowerCase()+' de mamá';case 'red':return it[0];
+  switch(t){case 'gasto':return it.t+' ('+money(it.monto)+')';case 'dia':return 'nota del '+fdate(it.iso)+(it.t?': '+it.t.slice(0,30):'');case 'mat':case 'prod':case 'sch':case 'vuel':return it.t;case 'jav':return 'el horario del '+it[0].toLowerCase()+' de mamá';case 'red':return it[0];case 'hp':return 'tu horario personalizado del '+DNL[+i];
     case 'vac':return 'vacaciones '+fdate(it.desde)+' al '+fdate(it.hasta);case 'swap':return 'cambio del '+fdate(it.iso);case 'med':return it.n;case 'aten':return it.motivo;
     case 'msg':return 'mensaje «'+String(it.t).slice(0,34)+'»';case 'bit':return it.t;case 'foto':return 'foto «'+it.label+'»';}return '';}
 function delItem(t,i){var it=delGet(t,i);if(!it)return false;
@@ -1144,6 +1145,7 @@ function delItem(t,i){var it=delGet(t,i);if(!it)return false;
   else if(t==='vuel')S.vuelta.splice(+i,1);
   else if(t==='sch')S.sch.splice(+i,1);
   else if(t==='jav')S.jav.splice(+i,1);
+  else if(t==='hp')delete S.work.hp[+i];
   else if(t==='red')S.red.splice(+i,1);
   else if(t==='vac'){if(it.estado==='Aceptada'){for(var di=idxOf(it.desde);di<=idxOf(it.hasta);di++)delete S.ov[isoOf(dayInfo(di).d)];}S.vacs.splice(+i,1);}
   else if(t==='swap'){if(it.estado==='Aceptado')delete S.ov[it.iso];S.swaps.splice(S.swaps.indexOf(it),1);}
@@ -1994,9 +1996,10 @@ document.addEventListener('click',function(e){
   else if(a==='hled'){S.hlEdit=!S.hlEdit;render();}
   else if(a==='jvopen'){var jr=v===''?null:javL()[+v];S.tsh={k:'jav',a:jr?jr[0]:'Lunes',b:jr?jr[1]:'08:00',c:jr?jr[2]:'17:45',d:jr?jr[3]:'16:15'};render();}
   else if(a==='rdopen'){var rr=v===''?null:redL()[+v];S.tsh={k:'red',i:v===''?-1:+v,a:rr?rr[0]:'',b:rr?rr[1]:''};render();}
-  else if(a==='tsday'){S.tsh.a=v;render();}
+  else if(a==='hpopen'){var dh=v===''?0:+v;S.tsh={k:'hp',a:DNL[dh].charAt(0).toUpperCase()+DNL[dh].slice(1),b:iniD(dh),c:finD(dh,false),d:finD(dh,true)};render();}
+  else if(a==='tsday'){S.tsh.a=v;if(S.tsh.k==='hp'){var dz=DNL.indexOf(v.toLowerCase());S.tsh.b=iniD(dz);S.tsh.c=finD(dz,false);S.tsh.d=finD(dz,true);}render();}
   else if(a==='tsclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.tsh=null;render();}
-  else if(a==='tssave'){var th=S.tsh;if(th.k==='jav'){if(!th.b||!th.c||!th.d){toast('Completa las tres horas');return;}var L=javL(),row=[th.a,th.b,th.c,th.d],ix=L.map(function(r){return r[0];}).indexOf(th.a);if(ix>=0)L[ix]=row;else L.push(row);L.sort(function(x,y){return javDow(x)-javDow(y);});}
+  else if(a==='tssave'){var th=S.tsh;if(th.k==='hp'){if(!th.b||!th.c||!th.d){toast('Completa las tres horas');return;}S.work.hp=S.work.hp||{};S.work.hp[DNL.indexOf(th.a.toLowerCase())]={e:th.b,s:th.c,c:th.d};}else if(th.k==='jav'){if(!th.b||!th.c||!th.d){toast('Completa las tres horas');return;}var L=javL(),row=[th.a,th.b,th.c,th.d],ix=L.map(function(r){return r[0];}).indexOf(th.a);if(ix>=0)L[ix]=row;else L.push(row);L.sort(function(x,y){return javDow(x)-javDow(y);});}
     else{if(!th.a.trim()){toast('Escribe quién o qué es');return;}var R=redL(),rw=[th.a.trim(),th.b.trim()];if(th.i>=0)R[th.i]=rw;else R.push(rw);}
     S.tsh=null;toast('Guardado');render();}
   else if(a==='vuclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.vuSheet=false;render();}

@@ -393,6 +393,25 @@ main.anim>*:nth-child(2){animation-delay:.03s}main.anim>*:nth-child(3){animation
 .mbal.ok .mbalc{flex-direction:column}
 .mbundo{background:none;border:none;font:inherit;font-size:13px;font-weight:700;color:var(--pd);padding:6px;cursor:pointer;text-align:center}
 @media (prefers-reduced-motion:reduce){.hbtn,.qbd.dot{animation:none}}
+/* Confirmar, avisar y deshacer */
+.snk{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom,0px));max-width:406px;margin:0 auto;z-index:99990;display:flex;align-items:center;gap:6px;background:var(--hc);color:var(--onhc);border-radius:16px;padding:8px 8px 8px 14px;box-shadow:0 10px 28px rgba(0,0,0,.32);animation:snkin .28s cubic-bezier(.3,1.4,.5,1)}
+@keyframes snkin{from{transform:translateY(16px);opacity:0}}
+.snkt{flex:1;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;line-height:1.25;min-width:0}.snkt svg{flex-shrink:0;color:#7DE0AE}
+.snkb{border:none;border-radius:11px;padding:0 14px;min-height:40px;background:rgba(255,255,255,.16);color:inherit;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+.snkx{border:none;background:none;color:inherit;opacity:.7;font-size:22px;width:36px;min-height:40px;cursor:pointer}
+@media (min-width:1100px){.snk{left:calc(230px + 12px)}}
+.cfq{font-size:15px;line-height:1.45;color:var(--ink2)}
+.cfl{display:flex;flex-direction:column;gap:6px;max-height:40vh;overflow-y:auto}
+.cfi{display:flex;align-items:center;gap:12px;min-height:50px;padding:6px 12px;border-radius:14px;border:1.5px solid var(--line2);background:var(--card);font:inherit;font-size:14px;font-weight:600;color:var(--ink);text-align:left;cursor:pointer}
+.cfi .cfbox{width:24px;height:24px;border-radius:8px;border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;color:transparent;flex-shrink:0}
+.cfi.on{border-color:var(--p);background:var(--pt)}.cfi.on .cfbox{background:var(--p);border-color:var(--p);color:#fff}
+.cfi:not(.on){border-color:var(--x);background:var(--rt)}.cfi:not(.on) span:last-child{text-decoration:line-through;color:var(--rd)}
+.cfw{display:flex;gap:8px;align-items:flex-start;font-size:13px;font-weight:600;color:var(--rd);background:var(--rt);border:1px solid var(--rb);border-radius:12px;padding:10px 12px}.cfw svg{flex-shrink:0;margin-top:1px}
+.cfb{display:flex;flex-direction:column;gap:8px}
+.cfmain{height:52px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;text-align:center}
+.mbal.warn{background:var(--rt);border-color:var(--rb)}.mbal.warn>b{color:var(--rd)}
+.mbfalta{font-size:13px;color:var(--rd);line-height:1.4}
+.mbalr{display:flex;justify-content:space-between;gap:4px}
 @media (min-width:480px){.mbtiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
 /* Fichas por período, estados vacíos y ajustes */
 .pcs{display:flex;gap:10px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}.pcs::-webkit-scrollbar{display:none}
@@ -474,7 +493,7 @@ nav .fabw{order:-1;justify-content:flex-start;margin-bottom:10px}
 
 <script>
 var S={tab:'hoy',sel:0,child:'agusta',rut:'rutina',call:false,approved:false,em:false,emType:null,pension:false,vista:'Philip',toast:'',wk:'papa',mkid:'agusta',sem:{agusta:{0:['Libro de la biblioteca'],2:['Zapatillas para educación física'],4:['Cuento o juguete para compartir']},rafaella:{0:['Pañales y toallitas para la semana'],4:['Traer de vuelta la muda usada']}},semf:{dia:'0',txt:''},pk:{},
-bag:{},alist:{},acc:{},tarP:'',tarHide:false,agP:'',tareas:[],tarf:{t:'',who:'Papá',iso:''},tarOther:false,tarFilter:'mias',nosch:[],nsf:{kids:'Ambas',iso:'',why:'Paro',care:'Por definir'},mfOther:false,nsOther:false,mf:{txt:'',kid:'agusta',fecha:'2026-10-02'},
+bag:{},alist:{},cf:null,alMiss:null,acc:{},tarP:'',tarHide:false,agP:'',tareas:[],tarf:{t:'',who:'Papá',iso:''},tarOther:false,tarFilter:'mias',nosch:[],nsf:{kids:'Ambas',iso:'',why:'Paro',care:'Por definir'},mfOther:false,nsOther:false,mf:{txt:'',kid:'agusta',fecha:'2026-10-02'},
 pantry:[{t:'Barras de cereal',k:'Ambas',st:0},{t:'Galletas',k:'Ambas',st:0},{t:'Yogurt',k:'Ambas',st:1},{t:'Leche',k:'Ambas',st:0},{t:'Pañales',k:'Rafaella',st:1},{t:'Toallitas húmedas',k:'Rafaella',st:2}],pf:'',
 mats:[{t:'[Material pedido por el colegio]',k:'Agusta',f:'2026-10-02',st:0},{t:'Pañales y toallitas húmedas',k:'Rafaella',f:'2026-10-05',st:1},{t:'Delantal marcado con nombre',k:'Agusta',f:'2026-10-07',st:2}],
 vuelta:[{t:'Polerón de Agusta',d:'En casa de papá',ok:false},{t:'Chaleco y muda de Rafaella',d:'En casa de papá',ok:false},{t:'Botella de agua',d:'En casa de mamá',ok:true}],
@@ -907,7 +926,7 @@ function llevarCard(){var i=nextSchoolIdx(),x=dayInfo(i),iso=isoOf(x.d),ti=idxOf
     (L.length?L.map(function(it,n){var key=iso+kid+it.t,on=!!S.pk[key];tot++;if(on)ok++;if(it.warn&&!on)warn++;
       return '<button class="llit'+(on?' on':'')+(it.warn?' w':'')+'" data-a="pk" data-v="'+key.replace(/"/g,'&quot;')+'" aria-pressed="'+on+'"><span class="box">'+ic('check',14,3)+'</span><span class="llx"><span class="lt1">'+it.t+'</span><span class="ls1">'+it.src+'</span></span></button>'+(it.mi!==undefined?'<div class="mbact" style="margin:2px 0 8px 34px"><button class="mbok" data-a="mset" data-v="'+it.mi+'|2">'+ic('check',14)+'Ya lo llevó</button><button data-a="mset" data-v="'+it.mi+'|0">Pendiente</button></div>':'');}).join(''):'<div class="lls">Nada especial: solo lo de siempre.</div>')+
     '<div class="lla"><b>Siempre:</b> '+siempre(kid)+'</div>'+alBlock(kid,false)+'</div>';};
-  var alN=['agusta','rafaella'].filter(function(q){return (S.alist||{})[iso+'|'+q];}).length;
+  var alN=['agusta','rafaella'].filter(function(q){var z=(S.alist||{})[iso+'|'+q];return z&&!(z.faltaIds&&z.faltaIds.length);}).length;
   var body=kidBlock('agusta')+kidBlock('rafaella');
   var prox=S.mats.filter(function(m){var j=idxOf(m.f);return m.st<2&&j>i&&j<=i+10;}).sort(function(a,b){return a.f<b.f?-1:1;});
   return '<section><h2>Para llevar · '+cuando.toLowerCase()+' '+fdate(iso)+'</h2><div class="card llc">'+
@@ -927,21 +946,83 @@ function mbItems(k){var bd=bagDay(),out=BAG[k].map(function(it){return {id:'b|'+
   paraLlevar(ni,k).forEach(function(x){var key=iso+k+x.t;out.push({mi:x.mi,id:'p|'+key,on:!!S.pk[key],t:x.t,s:x.src,i:mbIcon(x.t),tag:x.warn?'Falta comprar':'Extra de hoy',star:!x.warn});});
   return out;}
 
-function alSet(k){var iso=bagDay(),L=mbItems(k),mats=[],nm=k==='agusta'?'Agusta':'Rafaella',names=L.map(function(x){return x.t;});
-  L.forEach(function(x){var key=x.id.slice(2);if(x.id.charAt(0)==='b')S.bag[key]=true;else S.pk[key]=true;
+
+/* ===== Confirmar antes · avisar después · poder deshacer ===== */
+var UNDO=[],UKEYS=null,ULAB={alset:'Mochila alistada',alfix:'Faltante entregado',mset:'Estado de material',addgasto:'Gasto guardado',addmat:'Material agregado',addp:'Producto agregado',addact:'Actividad registrada',addaten:'Atención registrada',addmed:'Medicamento agregado',addsch:'Evento escolar agregado',bought:'Compra registrada',call:'Videollamada',dsave:'Nota del diario',dose:'Dosis registrada',hconf:'Traslado confirmado',pension:'Pensión de alimentos',nssave:'Día sin clases agregado',nsdel:'Día sin clases quitado',tarsave:'Tarea agregada',tardel:'Tarea quitada',semadd:'Fijo de la semana agregado',semdel:'Fijo de la semana quitado',addmat2:''};
+function fireAction(a,v){window._cf=1;var t=document.createElement('button');t.dataset.a=a;if(v!==undefined)t.dataset.v=v;t.style.display='none';document.body.appendChild(t);t.click();t.remove();window._cf=0;}
+function ukeys(){if(!UKEYS)UKEYS=SYNC_KEYS.filter(function(k){return ['avt','phid','lid'].indexOf(k)<0;});return UKEYS;}
+function ucap(){var o={};ukeys().forEach(function(k){o[k]=JSON.stringify(S[k]===undefined?null:S[k]);});return o;}
+function uStore(){try{localStorage.setItem('nido_undo_'+S.vista,JSON.stringify(UNDO.slice(-30)));}catch(e){}}
+function uLoad(){if(UNDO.loaded===S.vista)return;try{UNDO=JSON.parse(localStorage.getItem('nido_undo_'+S.vista)||'[]');}catch(e){UNDO=[];}UNDO.loaded=S.vista;}
+function ulabel(a,v){var nm={agusta:'Agusta',rafaella:'Rafaella'};if(a==='alset')return 'Mochila de '+(nm[v]||'')+' alistada';if(a==='alfix')return 'Faltante de '+(nm[v]||'')+' entregado';
+  if(a==='mset'){var q=String(v).split('|'),m=S.mats[+q[0]];return m?('«'+m.t+'»: '+MST[+q[1]][0].toLowerCase()):ULAB[a];}return ULAB[a];}
+function uValid(e){var cur=ucap();return Object.keys(e.k).every(function(k){return cur[k]===e.k[k].a;});}
+function uWhen(t){var d=new Date(t),h=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');return (new Date().toDateString()===d.toDateString()?'Hoy':fdate(isoOf(d)))+' '+h;}
+function uUndo(id){uLoad();var i=-1;UNDO.forEach(function(e,j){if(e.id===id)i=j;});if(i<0)return;var e=UNDO[i];
+  if(!uValid(e)){toast('No se puede deshacer: ya hubo otro cambio encima. Corrígelo a mano.');return;}
+  Object.keys(e.k).forEach(function(k){S[k]=JSON.parse(e.k[k].b);});UNDO.splice(i,1);uStore();
+  logA(whoMe(),'Deshacer','Deshizo: '+e.label);var sn=document.getElementById('nidoSnk');if(sn)sn.remove();render();toast('Deshecho: '+e.label);}
+function uSnack(e){var el=document.getElementById('nidoSnk');if(!el){el=document.createElement('div');el.id='nidoSnk';el.className='snk';el.setAttribute('role','status');document.body.appendChild(el);}
+  el.innerHTML='<span class="snkt">'+ic('check',18)+'<span>'+e.label+'</span></span><button class="snkb" data-u="'+e.id+'">Deshacer</button><button class="snkx" aria-label="Cerrar">×</button>';
+  clearTimeout(window._snk);window._snk=setTimeout(function(){var x=document.getElementById('nidoSnk');if(x)x.remove();},10000);}
+function uDone(a,v,before){var after=ucap(),k={},n=0;Object.keys(after).forEach(function(key){if(before[key]!==after[key]){k[key]={b:before[key],a:after[key]};n++;}});if(!n)return;
+  uLoad();var e={id:'u'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),a:a,label:ulabel(a,v)||a,who:S.vista,at:Date.now(),k:k};UNDO.push(e);if(UNDO.length>30)UNDO.shift();uStore();
+  S.toast='';var t=document.querySelector('.toast');if(t)t.remove();uSnack(e);}
+var CONF={
+ mset:function(v){var q=String(v).split('|'),m=S.mats[+q[0]];if(!m||q[1]!=='2')return null;return {t:'Material entregado',q:'¿Ya se llevó «'+m.t+'»? Saldrá de la mochila y no se volverá a pedir.',ok:'Sí, ya se llevó'};},
+ tardel:function(v){var t=S.tareas[+v];return t?{t:'Quitar tarea',q:'¿Quitar «'+t.t+'»?',ok:'Sí, quitar'}:null;},
+ nsdel:function(v){var x=S.nosch[+v];return x?{t:'Quitar día sin clases',q:'¿Quitar el día sin clases del '+fdate(x.iso)+' ('+x.why+')?',ok:'Sí, quitar'}:null;},
+ semdel:function(v){var q=String(v).split('|'),t=(S.sem[q[0]]||{})[q[1]];return t&&t[+q[2]]?{t:'Quitar fijo',q:'¿Quitar «'+t[+q[2]]+'» de ese día de la semana?',ok:'Sí, quitar'}:null;},
+ pension:function(){return {t:'Pensión de alimentos',q:S.pension?'¿Desmarcar la pensión como pagada? Se quitará el pago registrado.':'¿Marcar la pensión de este mes como pagada? Se registrará un pago de $500.000.',ok:S.pension?'Sí, desmarcar':'Sí, está pagada'};},
+ bought:function(){return {t:'Compra de colaciones',q:'¿Compraste todo lo de la lista? Los productos quedarán como disponibles.',ok:'Sí, compré todo'};},
+ call:function(){return S.call?null:{t:'Videollamada',q:'¿Hiciste hoy la videollamada con las niñas?',ok:'Sí, la hice'};},
+ dose:function(v){var m=S.meds[+v];return m?{t:'Registrar dosis',q:'¿Diste «'+m.n+'» ('+m.dosis+') ahora, a las '+nowHM()+'? El otro padre lo verá.',ok:'Sí, la di'}:null;},
+ hconf:function(v){var r=String(v).split('|')[1];return {t:r==='from'?'Confirmar entrega':'Confirmar recepción',q:r==='from'?'¿Entregaste a las niñas ahora, a las '+nowHM()+'? Queda registrado con hora.':'¿Recibiste a las niñas ahora, a las '+nowHM()+'? Queda registrado con hora.',ok:r==='from'?'Sí, las entregué':'Sí, las recibí'};},
+ addgasto:function(){var g=S.gf;if(!g||!g.t.trim()||!+String(g.monto).replace(/\D/g,''))return null;return {t:'Guardar gasto',q:'¿Guardar «'+g.t.trim()+'» por '+money(+String(g.monto).replace(/\D/g,''))+' ('+g.cat+')? Pagó '+whoMe()+'.'+(g.ph.length?'':' Aún no tiene comprobante.'),ok:'Sí, guardar'};},
+ swok:function(){return {t:'Aceptar cambio de día',q:'¿Aceptas este cambio? Quedará firmado en la bitácora.',ok:'Sí, aceptar'};},
+ swno:function(){return {t:'Rechazar cambio de día',q:'¿Rechazas este cambio de día? Quedará anotado en la bitácora.',ok:'Sí, rechazar'};},
+ vok:function(){return {t:'Aceptar vacaciones',q:'¿Aceptas estas vacaciones? Quedará firmado en la bitácora.',ok:'Sí, aceptar'};},
+ vno:function(){return {t:'Rechazar vacaciones',q:'¿Rechazas estas vacaciones? Quedará anotado en la bitácora.',ok:'Sí, rechazar'};}
+};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-a]');if(!b||window._cf)return;var a=b.dataset.a,f=CONF[a];if(!f)return;var c=f(b.dataset.v);if(!c)return;
+  e.stopImmediatePropagation();e.preventDefault();c.a=a;c.v=b.dataset.v;S.cf=c;render();},true);
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-a]');if(!b)return;var a=b.dataset.a;if(!ULAB[a])return;var before=ucap(),v=b.dataset.v;setTimeout(function(){uDone(a,v,before);},0);},true);
+document.addEventListener('click',function(e){var u=e.target.closest&&e.target.closest('[data-u]');if(u){uUndo(u.dataset.u);return;}var x=e.target.closest&&e.target.closest('.snkx');if(x){var sn=document.getElementById('nidoSnk');if(sn)sn.remove();}});
+function cfSheet(){var c=S.cf,body='',miss=0;
+  if(c.items){miss=c.items.filter(function(x){return !x.ok;}).length;body='<div class="cfl">'+c.items.map(function(it,i){return '<button class="cfi'+(it.ok?' on':'')+'" data-a="cfitem" data-v="'+i+'" aria-pressed="'+it.ok+'"><span class="cfbox">'+ic('check',14)+'</span><span>'+it.t+'</span></button>';}).join('')+'</div>'+(miss?'<div class="cfw">'+ic('alert',16)+'<span>Faltan '+miss+'. Quedará anotado y la mochila no se marcará como lista.</span></div>':'');}
+  var main=c.photo?'<label class="btn cfmain">'+ic('camera',18)+(miss?'Alistar con foto (con faltantes)':'Alistar con foto')+'<input type="file" accept="image/*" capture="environment" data-photo="'+c.photo.k+'" data-label="'+c.photo.label+'" style="display:none"></label><button class="btn sec" data-a="cfyes">'+(miss?'Alistar sin foto (con faltantes)':'Alistar sin foto')+'</button>':'<button class="btn cfmain" data-a="cfyes">'+c.ok+'</button>';
+  return '<div class="sheetbg" data-a="cfno"><div class="sheet tall" role="dialog" aria-label="'+c.t+'">'+sheetTop(c.t)+'<div class="cfq">'+c.q+'</div>'+body+'<div class="cfb">'+main+'</div><button class="btn sec" style="border:none" data-a="cfno">Cancelar</button></div></div>';}
+function historial(){uLoad();var L=UNDO.slice().reverse();
+  return '<div class="lbl" style="text-transform:none;letter-spacing:0;font-size:13px;font-weight:500;line-height:1.5">Aquí puedes deshacer lo que hiciste por error. Funciona mientras nadie haya cambiado lo mismo después. Cada cambio y cada deshacer quedan anotados en Actividades.</div>'+
+  (L.length?'<div class="list">'+L.map(function(e){var ok=uValid(e);return '<div class="row" style="align-items:center"><div class="grow"><b style="font-size:14px">'+e.label+'</b><span class="lbl" style="font-size:12px">'+uWhen(e.at)+' · '+e.who+(ok?'':' · ya cambió después')+'</span></div><button class="btn sec" style="height:38px;padding:0 14px'+(ok?'':';opacity:.45')+'" '+(ok?'data-a="uundo" data-v="'+e.id+'"':'disabled')+'>Deshacer</button></div>';}).join('')+'</div>':emptyCard('registros','Sin cambios recientes','Cuando hagas algo importante aparece aquí, para poder deshacerlo si fue un error.'))+
+  '<div class="lbl" style="font-size:12px;text-transform:none;letter-spacing:0;font-weight:500">No se pueden deshacer los mensajes, las firmas ni los registros de la bitácora: esos quedan como evidencia.</div>';}
+function alSet(k){var iso=bagDay(),L=mbItems(k),mats=[],nm=k==='agusta'?'Agusta':'Rafaella',miss=S.alMiss||[],names=[],fn=[];S.alMiss=null;
+  L.forEach(function(x){var key=x.id.slice(2),isM=miss.indexOf(x.id)>=0;
+    if(isM){if(x.id.charAt(0)==='b')delete S.bag[key];else delete S.pk[key];fn.push(x.t);return;}
+    names.push(x.t);if(x.id.charAt(0)==='b')S.bag[key]=true;else S.pk[key]=true;
     if(x.mi!==undefined&&S.mats[x.mi]&&S.mats[x.mi].st<2){mats.push([x.mi,S.mats[x.mi].st]);S.mats[x.mi].st=2;}});
-  S.alist=S.alist||{};S.alist[iso+'|'+k]={by:whoMe(),hm:nowHM(),items:names,mats:mats};
-  logA(whoMe(),'Mochila','Mochila de '+nm+' alistada para el '+fdate(iso)+': '+names.join(', '));}
+  S.alist=S.alist||{};S.alist[iso+'|'+k]={by:whoMe(),hm:nowHM(),items:names,falta:fn,faltaIds:miss.slice(),mats:mats};
+  logA(whoMe(),'Mochila','Mochila de '+nm+' alistada para el '+fdate(iso)+': '+names.join(', ')+(fn.length?' · FALTÓ: '+fn.join(', '):''));}
 function alUndo(k){var iso=bagDay(),a=(S.alist||{})[iso+'|'+k];if(!a)return;
   (a.mats||[]).forEach(function(q){if(S.mats[q[0]])S.mats[q[0]].st=q[1];});
   mbItems(k).forEach(function(x){var key=x.id.slice(2);if(x.id.charAt(0)==='b')delete S.bag[key];else delete S.pk[key];});
-  delete S.alist[iso+'|'+k];}
-function alPhoto(k,label,cls,txt){var pk='moc:'+bagDay()+'|'+k;return '<label class="'+cls+'">'+ic('camera',18)+txt+'<input type="file" accept="image/*" capture="environment" data-photo="'+pk+'" data-label="'+label+'" style="display:none"></label>';}
+  delete S.alist[iso+'|'+k];logA(whoMe(),'Mochila','Se reabrió la mochila de '+(k==='agusta'?'Agusta':'Rafaella')+' del '+fdate(iso));}
+function alFix(k){var iso=bagDay(),a=(S.alist||{})[iso+'|'+k];if(!a||!(a.faltaIds||[]).length)return;var L=mbItems(k),done=[];
+  L.forEach(function(x){if(a.faltaIds.indexOf(x.id)<0)return;var key=x.id.slice(2);if(x.id.charAt(0)==='b')S.bag[key]=true;else S.pk[key]=true;done.push(x.t);
+    if(x.mi!==undefined&&S.mats[x.mi]&&S.mats[x.mi].st<2){a.mats.push([x.mi,S.mats[x.mi].st]);S.mats[x.mi].st=2;}});
+  a.items=a.items.concat(done);a.falta=[];a.faltaIds=[];logA(whoMe(),'Mochila','Ya se llevó lo que faltaba en la mochila de '+(k==='agusta'?'Agusta':'Rafaella')+': '+done.join(', '));}
+function alDone(k){var a=alOf(k);return !!a&&!(a.faltaIds&&a.faltaIds.length);}
+function alAsk(k){var nm=k==='agusta'?'Agusta':'Rafaella',L=mbItems(k);S.cf={a:'alset',v:k,t:'¿Está todo en la mochila?',q:'Revisa la mochila de '+nm+'. Desmarca lo que faltó: quedará anotado y podrás completarlo después.',ok:'Alistar sin foto',items:L.map(function(x){return {id:x.id,t:x.t,ok:true};}),photo:{k:'moc:'+bagDay()+'|'+k,label:'Mochila de '+nm+' alistada'}};render();}
 function alBlock(k,full){var iso=bagDay(),a=(S.alist||{})[iso+'|'+k],pk='moc:'+iso+'|'+k,nm=k==='agusta'?'Agusta':'Rafaella',lab='Mochila de '+nm+' alistada',ph=S.photos.filter(function(x){return x.k===pk;}).slice(-1)[0];
-  if(a)return '<div class="mbal ok"><b>'+ic('check',16)+' Alistada · '+a.by+' · '+a.hm+'</b><span>Llevó: '+a.items.join(' · ')+'</span>'+
-    '<div class="mbalb">'+(ph?'<img class="mbph" src="'+ph.url+'" alt="Foto de respaldo">':'<span class="mbph none">'+ic('camera',20)+'</span>')+'<div class="mbalc">'+alPhoto(k,lab,'btn sec mbcam',ph?'Cambiar foto':'Agregar foto')+'<button class="mbundo" data-a="alundo" data-v="'+k+'">Deshacer</button></div></div></div>';
-  return '<div class="mbal"><b>'+(full?'¿'+nm+' lista para salir?':'Alistar mochila')+'</b>'+(full?'<span>Una foto de respaldo y listo: queda registrado quién la preparó y a qué hora.</span>':'')+
-    '<div class="mbalc">'+alPhoto(k,lab,'btn mbcam mbgo',full?'Alistar con foto':'Alistar con foto')+'<button class="btn sec mbcam" data-a="alset" data-v="'+k+'">Alistar sin foto</button></div></div>';}
+  if(a){var f=(a.faltaIds||[]).length;
+    return '<div class="mbal '+(f?'warn':'ok')+'"><b>'+ic(f?'alert':'check',16)+(f?' Alistada con faltantes':' Alistada')+' · '+a.by+' · '+a.hm+'</b>'+
+    (f?'<span class="mbfalta"><b>Faltó:</b> '+a.falta.join(', ')+'</span>':'')+(a.items.length?'<span>Llevó: '+a.items.join(' · ')+'</span>':'')+
+    '<div class="mbalb">'+(ph?'<img class="mbph" src="'+ph.url+'" alt="Foto de respaldo">':'<span class="mbph none">'+ic('camera',20)+'</span>')+'<div class="mbalc">'+
+    (f?'<button class="btn mbcam" data-a="alfix" data-v="'+k+'">'+ic('check',16)+'Ya se llevó lo que faltó</button>':alPhoto(k,lab,'btn sec mbcam',ph?'Cambiar foto':'Agregar foto'))+
+    '<div class="mbalr"><button class="mbundo" data-a="alask" data-v="'+k+'" data-re="1">Corregir</button><button class="mbundo" data-a="alundo" data-v="'+k+'">Deshacer</button></div></div></div></div>';}
+  return '<div class="mbal"><b>'+(full?'¿'+nm+' lista para salir?':'Alistar mochila')+'</b>'+(full?'<span>Revisa lo que lleva, saca una foto de respaldo si quieres y queda registrado quién la preparó y a qué hora.</span>':'')+
+    '<button class="btn mbcam mbgo" data-a="alask" data-v="'+k+'">'+ic('backpack',18)+'Alistar mochila</button></div>';}
+function alPhoto(k,label,cls,txt){var pk='moc:'+bagDay()+'|'+k;return '<label class="'+cls+'">'+ic('camera',18)+txt+'<input type="file" accept="image/*" capture="environment" data-photo="'+pk+'" data-label="'+label+'" style="display:none"></label>';}
 function mbAll(k){var L=mbItems(k);return L.length>0&&L.every(function(x){return x.on;});}
 function mbFace(cx,cy,sc){return '<g transform="translate('+cx+' '+cy+') scale('+sc+')"><ellipse class="mbblush" cx="-44" cy="12" rx="11" ry="7"/><ellipse class="mbblush" cx="44" cy="12" rx="11" ry="7"/><ellipse class="mbeye" cx="-24" cy="0" rx="6" ry="7"/><ellipse class="mbeye" cx="24" cy="0" rx="6" ry="7"/><path class="mbeyeh" d="M-32 3q8-12 16 0M16 3q8-12 16 0"/><path class="mbsmile" d="M-14 16q14 16 28 0"/><path class="mbsmileh" d="M-15 15q15 22 30 0z"/></g>';}
 function mbStar(x,y,sc){return '<path transform="translate('+x+' '+y+') scale('+sc+')" d="M0 -9 L2.6 -3.2 L8.6 -2.8 L4 1.2 L5.3 7.3 L0 4.2 L-5.3 7.3 L-4 1.2 L-8.6 -2.8 L-2.6 -3.2 Z" fill="#FFD25E" stroke="#D9A02A" stroke-width="1.2" stroke-linejoin="round"/>';}
@@ -1364,7 +1445,7 @@ function hoy(){
   var mp=S.mats.filter(function(m){return m.st===0;}).length;if(mp)P.push(['school',mp+' material(es) pedido(s) pendiente(s)','moc']);
   var pend='<section><h2>Por hacer'+(P.length?' <span class="pcount">'+P.length+'</span>':'')+'</h2>'+(P.length?'<div class="card" style="padding:0 16px">'+P.map(function(q,k){return '<button data-a="tab" data-v="'+q[2]+'" class="row" style="width:100%;background:none;border:none;'+(k?'border-top:1px solid var(--sep);':'')+'font:inherit;color:inherit;text-align:left;align-items:center;min-height:56px"><span style="color:var(--p)">'+ic(q[0],20)+'</span><span style="flex:1;font-size:14px">'+q[1]+'</span><span style="color:var(--mut)">'+ic('chev',16)+'</span></button>';}).join('')+'</div>':'<div class="card" style="display:flex;align-items:center;gap:10px;color:var(--p)">'+ic('check',20)+'<b style="font-size:14px">Todo al día</b></div>')+'</section>';
   var QA=qkGet().map(function(k){return QAO.filter(function(o){return o[0]===k;})[0];}).filter(Boolean);
-  var qbadge=function(k){if(k==='tarea'){var n=tarPendMine();return n?'<i class="qbd">'+n+'</i>':'';}if(k==='moc'){var al=['agusta','rafaella'].filter(function(q){return alOf(q);}).length;return al===2?'<i class="qbd ok">✓</i>':'<i class="qbd dot"></i>';}return '';};
+  var qbadge=function(k){if(k==='tarea'){var n=tarPendMine();return n?'<i class="qbd">'+n+'</i>':'';}if(k==='moc'){var al=['agusta','rafaella'].filter(function(q){return alDone(q);}).length;return al===2?'<i class="qbd ok">✓</i>':'<i class="qbd dot"></i>';}return '';};
   var quick='<div class="qa" style="--n:'+QA.length+'">'+QA.map(function(a){var inner='<span class="ti">'+ic(a[1],24)+'</span><span class="ql">'+(a[0]==='call'&&S.call?'Llamada hecha':a[2])+'</span>'+qbadge(a[0]),st=' style="--qc:'+a[4]+';--qi:'+(a[5]||'#fff')+'"';
     if(a[0]==='photo')return '<label class="qb"'+st+'>'+inner+'<input type="file" accept="image/*" capture="environment" data-photo="act:Foto" data-label="Foto" style="display:none"></label>';
     if(a[0]==='call')return '<button class="qb"'+st+' data-a="call">'+inner+'</button>';
@@ -1403,6 +1484,7 @@ function mas(){var SB=masSub();
   setRow('image','Perfiles y fotos','4 perfiles','tab','per')+
   setRow('bell','Avisos y recordatorios',avisosList().length?avisosList().length+' activos':'Al día','tab','avi')+
   setRow('spark','Acciones rápidas',qkGet().length+' activas','qkopen')+
+  setRow('swap','Cambios recientes',(uLoad(),UNDO.length)+' para deshacer','tab','hist')+
   setRow('sun','Apariencia',({auto:'Automática',light:'Clara',dark:'Oscura'})[S.theme]||'Automática','themecyc')+
   (isStandalone()?'':setRow('up','Instalar la app','Disponible','inst')+(S.instHelp?'<div style="padding:0 16px 14px;font-size:13px;color:var(--ink2)">'+instHelpTxt()+'</div>':''))+
   '<div class="row" style="align-items:center"><span style="font-size:14px;font-weight:600">Modo demo: ver como</span>'+vistaSel()+'</div></div></section>';
@@ -1590,7 +1672,7 @@ function genPDF(){
   try{doc.save(name);}catch(e){}
   toast('Informe PDF generado');
 }
-var T={tar:['Entre papá y mamá','Tareas',tareas],ana:['Resumen y equilibrio','Análisis',analisis],hoy:[function(){return longToday();},function(){return 'Hola, '+S.vista;},hoy],cal:['Régimen de relación directa y regular','Calendario',cal],rut:['Cuidado y contacto','Rutinas',rut],fic:['Información compartida','Fichas',fic],gas:['Pensión, aportes y comprobantes','Gastos',gas],tra:['Horario laboral y equilibrio','Trabajo',trabajo],mas:['Todo lo demás','Más',mas],moc:['Útiles, colaciones y despensa','Mochila',mochila],res:['Según filtro de fechas','Resumen',resumen],bit:['Acuerdos, cambios e incidencias','Bitácora',bitacora],sal:['Información compartida de salud','Salud',salud],avi:['Notificaciones','Avisos',avisos],alb:['Registro fotográfico','Álbum',album],acu:['Transacción revisada','El acuerdo',acuerdo],per:['Avatares en el calendario','Perfiles y fotos',perfiles],act:['Qué hizo cada uno','Actividades',actividades],chat:['Solo entre papá y mamá','Mensajes',chat],eq:['Mes a mes','Equilibrio',equilibrio],ask:['Pregunta a Nido','Asistente',asistente],dia:['Lo que pasa en cada casa','Diario',diario],esc:['Calendario escolar','Colegio y feriados',escolar],vac:['Verano e invierno','Vacaciones',vacaciones],inf:['Juzgado de Familia','Informe',informe]};
+var T={hist:['Lo que hiciste','Cambios recientes',historial],tar:['Entre papá y mamá','Tareas',tareas],ana:['Resumen y equilibrio','Análisis',analisis],hoy:[function(){return longToday();},function(){return 'Hola, '+S.vista;},hoy],cal:['Régimen de relación directa y regular','Calendario',cal],rut:['Cuidado y contacto','Rutinas',rut],fic:['Información compartida','Fichas',fic],gas:['Pensión, aportes y comprobantes','Gastos',gas],tra:['Horario laboral y equilibrio','Trabajo',trabajo],mas:['Todo lo demás','Más',mas],moc:['Útiles, colaciones y despensa','Mochila',mochila],res:['Según filtro de fechas','Resumen',resumen],bit:['Acuerdos, cambios e incidencias','Bitácora',bitacora],sal:['Información compartida de salud','Salud',salud],avi:['Notificaciones','Avisos',avisos],alb:['Registro fotográfico','Álbum',album],acu:['Transacción revisada','El acuerdo',acuerdo],per:['Avatares en el calendario','Perfiles y fotos',perfiles],act:['Qué hizo cada uno','Actividades',actividades],chat:['Solo entre papá y mamá','Mensajes',chat],eq:['Mes a mes','Equilibrio',equilibrio],ask:['Pregunta a Nido','Asistente',asistente],dia:['Lo que pasa en cada casa','Diario',diario],esc:['Calendario escolar','Colegio y feriados',escolar],vac:['Verano e invierno','Vacaciones',vacaciones],inf:['Juzgado de Familia','Informe',informe]};
 function render(){
   var ab=isAb(),t=ab?['Red de apoyo',function(){return 'Hola, '+S.vista.replace('Abuela','abuela');},abuelaView]:T[S.tab],y=window.scrollY;
   var nb=pendingMine()+(S.pension?0:1)+(S.pantry.filter(function(x){return x.st>0;}).length?1:0);
@@ -1613,6 +1695,7 @@ function render(){
   if(S.nsSheet)h+=nsSheet();
   if(S.tarSheet)h+=tarSheet();
   if(S.qkSheet)h+=qkSheet();
+  if(S.cf)h+=cfSheet();
   if(S.tone)h+=toneSheet();
   if(S.toast)h+='<div class="toast">'+S.toast+'</div>';
   document.getElementById('app').innerHTML=h;
@@ -1737,8 +1820,14 @@ document.addEventListener('click',function(e){
   else if(a==='qkclose2'){S.qkSheet=false;render();}
   else if(a==='qkt'){var cq=qkGet(),ix=cq.indexOf(v);if(ix>=0){if(cq.length<=1){toast('Deja al menos una');return;}cq.splice(ix,1);}else{if(cq.length>=4){toast('Máximo 4: quita una primero');return;}cq.push(v);}qkSet(cq);render();}
   else if(a==='qkreset'){qkSet(['moc','chat','swap','gas']);render();}
+  else if(a==='alask'){if(b.dataset.re){var cur0=(S.alist||{})[bagDay()+'|'+v];if(cur0){alUndo(v);}}alAsk(v);}
   else if(a==='alset'){alSet(v);toast('Mochila alistada y registrada');}
-  else if(a==='alundo'){alUndo(v);toast('Alistado deshecho');}
+  else if(a==='alfix'){alFix(v);toast('Listo: ya se llevó lo que faltaba');}
+  else if(a==='alundo'){alUndo(v);toast('Mochila reabierta');}
+  else if(a==='cfitem'){if(S.cf&&S.cf.items&&S.cf.items[+v]){S.cf.items[+v].ok=!S.cf.items[+v].ok;render();}}
+  else if(a==='cfno'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.cf=null;render();}
+  else if(a==='cfyes'){var c0=S.cf;if(!c0)return;S.cf=null;if(c0.items)S.alMiss=c0.items.filter(function(x){return !x.ok;}).map(function(x){return x.id;});render();fireAction(c0.a,c0.v);}
+  else if(a==='uundo'){uUndo(v);}
   else if(a==='mbtog'){S.mbOpen=!S.mbOpen;render();mbSquish();}
   else if(a==='mbpack'){var mk=S.mkid,mwas=mbAll(mk),mic=b.querySelector('.mbic'),mr=mic&&mic.getBoundingClientRect(),mh=mic&&mic.innerHTML,mon;
     if(v.charAt(0)==='b'){mon=!S.bag[v.slice(2)];S.bag[v.slice(2)]=mon;}else{mon=!S.pk[v.slice(2)];S.pk[v.slice(2)]=mon;}
@@ -1791,7 +1880,7 @@ document.addEventListener('change',function(e){var D=e.target.dataset||{};
   if(D.photo&&S.fab)S.fab=false;
   if(D.photo||D.nbfile||D.bfile){var fs=[].slice.call(e.target.files||[]);if(!fs.length)return;var left=fs.length,cnt=0;
     fs.forEach(function(f){var isImg=/^image\//.test(f.type);
-      var done=function(url,w,h){var ph=null;if(url&&D.photo&&D.photo.indexOf('moc:')===0){S.photos=S.photos.filter(function(x){return x.k!==D.photo;});}if(url){ph={id:'ph'+(++S.phid),k:D.photo||'bit',url:url,w:w,h:h,label:D.photo?(D.label||'Foto'):'Bitácora · '+f.name,at:stamp(),iso:todayIso(),hm:nowHM(),who:whoMe()};S.photos.push(ph);cnt++;if(D.photo&&D.photo.indexOf('moc:')===0){var mkk=D.photo.split('|')[1];if(mkk&&!(S.alist||{})[bagDay()+'|'+mkk])alSet(mkk);}}
+      var done=function(url,w,h){var ph=null;if(url&&D.photo&&D.photo.indexOf('moc:')===0){S.photos=S.photos.filter(function(x){return x.k!==D.photo;});}if(url){ph={id:'ph'+(++S.phid),k:D.photo||'bit',url:url,w:w,h:h,label:D.photo?(D.label||'Foto'):'Bitácora · '+f.name,at:stamp(),iso:todayIso(),hm:nowHM(),who:whoMe()};S.photos.push(ph);cnt++;if(D.photo&&D.photo.indexOf('moc:')===0){var mkk=D.photo.split('|')[1];if(mkk&&!(S.alist||{})[bagDay()+'|'+mkk]){if(S.cf&&S.cf.items)S.alMiss=S.cf.items.filter(function(x){return !x.ok;}).map(function(x){return x.id;});S.cf=null;setTimeout(function(){fireAction('alset',mkk);},0);}}}
         if(D.photo){if(ph){if(D.photo==='gas:nuevo')S.gf.ph.push(ph.id);else logA(whoMe(),D.photo.indexOf('act:')===0?D.photo.slice(4):(D.photo.indexOf('dia:')===0?'Diario':'Registro fotográfico'),D.photo.indexOf('act:')===0?(S.af2.t.trim()||'Foto de respaldo'):ph.label,[ph.id]);}}
         else if(D.nbfile){S.nb.files.push({n:f.name,url:url,pid:ph&&ph.id});}
         else{S.bit[+D.bfile].files.push({n:f.name,url:url,pid:ph&&ph.id});}
@@ -1848,7 +1937,7 @@ function fbInit(){var d=fbDefaults(),b=FB.db.batch(),base=fbBase();
   return b.commit();}
 
 function fbReadyCheck(){if(FB.ready)return;if(!FB.got.estado)return;FB.ready=true;hideLoading();render();setTimeout(function(){loadPdfLibs();},6000);}
-function softRender(){if(!FB.ready)return;var a=document.activeElement,typing=a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName);if(typing||S.sig!=null||S.nb||S.swf||S.edit||S.matSheet||S.nsSheet||S.tarSheet||S.qkSheet){FB.pend=true;return;}FB.pend=false;render();}
+function softRender(){if(!FB.ready)return;var a=document.activeElement,typing=a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName);if(typing||S.sig!=null||S.nb||S.swf||S.edit||S.matSheet||S.nsSheet||S.tarSheet||S.qkSheet||S.cf){FB.pend=true;return;}FB.pend=false;render();}
 document.addEventListener('focusout',function(){setTimeout(function(){if(FB.pend)softRender();},50);});
 
 function fbListen(){var base=fbBase();

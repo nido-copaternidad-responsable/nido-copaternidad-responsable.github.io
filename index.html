@@ -1344,6 +1344,8 @@ function ntDue(){var L=[],c=ntGet(),me2=whoMe();if(me2!=='Papá'&&me2!=='Mamá')
     else if(h.to===me2&&!cc.to)L.push({id:'rec-'+h.id,t:'Recepción sin confirmar',b:'No has registrado que recibiste a las niñas ('+h.prog+'). Confírmalo en Nido.',tab:'hoy'});});}
   if(c.firmas&&now>=540&&now<1260&&pendingMine()>0)L.push({id:'firmas',t:'Registros por firmar',b:'Tienes '+pendingMine()+' registro'+(pendingMine()>1?'s':'')+' por firmar en la Bitácora.',tab:'bit'});
   return L;}
+function ntBanner(){var off=false;try{off=!!localStorage.getItem('nido_nt_off');}catch(e){}if(off||ntPerm()!=='default')return '';
+  return '<div class="card" style="display:flex;align-items:center;gap:12px;margin:0 0 18px"><span style="width:40px;height:40px;border-radius:13px;background:var(--pt);color:var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic('bell',22)+'</span><span style="flex:1;font-size:14px"><b style="display:block">Activa los avisos</b><span class="lbl">Te recordamos la mochila y las entregas en el teléfono.</span></span><button class="btn" style="height:38px;font-size:13px" data-a="ntask">Activar</button><button data-a="ntoff" aria-label="Ocultar" style="background:none;border:none;color:var(--mut);font-size:20px;padding:4px 6px">×</button></div>';}
 function ntShow(n){var opt={body:n.b,icon:'icons/icon-192.png',badge:'icons/icon-192.png',tag:n.id,data:{tab:n.tab}};
   if('serviceWorker' in navigator&&navigator.serviceWorker.ready){navigator.serviceWorker.ready.then(function(r){r.showNotification(n.t,opt);}).catch(function(){try{new Notification(n.t,opt);}catch(e){}});}else{try{new Notification(n.t,opt);}catch(e){}}}
 function ntTick(){if(ntPerm()!=='granted'||!ntGet().on||typeof FB==='undefined'||!FB.ready)return;var sent=ntSent(),d=todayIso();ntDue().forEach(function(n){if(sent[n.id]===d)return;ntMark(n.id);ntShow(n);});}
@@ -1352,7 +1354,7 @@ function ntSheet(){var c=ntGet(),p=ntPerm(),on=p==='granted'&&c.on;
   var st=p==='unsupported'?'Este navegador no permite notificaciones. Instala Nido en la pantalla de inicio e inténtalo de nuevo.':(p==='denied'?'Las notificaciones están bloqueadas para Nido. Actívalas en los ajustes del teléfono (Ajustes → Apps → Nido → Notificaciones).':(p==='granted'?(c.on?'Activadas en este teléfono.':'Desactivadas.'):'Aún no están activadas en este teléfono.'));
   return '<div class="sheetbg" data-a="ntclose"><div class="sheet tall" role="dialog" aria-label="Notificaciones">'+sheetTop('Notificaciones')+
   '<div style="font-size:14px;color:var(--ink2)">'+st+'</div>'+
-  (p==='default'?'<button class="btn" style="height:50px" data-a="ntask">Activar avisos en este teléfono</button>':'')+
+  (p==='default'?'<button class="btn" style="height:50px" data-a="ntask">Activar avisos en este teléfono</button>':'')+(p==='denied'?'<div class="mthelp">1. Abre los ajustes del teléfono.<br>2. Entra a Aplicaciones → Nido → Notificaciones.<br>3. Actívalas y vuelve aquí.</div><button class="btn sec" data-a="ntre">Ya las activé, revisar de nuevo</button>':'')+
   (p==='granted'?'<div class="list">'+'<div class="row" style="align-items:center"><div class="grow"><b style="font-size:14px">Avisos activados</b></div><button class="sw'+(c.on?' on':'')+'" role="switch" aria-checked="'+c.on+'" data-a="ntt" data-v="on" aria-label="Avisos activados"></button></div>'+
    NT.map(function(x){return '<div class="row" style="align-items:center"><div class="grow"><b style="font-size:14px">'+x[1]+'</b><span class="lbl" style="font-size:12px">'+x[2]+'</span></div><button class="sw'+(c[x[0]]?' on':'')+'" role="switch" aria-checked="'+c[x[0]]+'" data-a="ntt" data-v="'+x[0]+'" aria-label="'+x[1]+'"></button></div>';}).join('')+'</div><button class="btn sec" data-a="nttest">Probar un aviso</button>':'')+
   '<div class="mthelp">Los avisos aparecen en la pantalla del teléfono mientras Nido está abierta o en segundo plano. Se activan solo en este dispositivo.</div>'+
@@ -1735,7 +1737,7 @@ function hoy(){
     if(a[0]==='call')return '<button class="qb"'+st+' data-a="call">'+inner+'</button>';
     return '<button class="qb"'+st+' data-a="fabgo" data-v="'+a[3]+'">'+inner+'</button>';}).join('')+'</div><div style="text-align:right;margin:-8px 0 14px"><button class="qkb" data-a="qkopen">'+ic('pen',14)+'Personalizar</button></div>';
   var tlw='<div class="tlsec"><button class="tlt" data-a="tlt" aria-expanded="'+(S.tlOpen?'true':'false')+'">'+ic('cal',20)+'<span>'+(S.tlOpen?'Ocultar':'Ver')+' la línea del día</span></button><div class="tlbody'+(S.tlOpen?' open':'')+'">'+tl+'</div></div>';
-  return '<div class="hgrid"><div class="hl">'+instBanner()+hero+nsNote()+quick+pend+'<section style="margin-top:-4px">'+tiempoCard(true)+'</section>'+llevarCard()+countdowns()+lastDiario()+'</div><div class="hr">'+tlw+'</div></div>';
+  return '<div class="hgrid"><div class="hl">'+instBanner()+ntBanner()+hero+nsNote()+quick+pend+'<section style="margin-top:-4px">'+tiempoCard(true)+'</section>'+llevarCard()+countdowns()+lastDiario()+'</div><div class="hr">'+tlw+'</div></div>';
 }
 function isStandalone(){return window.matchMedia&&matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;}
 function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
@@ -2214,6 +2216,8 @@ document.addEventListener('click',function(e){
   else if(a==='ntopen'){S.ntSheet=true;render();}
   else if(a==='ntclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.ntSheet=false;render();}
   else if(a==='ntask'){if(!('Notification' in window)){toast('Este navegador no permite notificaciones');return;}Notification.requestPermission().then(function(r){if(r==='granted'){var c=ntGet();c.on=true;ntSet(c);ntShow({id:'bienvenida',t:'Nido',b:'Listo: te avisaremos de lo importante.',tab:'hoy'});}render();});}
+  else if(a==='ntre'){render();}
+  else if(a==='ntoff'){try{localStorage.setItem('nido_nt_off','1');}catch(e){}render();}
   else if(a==='ntt'){var c2=ntGet();c2[v]=!c2[v];ntSet(c2);render();}
   else if(a==='nttest'){ntShow({id:'prueba-'+Date.now(),t:'Nido · aviso de prueba',b:'Así te llegarán los recordatorios.',tab:'hoy'});}
   else if(a==='palopen'){S.palSheet=true;render();}

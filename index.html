@@ -357,6 +357,11 @@ main.anim>*:nth-child(2){animation-delay:.03s}main.anim>*:nth-child(3){animation
 .mst3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--seg);padding:3px;border-radius:12px}
 .mst3 button{min-height:38px;border:none;border-radius:9px;background:none;font:inherit;font-size:12px;font-weight:700;color:var(--mut);cursor:pointer}
 .mst3 button.on.cm{background:var(--mt);color:var(--md)}.mst3 button.on.ca{background:var(--abt);color:var(--abd)}.mst3 button.on.cp{background:var(--pt);color:var(--pd)}
+.mbal{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.mbal b{font-size:15px;display:flex;align-items:center;gap:6px}.mbal>span{font-size:13px;color:var(--mut);line-height:1.4}
+.mbal.ok{background:var(--pt);border-color:var(--ptb)}.mbal.ok b{color:var(--pd)}
+.mbalb{display:flex;align-items:center;gap:10px}
+.llk .mbal{margin-top:8px;padding:10px 12px;border-radius:14px;box-shadow:none}
 @media (min-width:480px){.mbtiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
 /* Fichas por período, estados vacíos y ajustes */
 .pcs{display:flex;gap:10px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}.pcs::-webkit-scrollbar{display:none}
@@ -3137,7 +3142,7 @@ var qrcode = function() {
 </script>
 <script>
 var S={tab:'hoy',sel:0,child:'agusta',rut:'rutina',call:false,approved:false,em:false,emType:null,pension:false,vista:'Philip',toast:'',wk:'papa',mkid:'agusta',sem:{agusta:{0:['Libro de la biblioteca'],2:['Zapatillas para educación física'],4:['Cuento o juguete para compartir']},rafaella:{0:['Pañales y toallitas para la semana'],4:['Traer de vuelta la muda usada']}},semf:{dia:'0',txt:''},pk:{},
-bag:{},acc:{},tarP:'',tarHide:false,agP:'',tareas:[],tarf:{t:'',who:'Papá',iso:''},tarOther:false,tarFilter:'mias',nosch:[],nsf:{kids:'Ambas',iso:'',why:'Paro',care:'Por definir'},mfOther:false,nsOther:false,mf:{txt:'',kid:'agusta',fecha:'2026-10-02'},
+bag:{},alist:{},acc:{},tarP:'',tarHide:false,agP:'',tareas:[],tarf:{t:'',who:'Papá',iso:''},tarOther:false,tarFilter:'mias',nosch:[],nsf:{kids:'Ambas',iso:'',why:'Paro',care:'Por definir'},mfOther:false,nsOther:false,mf:{txt:'',kid:'agusta',fecha:'2026-10-02'},
 pantry:[{t:'Barras de cereal',k:'Ambas',st:0},{t:'Galletas',k:'Ambas',st:0},{t:'Yogurt',k:'Ambas',st:1},{t:'Leche',k:'Ambas',st:0},{t:'Pañales',k:'Rafaella',st:1},{t:'Toallitas húmedas',k:'Rafaella',st:2}],pf:'',
 mats:[{t:'[Material pedido por el colegio]',k:'Agusta',f:'2026-10-02',st:0},{t:'Pañales y toallitas húmedas',k:'Rafaella',f:'2026-10-05',st:1},{t:'Delantal marcado con nombre',k:'Agusta',f:'2026-10-07',st:2}],
 vuelta:[{t:'Polerón de Agusta',d:'En casa de papá',ok:false},{t:'Chaleco y muda de Rafaella',d:'En casa de papá',ok:false},{t:'Botella de agua',d:'En casa de mamá',ok:true}],
@@ -3564,14 +3569,17 @@ function llevarCard(){var i=nextSchoolIdx(),x=dayInfo(i),iso=isoOf(x.d),ti=idxOf
   var tot=0,ok=0,warn=0;
   var kidBlock=function(kid){var L=paraLlevar(i,kid),nm=kid==='agusta'?'Agusta':'Rafaella',lugar=kid==='agusta'?'Regina Mundi':'Jardín Esperanza',nsk=nsFor(iso,kid);
     if(nsk)return '<div class="llk"><div class="llh">'+kidAv(kid)+'<b>'+nm+'</b><span class="lbl" style="font-size:12px">'+lugar+'</span></div><div class="lls"><b>Sin clases</b> · '+nsk.why+(nsk.care==='Por definir'?' · cuidado por definir':' · la cuida '+nsk.care.toLowerCase())+'</div></div>';
+    var alr=(S.alist||{})[iso+'|'+kid];
+    if(alr)return '<div class="llk"><div class="llh">'+kidAv(kid)+'<b>'+nm+'</b><span class="lbl" style="font-size:12px">'+lugar+'</span></div>'+alBlock(kid,false)+'</div>';
     return '<div class="llk"><div class="llh">'+kidAv(kid)+'<b>'+nm+'</b><span class="lbl" style="font-size:12px">'+lugar+'</span></div>'+
     (L.length?L.map(function(it,n){var key=iso+kid+it.t,on=!!S.pk[key];tot++;if(on)ok++;if(it.warn&&!on)warn++;
-      return '<button class="llit'+(on?' on':'')+(it.warn?' w':'')+'" data-a="pk" data-v="'+key.replace(/"/g,'&quot;')+'" aria-pressed="'+on+'"><span class="box">'+ic('check',14,3)+'</span><span class="llx"><span class="lt1">'+it.t+'</span><span class="ls1">'+it.src+'</span></span></button>';}).join(''):'<div class="lls">Nada especial: solo lo de siempre.</div>')+
-    '<div class="lla"><b>Siempre:</b> '+siempre(kid)+'</div></div>';};
+      return '<button class="llit'+(on?' on':'')+(it.warn?' w':'')+'" data-a="pk" data-v="'+key.replace(/"/g,'&quot;')+'" aria-pressed="'+on+'"><span class="box">'+ic('check',14,3)+'</span><span class="llx"><span class="lt1">'+it.t+'</span><span class="ls1">'+it.src+'</span></span></button>'+(it.mi!==undefined?'<div class="mbact" style="margin:2px 0 8px 34px"><button class="mbok" data-a="mset" data-v="'+it.mi+'|2">'+ic('check',14)+'Ya lo llevó</button><button data-a="mset" data-v="'+it.mi+'|0">Pendiente</button></div>':'');}).join(''):'<div class="lls">Nada especial: solo lo de siempre.</div>')+
+    '<div class="lla"><b>Siempre:</b> '+siempre(kid)+'</div>'+alBlock(kid,false)+'</div>';};
+  var alN=['agusta','rafaella'].filter(function(q){return (S.alist||{})[iso+'|'+q];}).length;
   var body=kidBlock('agusta')+kidBlock('rafaella');
   var prox=S.mats.filter(function(m){var j=idxOf(m.f);return m.st<2&&j>i&&j<=i+10;}).sort(function(a,b){return a.f<b.f?-1:1;});
   return '<section><h2>Para llevar · '+cuando.toLowerCase()+' '+fdate(iso)+'</h2><div class="card llc">'+
-    '<div class="llt"><div><div class="cap">'+cuando+' llevan</div><div style="font-size:13px;color:var(--ink2);margin-top:2px">'+prepT+'</div></div>'+(tot?'<span class="pill '+(ok===tot?'pg':(warn?'pr':'pa'))+'">'+(ok===tot?'Todo listo':(warn?warn+' por comprar':ok+' de '+tot+' listo'))+'</span>':'<span class="pill pg">Lo de siempre</span>')+'</div>'+body+
+    '<div class="llt"><div><div class="cap">'+cuando+' llevan</div><div style="font-size:13px;color:var(--ink2);margin-top:2px">'+prepT+'</div></div>'+(alN===2?'<span class="pill pg">Alistadas ✓</span>':tot?'<span class="pill '+(ok===tot?'pg':(warn?'pr':'pa'))+'">'+(ok===tot?'Todo listo':(warn?warn+' por comprar':ok+' de '+tot+' listo'))+'</span>':'<span class="pill pg">Lo de siempre</span>')+'</div>'+body+
     (prox.length?'<div class="llp"><div class="cap" style="margin-bottom:6px">Se viene</div>'+prox.map(function(m){return '<div class="llpr"><span class="dt" style="background:'+(m.st===0?'var(--x)':'var(--kc)')+'"></span><span class="grow">'+m.t+' <span class="lbl">· '+m.k+'</span></span><b>'+fdate(m.f)+'</b></div>';}).join('')+'</div>':'')+
     '<button class="btn sec" style="width:100%;margin-top:12px" data-a="gomoc">Ver mochila y agregar material</button></div></section>';}
 function semEditor(){var k=S.mkid,nm=k==='agusta'?'Agusta':'Rafaella';
@@ -3580,10 +3588,25 @@ function semEditor(){var k=S.mkid,nm=k==='agusta'?'Agusta':'Rafaella';
 
 var MBK={agusta:['#E8688A','#C24A70','#F6A6BB'],rafaella:['#4F8FD6','#3A72B3','#9CC3EE']};
 function mbIcon(t){t=String(t).toLowerCase();return /pañal|toallita/.test(t)?'diaper':/bandeja/.test(t)?'tray':/chaleco|parka/.test(t)?'jacket':/ropa|muda|buzo|polera|poler/.test(t)?'shirt':/libro|libreta|agenda|cuento/.test(t)?'book':/colaci|fruta|manzana|galleta/.test(t)?'apple':/leche/.test(t)?'bottle':/agua|botella/.test(t)?'drop':/material|cartulina|témpera|disfraz/.test(t)?'clip':'star';}
-function mbItems(k){var out=BAG[k].map(function(it){return {id:'b|'+k+it[0],on:!!S.bag[k+it[0]],t:it[1],s:it[2]||'',i:mbIcon(it[1])};});
+function bagDay(){return isoOf(dayInfo(nextSchoolIdx()).d);}
+function alOf(k){return (S.alist||{})[bagDay()+'|'+k];}
+function mbItems(k){var bd=bagDay(),out=BAG[k].map(function(it){return {id:'b|'+bd+k+it[0],on:!!S.bag[bd+k+it[0]],t:it[1],s:it[2]||'',i:mbIcon(it[1])};});
   var ni=nextSchoolIdx(),iso=isoOf(dayInfo(ni).d);
   paraLlevar(ni,k).forEach(function(x){var key=iso+k+x.t;out.push({mi:x.mi,id:'p|'+key,on:!!S.pk[key],t:x.t,s:x.src,i:mbIcon(x.t),tag:x.warn?'Falta comprar':'Extra de hoy',star:!x.warn});});
   return out;}
+
+function alSet(k){var iso=bagDay(),L=mbItems(k),mats=[],nm=k==='agusta'?'Agusta':'Rafaella',names=L.map(function(x){return x.t;});
+  L.forEach(function(x){var key=x.id.slice(2);if(x.id.charAt(0)==='b')S.bag[key]=true;else S.pk[key]=true;
+    if(x.mi!==undefined&&S.mats[x.mi]&&S.mats[x.mi].st<2){mats.push([x.mi,S.mats[x.mi].st]);S.mats[x.mi].st=2;}});
+  S.alist=S.alist||{};S.alist[iso+'|'+k]={by:whoMe(),hm:nowHM(),items:names,mats:mats};
+  logA(whoMe(),'Mochila','Mochila de '+nm+' alistada para el '+fdate(iso)+': '+names.join(', '));}
+function alUndo(k){var iso=bagDay(),a=(S.alist||{})[iso+'|'+k];if(!a)return;
+  (a.mats||[]).forEach(function(q){if(S.mats[q[0]])S.mats[q[0]].st=q[1];});
+  mbItems(k).forEach(function(x){var key=x.id.slice(2);if(x.id.charAt(0)==='b')delete S.bag[key];else delete S.pk[key];});
+  delete S.alist[iso+'|'+k];}
+function alBlock(k,full){var iso=bagDay(),a=(S.alist||{})[iso+'|'+k],pk='moc:'+iso+'|'+k,nm=k==='agusta'?'Agusta':'Rafaella';
+  if(a)return '<div class="mbal ok"><b>'+ic('check',16)+' Alistada · '+a.by+' · '+a.hm+'</b><span>Llevó: '+a.items.join(' · ')+'</span>'+thumbs(pk)+'<div class="mbalb">'+camBtn(pk,'Mochila de '+nm+' alistada')+'<span class="lbl" style="flex:1;font-size:12px;text-transform:none;letter-spacing:0;font-weight:500">Foto de respaldo</span><button class="btn sec" style="height:40px;padding:0 14px" data-a="alundo" data-v="'+k+'">Deshacer</button></div></div>';
+  return '<div class="mbal"><b>'+(full?'¿'+nm+' lista para salir?':'Alistar mochila')+'</b>'+(full?'<span>Al marcarla queda registrado quién la preparó y cuándo. Lo que ya se usó y no es de todos los días sale de la lista. La foto es opcional y sirve de respaldo.</span>':'')+thumbs(pk)+'<div class="mbalb">'+camBtn(pk,'Mochila de '+nm+' alistada')+'<button class="btn" style="flex:1;height:42px" data-a="alset" data-v="'+k+'">Marcar alistada</button></div></div>';}
 function mbAll(k){var L=mbItems(k);return L.length>0&&L.every(function(x){return x.on;});}
 function mbFace(cx,cy,sc){return '<g transform="translate('+cx+' '+cy+') scale('+sc+')"><ellipse class="mbblush" cx="-44" cy="12" rx="11" ry="7"/><ellipse class="mbblush" cx="44" cy="12" rx="11" ry="7"/><ellipse class="mbeye" cx="-24" cy="0" rx="6" ry="7"/><ellipse class="mbeye" cx="24" cy="0" rx="6" ry="7"/><path class="mbeyeh" d="M-32 3q8-12 16 0M16 3q8-12 16 0"/><path class="mbsmile" d="M-14 16q14 16 28 0"/><path class="mbsmileh" d="M-15 15q15 22 30 0z"/></g>';}
 function mbStar(x,y,sc){return '<path transform="translate('+x+' '+y+') scale('+sc+')" d="M0 -9 L2.6 -3.2 L8.6 -2.8 L4 1.2 L5.3 7.3 L0 4.2 L-5.3 7.3 L-4 1.2 L-8.6 -2.8 L-2.6 -3.2 Z" fill="#FFD25E" stroke="#D9A02A" stroke-width="1.2" stroke-linejoin="round"/>';}
@@ -3612,7 +3635,7 @@ function mbStage(k,cuando,fecha,prep){var L=mbItems(k),d=L.filter(function(x){re
   return '<div class="mbs'+(open?' open':'')+(rd?' rdy':'')+'" style="--bag:'+c[0]+';--bag-d:'+c[1]+';--bag-l:'+c[2]+';--rise:'+Math.max(0,34-d*5)+'px"><div class="mbcap"><span>'+cuando+' · '+fecha+'</span></div><span class="mbcount">'+d+' de '+L.length+'</span>'+
   '<button class="mbbag" data-a="mbtog" aria-expanded="'+open+'" aria-label="'+(open?'Cerrar':'Abrir')+' la mochila de '+nm+'">'+mbSVG(nm)+'</button>'+
   '<div class="mbhint">'+(rd?'<span class="mbready">¡Mochila lista!</span>':(open?'Toca cada cosa para guardarla en la mochila.':'Toca la mochila para abrirla.'))+'</div><div class="mbprep">'+prep+'</div></div>'+
-  (open?'<div class="mbtiles">'+L.map(mbTile).join('')+'</div>':'');}
+  (open?'<div class="mbtiles">'+L.map(mbTile).join('')+'</div>':'')+alBlock(k,true);}
 function mbSquish(){var e=document.querySelector('.mbs');if(!e)return;e.classList.remove('sq');void e.offsetWidth;e.classList.add('sq');setTimeout(function(){e.classList.remove('sq');},400);}
 function mbFly(r0,html){if(!r0||!document.body.animate||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))return;var m=document.getElementById('mbmouth'),b=m?m.getBoundingClientRect():null;if(!b)return;
   var el=document.createElement('div');el.className='mbfly';el.innerHTML=html;el.style.left=r0.left+'px';el.style.top=r0.top+'px';document.body.appendChild(el);
@@ -4374,6 +4397,8 @@ document.addEventListener('click',function(e){
   else if(a==='qkclose2'){S.qkSheet=false;render();}
   else if(a==='qkt'){var cq=qkGet(),ix=cq.indexOf(v);if(ix>=0){if(cq.length<=1){toast('Deja al menos una');return;}cq.splice(ix,1);}else{if(cq.length>=4){toast('Máximo 4: quita una primero');return;}cq.push(v);}qkSet(cq);render();}
   else if(a==='qkreset'){qkSet(['chat','swap','photo','gas']);render();}
+  else if(a==='alset'){alSet(v);toast('Mochila alistada y registrada');}
+  else if(a==='alundo'){alUndo(v);toast('Alistado deshecho');}
   else if(a==='mbtog'){S.mbOpen=!S.mbOpen;render();mbSquish();}
   else if(a==='mbpack'){var mk=S.mkid,mwas=mbAll(mk),mic=b.querySelector('.mbic'),mr=mic&&mic.getBoundingClientRect(),mh=mic&&mic.innerHTML,mon;
     if(v.charAt(0)==='b'){mon=!S.bag[v.slice(2)];S.bag[v.slice(2)]=mon;}else{mon=!S.pk[v.slice(2)];S.pk[v.slice(2)]=mon;}
@@ -4440,7 +4465,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.dat
 var NIDO_CFG={apiKey:"AIzaSyCTDL8onvTFFwsYgmNv7enRetNDOZP2Y24",authDomain:"nido-copartenidad-responsable.firebaseapp.com",projectId:"nido-copartenidad-responsable",storageBucket:"nido-copartenidad-responsable.firebasestorage.app",messagingSenderId:"581401693086",appId:"1:581401693086:web:c4a6eb1991457f69c3e48f"};
 var NIDO_USERS={"philip.fuentes93@gmail.com": "Philip", "javi.balma24@gmail.com": "Javiera"};
 var FAM='familias/nido';
-var SYNC_KEYS=['tareas','nosch','pension','approved','call','sem','pk','bag','pantry','mats','vuelta','work','actaSeq','diario','sch','vacs','hcl','hc','swaps','ov','msgs','gastos','meds','aten','av','checks','qa','phid','lid','avt'];
+var SYNC_KEYS=['alist','tareas','nosch','pension','approved','call','sem','pk','bag','pantry','mats','vuelta','work','actaSeq','diario','sch','vacs','hcl','hc','swaps','ov','msgs','gastos','meds','aten','av','checks','qa','phid','lid','avt'];
 var COLLS={log:'registro',bit:'bitacora',photos:'fotos'};
 var FB={db:null,ready:false,sent:{},seen:{log:{},bit:{},photos:{}},got:{},timer:null,pend:false};
 function fbBase(){return FB.db.doc(FAM);}

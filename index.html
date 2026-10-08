@@ -735,6 +735,11 @@ function hoy(){
   '<section><h2>Próximos compromisos</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="card"><div class="lbl" style="font-weight:600">Pensión de alimentos</div><div style="font-size:17px;font-weight:700">Vence 5 oct</div><div style="font-size:13px;color:var(--m);font-weight:600">'+(S.pension?'Pagada ✓':'Pendiente')+'</div></div><div class="card"><div class="lbl" style="font-weight:600">Fin de semana</div><div style="font-size:17px;font-weight:700">2–4 oct</div><div style="font-size:13px;color:var(--p);font-weight:600">Con papá</div></div></div>'+(function(){var n=S.pantry.filter(function(x){return x.st>0;}).length;return n?'<button data-a="gopantry" class="alert a" style="width:100%;margin-top:10px;text-align:left;font:inherit;color:inherit"><span style="color:var(--yd);flex-shrink:0">'+ic('backpack',20)+'</span><span><b style="font-size:14px;display:block">Colaciones: '+n+' por comprar</b><span style="font-size:13px;color:var(--ink2)">'+S.pantry.filter(function(x){return x.st>0;}).map(function(x){return x.t;}).join(', ')+' →</span></span></button>':'';})()+'</section>';
 }
 function ckK(w){return w==='Papá'?'p':(w==='Mamá'?'m':(w==='Colegio'?'c':'a'));}
+function tlSpan(i,b){var a=b[0],e=b[1],w=b[2],pre='',post='';
+  if(e>=1439&&b[1]-b[0]<1439){var nb=dayBlocks(i+1),j=0,en=0;while(j<nb.length&&nb[j][2]===w){en=nb[j][1];j++;}if(j)post=' de mañana';if(j)e=en;else e=1440;}
+  if(a===0&&b[1]-b[0]<1439){var pb=dayBlocks(i-1),l=pb[pb.length-1];if(l&&l[2]===w&&l[1]>=1439){a=l[0];pre=' de ayer';}}
+  if(b[1]-b[0]>=1439)return 'todo el día';
+  return h12(a)+pre+' a '+(e>=1439&&!post?'12 a.m.':h12(e))+post;}
 function clockSVG(i){var B=dayBlocks(i).filter(function(b){return b[1]-b[0]>=4;}),cx=160,cy=160,R=128,isT=i===idxOf(todayIso()),nm=tm(nowHM());
   var P=function(r,a){var t=(a/1440)*2*Math.PI+Math.PI/2;return [cx+r*Math.cos(t),cy+r*Math.sin(t)];};
   var arc=function(r,a0,a1){var s=P(r,a0),e=P(r,a1);return 'M'+s[0].toFixed(1)+' '+s[1].toFixed(1)+'A'+r+' '+r+' 0 '+((a1-a0)>720?1:0)+' 1 '+e[0].toFixed(1)+' '+e[1].toFixed(1);};
@@ -744,7 +749,7 @@ function clockSVG(i){var B=dayBlocks(i).filter(function(b){return b[1]-b[0]>=4;}
   o+='<circle cx="'+cx+'" cy="'+cy+'" r="170" style="fill:var(--card);stroke:var(--kring)" stroke-width="6"/><circle cx="'+cx+'" cy="'+cy+'" r="163" fill="none" style="stroke:var(--sep)" stroke-width="1.5"/>';
   for(var hh=0;hh<48;hh++){if(hh%4)continue;var mj=true,big=hh%12===0,a1=P(mj?(big?132:134):135,hh*30),a2=P(141,hh*30);o+='<line x1="'+a1[0].toFixed(1)+'" y1="'+a1[1].toFixed(1)+'" x2="'+a2[0].toFixed(1)+'" y2="'+a2[1].toFixed(1)+'" style="stroke:'+(big?'var(--ink2)':'var(--mut)')+'" stroke-width="'+(big?3:(mj?2:1))+'" stroke-linecap="round" opacity="'+(mj?1:.5)+'"/>';}
   for(var hn=0;hn<24;hn+=3){var q6=hn%6===0,tp=P(153,hn*60);o+='<text x="'+tp[0].toFixed(1)+'" y="'+(tp[1]+(q6?5:4)).toFixed(1)+'" text-anchor="middle" font-size="'+(q6?14:10.5)+'" font-weight="'+(q6?800:600)+'" style="fill:'+(q6?'var(--ink)':'var(--mut)')+'" font-family="DM Sans,sans-serif">'+(hn===0?'12 a.m.':hn===12?'12 p.m.':(hn%12||12))+'</text>';}
-  B.forEach(function(b){var k=ckK(b[2]),lab=(b[2]==='Colegio'?'En el colegio y jardín':'Con '+b[2].toLowerCase())+' · '+h12(b[0])+' a '+(b[1]>=1439?'12 a.m.':h12(b[1]));
+  B.forEach(function(b){var k=ckK(b[2]),lab=(b[2]==='Colegio'?'En el colegio y jardín':'Con '+b[2].toLowerCase())+' · '+tlSpan(i,b);
     o+='<g class="cslice" data-a="clk" data-v="'+lab+'"><path d="'+pie(R,b[0],b[1])+'" style="fill:var(--k'+k+'t);stroke:var(--card)" stroke-width="4" stroke-linejoin="round"/>'+
     (b[1]-b[0]>=1439?'<circle cx="'+cx+'" cy="'+cy+'" r="'+(R-6)+'" fill="none" style="stroke:var(--k'+k+')" stroke-width="8"/>':'<path d="'+arc(R-6,b[0]+4,Math.max(b[0]+5,b[1]-4))+'" fill="none" style="stroke:var(--k'+k+')" stroke-width="8" stroke-linecap="round"/>')+'</g>';});
   if(cur&&cur[1]-cur[0]<1439)o+='<path d="'+pie(R+4,cur[0],cur[1])+'" fill="none" style="stroke:var(--k'+ckK(cur[2])+')" stroke-width="3" stroke-linejoin="round" pointer-events="none"/>';

@@ -1,5 +1,5 @@
 /* Nido · service worker: abre al instante con la copia guardada y la actualiza en segundo plano */
-const V = 'nido-v3';
+const V = 'nido-v4';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -28,6 +28,10 @@ self.addEventListener('fetch', e => {
       }
       return res;
     }).catch(() => hit || caches.match('./index.html'));
+    if (r.mode === 'navigate' || /index\.html$|\/$/.test(u.pathname)) {
+      /* la página: primero la versión nueva (hasta 2,5 s); si no hay red, la guardada */
+      return Promise.race([red, new Promise(ok => setTimeout(() => ok(hit), 2500))]).then(x => x || hit || red);
+    }
     return hit || red;
   })());
 });

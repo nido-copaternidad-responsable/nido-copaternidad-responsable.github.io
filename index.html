@@ -735,31 +735,34 @@ function hoy(){
   '<section><h2>Próximos compromisos</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="card"><div class="lbl" style="font-weight:600">Pensión de alimentos</div><div style="font-size:17px;font-weight:700">Vence 5 oct</div><div style="font-size:13px;color:var(--m);font-weight:600">'+(S.pension?'Pagada ✓':'Pendiente')+'</div></div><div class="card"><div class="lbl" style="font-weight:600">Fin de semana</div><div style="font-size:17px;font-weight:700">2–4 oct</div><div style="font-size:13px;color:var(--p);font-weight:600">Con papá</div></div></div>'+(function(){var n=S.pantry.filter(function(x){return x.st>0;}).length;return n?'<button data-a="gopantry" class="alert a" style="width:100%;margin-top:10px;text-align:left;font:inherit;color:inherit"><span style="color:var(--yd);flex-shrink:0">'+ic('backpack',20)+'</span><span><b style="font-size:14px;display:block">Colaciones: '+n+' por comprar</b><span style="font-size:13px;color:var(--ink2)">'+S.pantry.filter(function(x){return x.st>0;}).map(function(x){return x.t;}).join(', ')+' →</span></span></button>':'';})()+'</section>';
 }
 function ckK(w){return w==='Papá'?'p':(w==='Mamá'?'m':(w==='Colegio'?'c':'a'));}
-function tlSpan(i,b){var a=b[0],e=b[1],w=b[2],pre='',post='';
-  if(e>=1439&&b[1]-b[0]<1439){var nb=dayBlocks(i+1),j=0,en=0;while(j<nb.length&&nb[j][2]===w){en=nb[j][1];j++;}if(j)post=' de mañana';if(j)e=en;else e=1440;}
-  if(a===0&&b[1]-b[0]<1439){var pb=dayBlocks(i-1),l=pb[pb.length-1];if(l&&l[2]===w&&l[1]>=1439){a=l[0];pre=' de ayer';}}
-  if(b[1]-b[0]>=1439)return 'todo el día';
-  return h12(a)+pre+' a '+(e>=1439&&!post?'12 a.m.':h12(e))+post;}
-function clockSVG(i){var B=dayBlocks(i).filter(function(b){return b[1]-b[0]>=4;}),cx=160,cy=160,R=128,isT=i===idxOf(todayIso()),nm=tm(nowHM());
-  var P=function(r,a){var t=(a/1440)*2*Math.PI+Math.PI/2;return [cx+r*Math.cos(t),cy+r*Math.sin(t)];};
+var CKO=360;
+function ckWin(i){var ti=idxOf(todayIso()),raw=tm(nowHM());if(i===ti&&raw<CKO)i=i-1;
+  var isT=(i===ti&&raw>=CKO)||(i===ti-1&&raw<CKO),L=[];
+  [[i-1,-1440],[i,0],[i+1,1440]].forEach(function(q){dayBlocks(q[0]).forEach(function(b){var n=[b[0]+q[1],b[1]+q[1],b[2]];var l=L[L.length-1];if(l&&l[2]===n[2]&&l[1]===n[0])l[1]=n[1];else L.push(n);});});
+  var B=[];L.forEach(function(b){var c0=Math.max(b[0],CKO),c1=Math.min(b[1],CKO+1440);if(c1-c0>=4)B.push([c0,c1,b[2],b[0],b[1]]);});
+  return {i:i,isT:isT,nm:raw<CKO?raw+1440:raw,B:B};}
+function tlFmt(m){var d=Math.floor(m/1440);return h12(((m%1440)+1440)%1440)+(d>0?' de mañana':(d<0?' de ayer':''));}
+function tlSpan(b){if(b[4]-b[3]>=1439)return 'todo el día';return tlFmt(b[3])+' a '+tlFmt(b[4]);}
+function clockSVG(i0){var W=ckWin(i0),B=W.B,nm=W.nm,isT=W.isT,cx=160,cy=160,R=128,O=CKO;
+  var P=function(r,a){var t=((a-O)/1440)*2*Math.PI+Math.PI/2;return [cx+r*Math.cos(t),cy+r*Math.sin(t)];};
   var arc=function(r,a0,a1){var s=P(r,a0),e=P(r,a1);return 'M'+s[0].toFixed(1)+' '+s[1].toFixed(1)+'A'+r+' '+r+' 0 '+((a1-a0)>720?1:0)+' 1 '+e[0].toFixed(1)+' '+e[1].toFixed(1);};
   var pie=function(r,a0,a1){if(a1-a0>=1439)return 'M'+(cx-r)+' '+cy+'a'+r+' '+r+' 0 1 0 '+(2*r)+' 0a'+r+' '+r+' 0 1 0 '+(-2*r)+' 0Z';return 'M'+cx+' '+cy+'L'+arc(r,a0,a1).slice(1)+'Z';};
   var cur=isT?B.filter(function(b){return nm>=b[0]&&nm<b[1];})[0]:null;
   var o='<svg class="ctorta" width="310" height="310" viewBox="-14 -14 348 348" role="img" aria-label="Reloj del día: con quién están en cada hora">';
   o+='<circle cx="'+cx+'" cy="'+cy+'" r="170" style="fill:var(--card);stroke:var(--kring)" stroke-width="6"/><circle cx="'+cx+'" cy="'+cy+'" r="163" fill="none" style="stroke:var(--sep)" stroke-width="1.5"/>';
-  for(var hh=0;hh<48;hh++){if(hh%4)continue;var mj=true,big=hh%12===0,a1=P(mj?(big?132:134):135,hh*30),a2=P(141,hh*30);o+='<line x1="'+a1[0].toFixed(1)+'" y1="'+a1[1].toFixed(1)+'" x2="'+a2[0].toFixed(1)+'" y2="'+a2[1].toFixed(1)+'" style="stroke:'+(big?'var(--ink2)':'var(--mut)')+'" stroke-width="'+(big?3:(mj?2:1))+'" stroke-linecap="round" opacity="'+(mj?1:.5)+'"/>';}
-  for(var hn=0;hn<24;hn+=3){var q6=hn%6===0,tp=P(153,hn*60);o+='<text x="'+tp[0].toFixed(1)+'" y="'+(tp[1]+(q6?5:4)).toFixed(1)+'" text-anchor="middle" font-size="'+(q6?14:10.5)+'" font-weight="'+(q6?800:600)+'" style="fill:'+(q6?'var(--ink)':'var(--mut)')+'" font-family="DM Sans,sans-serif">'+(hn===0?'12 a.m.':hn===12?'12 p.m.':(hn%12||12))+'</text>';}
-  B.forEach(function(b){var k=ckK(b[2]),lab=(b[2]==='Colegio'?'En el colegio y jardín':'Con '+b[2].toLowerCase())+' · '+tlSpan(i,b);
+  for(var hh=0;hh<48;hh+=4){var big=hh%24===0,a1=P(big?132:134,O+hh*30),a2=P(141,O+hh*30);o+='<line x1="'+a1[0].toFixed(1)+'" y1="'+a1[1].toFixed(1)+'" x2="'+a2[0].toFixed(1)+'" y2="'+a2[1].toFixed(1)+'" style="stroke:'+(big?'var(--ink2)':'var(--mut)')+'" stroke-width="'+(big?3:2)+'" stroke-linecap="round"/>';}
+  for(var hn=0;hn<24;hn+=3){var H=(O/60+hn)%24,q6=hn%6===0,tp=P(153,O+hn*60);o+='<text x="'+tp[0].toFixed(1)+'" y="'+(tp[1]+(q6?5:4)).toFixed(1)+'" text-anchor="middle" font-size="'+(q6?14:10.5)+'" font-weight="'+(q6?800:600)+'" style="fill:'+(q6?'var(--ink)':'var(--mut)')+'" font-family="DM Sans,sans-serif">'+(H===6?'6 a.m.':H===18?'6 p.m.':(H%12||12))+'</text>';}
+  B.forEach(function(b){var k=ckK(b[2]),lab=(b[2]==='Colegio'?'En el colegio y jardín':'Con '+b[2].toLowerCase())+' · '+tlSpan(b);
     o+='<g class="cslice" data-a="clk" data-v="'+lab+'"><path d="'+pie(R,b[0],b[1])+'" style="fill:var(--k'+k+'t);stroke:var(--card)" stroke-width="4" stroke-linejoin="round"/>'+
     (b[1]-b[0]>=1439?'<circle cx="'+cx+'" cy="'+cy+'" r="'+(R-6)+'" fill="none" style="stroke:var(--k'+k+')" stroke-width="8"/>':'<path d="'+arc(R-6,b[0]+4,Math.max(b[0]+5,b[1]-4))+'" fill="none" style="stroke:var(--k'+k+')" stroke-width="8" stroke-linecap="round"/>')+'</g>';});
   if(cur&&cur[1]-cur[0]<1439)o+='<path d="'+pie(R+4,cur[0],cur[1])+'" fill="none" style="stroke:var(--k'+ckK(cur[2])+')" stroke-width="3" stroke-linejoin="round" pointer-events="none"/>';
   if(isT){var h=P(R+8,nm),h0=P(-14,nm);o+='<line x1="'+h0[0].toFixed(1)+'" y1="'+h0[1].toFixed(1)+'" x2="'+h[0].toFixed(1)+'" y2="'+h[1].toFixed(1)+'" stroke="#FF6B6B" stroke-width="4" stroke-linecap="round" pointer-events="none"/><circle cx="'+h[0].toFixed(1)+'" cy="'+h[1].toFixed(1)+'" r="8" fill="#FF6B6B" style="stroke:var(--card)" stroke-width="3" pointer-events="none"/>';}
-  B.forEach(function(b){if(b[1]-b[0]<120)return;var m=b[1]-b[0]>=1439?1080:(b[0]+b[1])/2,q=P(R*.62,m),fin=hhmm(Math.min(b[1],1439)).replace('23:59','24h');
+  B.forEach(function(b){if(b[1]-b[0]<120)return;var m=b[1]-b[0]>=1439?O+720+360:(b[0]+b[1])/2,q=P(R*.62,m);
     o+='<foreignObject x="'+(q[0]-22).toFixed(1)+'" y="'+(q[1]-22).toFixed(1)+'" width="44" height="44" pointer-events="none"><div class="ctav">'+av(b[2],40)+'</div></foreignObject>';});
   var nx=cur?B[B.indexOf(cur)+1]:null,left=cur?cur[1]-nm:0,lt=Math.floor(left/60)?Math.floor(left/60)+'h '+(left%60)+'m':(left%60)+' min';
   o+='<circle cx="'+cx+'" cy="'+cy+'" r="38" style="fill:var(--card);stroke:var(--sep)" stroke-width="2"/>';
   if(isT){o+='<text x="'+cx+'" y="'+(cy-5)+'" text-anchor="middle" font-size="17" font-weight="800" style="fill:var(--ink)" font-family="DM Sans,sans-serif">'+h12(nm)+'</text>'+
-    (cur&&nx?'<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" font-size="9.5" font-weight="800" fill="#FF6B6B" font-family="DM Sans,sans-serif">faltan '+lt+'</text><text x="'+cx+'" y="'+(cy+22)+'" text-anchor="middle" font-size="8.5" font-weight="600" style="fill:var(--mut)" font-family="DM Sans,sans-serif">'+(nx[2]==='Colegio'?'luego al colegio':'luego con '+nx[2].toLowerCase().replace('abuela ','abuela '))+'</text>':'<text x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle" font-size="9.5" font-weight="700" style="fill:var(--mut)" font-family="DM Sans,sans-serif">hasta mañana</text>');}
+    (cur&&nx?'<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" font-size="9.5" font-weight="800" fill="#FF6B6B" font-family="DM Sans,sans-serif">faltan '+lt+'</text><text x="'+cx+'" y="'+(cy+22)+'" text-anchor="middle" font-size="8.5" font-weight="600" style="fill:var(--mut)" font-family="DM Sans,sans-serif">'+(nx[2]==='Colegio'?'luego al colegio':'luego con '+nx[2].toLowerCase())+'</text>':'<text x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle" font-size="9.5" font-weight="700" style="fill:var(--mut)" font-family="DM Sans,sans-serif">hasta mañana</text>');}
   else o+='<text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="13" font-weight="800" style="fill:var(--ink)" font-family="DM Sans,sans-serif">Día</text>';
   return o+'</svg>';}
 function countdowns(){var me2=whoMe();if(me2!=='Papá'&&me2!=='Mamá')return '';var ti=idxOf(todayIso()),out=[];

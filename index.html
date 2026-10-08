@@ -516,6 +516,10 @@ nav .fabw{order:-1;justify-content:flex-start;margin-bottom:10px}
 .toast{bottom:32px;left:calc(50% + 115px)}
 .sheetbg{padding-left:230px}
 }
+.hero{padding:14px;gap:8px;border-radius:20px}.hero .nx{padding:8px 12px;border-radius:12px}.hero>div[style*="Fraunces"]{font-size:20px!important}
+.qa{margin:10px 0 12px;gap:6px}.qb{min-height:72px;padding:8px 2px;gap:5px}.qb .ti{width:38px;height:38px;border-radius:13px}
+.cdc{padding:10px 12px}.cdc .big{font-size:23px}
+.llc{gap:8px;padding:12px}.llk{gap:2px;padding:8px 10px}.llh{margin-bottom:0}.lla{border-top:none;padding-top:2px}.llc>.btn.sec{margin-top:4px!important;min-height:38px;height:38px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -982,8 +986,8 @@ function llevarCard(){var i=nextSchoolIdx(),x=dayInfo(i),iso=isoOf(x.d),ti=idxOf
     if(alr)return '<div class="llk"><div class="llh">'+kidAv(kid)+'<b>'+nm+'</b><span class="lbl" style="font-size:12px">'+lugar+'</span></div>'+alBlock(kid,false)+'</div>';
     return '<div class="llk"><div class="llh">'+kidAv(kid)+'<span class="llnm"><b>'+nm+'</b><span class="lbl">'+lugar+'</span></span><button class="llgo" data-a="alask" data-v="'+kid+'">'+ic('backpack',16)+'Alistar</button></div>'+
     (L.length?L.map(function(it,n){var key=iso+kid+it.t,on=!!S.pk[key];tot++;if(on)ok++;if(it.warn&&!on)warn++;
-      return '<button class="llit'+(on?' on':'')+(it.warn?' w':'')+'" data-a="pk" data-v="'+key.replace(/"/g,'&quot;')+'" aria-pressed="'+on+'"><span class="box">'+ic('check',14,3)+'</span><span class="llx"><span class="lt1">'+it.t+'</span><span class="ls1">'+it.src+'</span></span></button>';}).join(''):'<div class="lls">Nada especial: solo lo de siempre.</div>')+
-    '<details class="lla"><summary>Lo de siempre · '+BAG[kid].filter(function(b){return b[0]!=='mat';}).length+'</summary>'+siempre(kid)+'</details></div>';};
+      return '<button class="llit'+(on?' on':'')+(it.warn?' w':'')+'" data-a="pk" data-v="'+key.replace(/"/g,'&quot;')+'" aria-pressed="'+on+'"><span class="box">'+ic('check',14,3)+'</span><span class="llx"><span class="lt1">'+it.t+'</span><span class="ls1">'+it.src+'</span></span></button>';}).join(''):'')+
+    '<details class="lla"><summary>'+(L.length?'Lo de siempre':'Sin extras · lo de siempre')+' · '+BAG[kid].filter(function(b){return b[0]!=='mat';}).length+'</summary>'+siempre(kid)+'</details></div>';};
   var alN=['agusta','rafaella'].filter(function(q){var z=(S.alist||{})[iso+'|'+q];return z&&!(z.faltaIds&&z.faltaIds.length);}).length;
   var body=kidBlock('agusta')+kidBlock('rafaella');
   var prox=S.mats.filter(function(m){var j=idxOf(m.f);return m.st<2&&j>i&&j<=i+10;}).sort(function(a,b){return a.f<b.f?-1:1;});
@@ -1591,7 +1595,7 @@ function hoy(){
   if(!S.pension&&me2==='Papá')P.push(['gas','Pensión del mes: transferir antes del 5','gas']);
   var tm2=tarPendMine();if(tm2)P.push(['check',tm2+' tarea'+(tm2>1?'s':'')+' tuya'+(tm2>1?'s':'')+' por hacer','tar']);var cp=S.pantry.filter(function(q){return q.st>0;}).length;if(cp)P.push(['backpack',cp+' producto(s) de colación por comprar','moc']);
   var mp=S.mats.filter(function(m){return m.st===0;}).length;if(mp)P.push(['school',mp+' material(es) pedido(s) pendiente(s)','moc']);
-  var pend='<section><h2>Por hacer'+(P.length?' <span class="pcount">'+P.length+'</span>':'')+'</h2>'+(P.length?'<div class="card" style="padding:0 16px">'+P.map(function(q,k){return '<button data-a="tab" data-v="'+q[2]+'" class="row" style="width:100%;background:none;border:none;'+(k?'border-top:1px solid var(--sep);':'')+'font:inherit;color:inherit;text-align:left;align-items:center;min-height:56px"><span style="color:var(--p)">'+ic(q[0],20)+'</span><span style="flex:1;font-size:14px">'+q[1]+'</span><span style="color:var(--mut)">'+ic('chev',16)+'</span></button>';}).join('')+'</div>':'<div class="card" style="display:flex;align-items:center;gap:10px;color:var(--p)">'+ic('check',20)+'<b style="font-size:14px">Todo al día</b></div>')+'</section>';
+  var pend='<section><h2>Por hacer'+(P.length?' <span class="pcount">'+P.length+'</span>':'')+'</h2>'+(P.length?'<div class="card" style="padding:0 16px">'+P.map(function(q,k){return '<button data-a="tab" data-v="'+q[2]+'" class="row" style="width:100%;background:none;border:none;'+(k?'border-top:1px solid var(--sep);':'')+'font:inherit;color:inherit;text-align:left;align-items:center;min-height:44px;padding-top:6px;padding-bottom:6px"><span style="color:var(--p)">'+ic(q[0],18)+'</span><span style="flex:1;font-size:14px">'+q[1]+'</span><span style="color:var(--mut)">'+ic('chev',16)+'</span></button>';}).join('')+'</div>':'<div class="card" style="display:flex;align-items:center;gap:10px;color:var(--p)">'+ic('check',20)+'<b style="font-size:14px">Todo al día</b></div>')+'</section>';
   var QA=qkGet().map(function(k){return QAO.filter(function(o){return o[0]===k;})[0];}).filter(Boolean);
   var qbadge=function(k){if(k==='tarea'){var n=tarPendMine();return n?'<i class="qbd">'+n+'</i>':'';}if(k==='moc'){var al=['agusta','rafaella'].filter(function(q){return alDone(q);}).length;return al===2?'<i class="qbd ok">✓</i>':'<i class="qbd dot"></i>';}return '';};
   var quick='<div class="qa" style="--n:'+QA.length+'">'+QA.map(function(a){var inner='<span class="ti">'+ic(a[1],24)+'</span><span class="ql">'+(a[0]==='call'&&S.call?'Llamada hecha':a[2])+'</span>'+qbadge(a[0]),st=' style="--qc:'+a[4]+';--qi:'+(a[5]||'#fff')+'"';
@@ -1633,7 +1637,7 @@ function tiempoCard(compact){var r=tpRange(),o=tpStats(r),par=o.P+o.M,pp=par?Mat
   var sides=me==='P'?side('P')+side('M'):side('M')+side('P');
   var bar='<div class="tpbar" role="img" aria-label="Papá '+pp+'%, mamá '+pm+'%">'+(me==='P'?'<i class="p" style="flex:'+(pp||.001)+'"></i><i class="m" style="flex:'+(pm||.001)+'"></i>':'<i class="m" style="flex:'+(pm||.001)+'"></i><i class="p" style="flex:'+(pp||.001)+'"></i>')+'</div>';
   var chips='<div class="tpch" role="group" aria-label="Período">'+['sem','mes','30','prox'].map(function(k){return '<button class="'+((S.tpP||'mes')===k?'on':'')+'" data-a="tpp" data-v="'+k+'" aria-pressed="'+((S.tpP||'mes')===k)+'">'+TPL[k]+'</button>';}).join('')+'</div>';
-  if(compact)return '<button class="tpc tpcc" data-a="tab" data-v="ana"><div class="tph"><b>Tiempo con las niñas</b><span>'+TPL[S.tpP||'mes'].toLowerCase()+'</span></div><div class="tpmini"><span><b>'+pp+'%</b> Papá</span><span><b>'+pm+'%</b> Mamá</span></div>'+bar+'</button>';
+  if(compact)return '<button class="tpc tpcc" data-a="tab" data-v="ana"><div class="tph"><b>Tiempo con las niñas</b><span>'+TPL[S.tpP||'mes'].toLowerCase()+'</span></div><div class="tpmini">'+(me==='P'?'<span><b>'+pp+'%</b> Papá</span><span><b>'+pm+'%</b> Mamá</span>':'<span><b>'+pm+'%</b> Mamá</span><span><b>'+pp+'%</b> Papá</span>')+'</div>'+bar+'</button>';
   var dif=Math.abs(o.P-o.M),dpt=Math.abs(pp-pm),mas=o.P>o.M?'Papá':'Mamá',menos=o.P>o.M?'mamá':'papá';
   var seg=[['P','Papá','var(--pc)',o.P],['M','Mamá','var(--mc)',o.M],['C','Colegio','var(--kc)',o.C],['A','Abuelas','var(--ab)',o.A]];
   return '<div class="tpc"><div class="tph"><b>Tiempo con las niñas</b><span>según el régimen acordado</span></div>'+chips+

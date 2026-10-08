@@ -1,5 +1,5 @@
 /* Nido · service worker: abre al instante con la copia guardada y la actualiza en segundo plano */
-const V = 'nido-v4';
+const V = 'nido-v5';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -34,4 +34,14 @@ self.addEventListener('fetch', e => {
     }
     return hit || red;
   })());
+});
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const tab = (e.notification.data || {}).tab;
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
+    const c = cs[0];
+    if (c) { c.focus(); if (tab) c.postMessage({ type: 'abrir', tab }); return; }
+    return self.clients.openWindow('./');
+  }));
 });

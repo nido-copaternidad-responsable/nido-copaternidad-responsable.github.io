@@ -1329,6 +1329,34 @@ function palSheet(){var cur=palCur()[0];
   return '<div class="sheetbg" data-a="palclose"><div class="sheet tall" role="dialog" aria-label="Paleta de colores">'+sheetTop('Paleta de colores')+
   '<div style="font-size:14px;color:var(--ink2)">Toca una para verla al instante. Se guarda solo en este dispositivo.</div><div class="palg">'+PALS.map(function(x){return '<button class="pal'+(x[0]===cur?' on':'')+'" data-a="palset" data-v="'+x[0]+'" aria-pressed="'+(x[0]===cur)+'"><span class="pals"><i style="background:'+x[4]+'"></i><i style="background:'+x[2]+'"></i><i style="background:'+x[3]+'"></i></span><b>'+x[1]+'</b></button>';}).join('')+'</div>'+
   '<button class="btn" style="height:50px" data-a="palclose">Listo</button></div></div>';}
+/* ===== Avisos en el teléfono (notificaciones) ===== */
+var NT=[['mochila','Mochila sin alistar','Te avisa de noche si falta alistar la mochila de mañana'],['entrega','Entrega o recepción sin confirmar','Te avisa si no confirmaste el traslado de las niñas'],['firmas','Registros por firmar','Una vez al día si tienes firmas pendientes']];
+function ntGet(){var o={on:true,mochila:true,entrega:true,firmas:true};try{var v=JSON.parse(localStorage.getItem('nido_noti'));if(v)for(var k in v)o[k]=v[k];}catch(e){}return o;}
+function ntSet(o){try{localStorage.setItem('nido_noti',JSON.stringify(o));}catch(e){}}
+function ntPerm(){return ('Notification' in window)?Notification.permission:'unsupported';}
+function ntSent(){try{return JSON.parse(localStorage.getItem('nido_noti_sent'))||{};}catch(e){return {};}}
+function ntMark(id){var o=ntSent(),d=todayIso();Object.keys(o).forEach(function(k){if(o[k]!==d)delete o[k];});o[id]=d;try{localStorage.setItem('nido_noti_sent',JSON.stringify(o));}catch(e){}}
+function ntDue(){var L=[],c=ntGet(),me2=whoMe();if(me2!=='Papá'&&me2!=='Mamá')return L;
+  var ti=idxOf(todayIso()),now=tm(nowHM());
+  if(c.mochila&&now>=1140&&now<1380){var ni=nextSchoolIdx();if(ni>ti&&nightOwnerI(ni-1)===me2){var iso=isoOf(dayInfo(ni).d);['agusta','rafaella'].forEach(function(k){if(!(S.alist||{})[iso+'|'+k]&&!nsFor(iso,k))L.push({id:'moc-'+k,t:'Mochila sin alistar',b:'Aún no has registrado la mochila de '+(k==='agusta'?'Agusta':'Rafaella')+' para mañana. Prepárala con tiempo.',tab:'moc'});});}}
+  if(c.entrega){handoffs(ti).forEach(function(h){if(!/^\d\d:\d\d$/.test(h.prog))return;var d=now-tm(h.prog),cc=S.hc[h.id]||{};if(d<5||d>240)return;
+    if(h.from===me2&&!cc.from)L.push({id:'ent-'+h.id,t:'Entrega sin confirmar',b:'No has registrado la entrega de las niñas ('+h.prog+'). Confírmala en Nido.',tab:'hoy'});
+    else if(h.to===me2&&!cc.to)L.push({id:'rec-'+h.id,t:'Recepción sin confirmar',b:'No has registrado que recibiste a las niñas ('+h.prog+'). Confírmalo en Nido.',tab:'hoy'});});}
+  if(c.firmas&&now>=540&&now<1260&&pendingMine()>0)L.push({id:'firmas',t:'Registros por firmar',b:'Tienes '+pendingMine()+' registro'+(pendingMine()>1?'s':'')+' por firmar en la Bitácora.',tab:'bit'});
+  return L;}
+function ntShow(n){var opt={body:n.b,icon:'icons/icon-192.png',badge:'icons/icon-192.png',tag:n.id,data:{tab:n.tab}};
+  if('serviceWorker' in navigator&&navigator.serviceWorker.ready){navigator.serviceWorker.ready.then(function(r){r.showNotification(n.t,opt);}).catch(function(){try{new Notification(n.t,opt);}catch(e){}});}else{try{new Notification(n.t,opt);}catch(e){}}}
+function ntTick(){if(ntPerm()!=='granted'||!ntGet().on||typeof FB==='undefined'||!FB.ready)return;var sent=ntSent(),d=todayIso();ntDue().forEach(function(n){if(sent[n.id]===d)return;ntMark(n.id);ntShow(n);});}
+setInterval(ntTick,60000);setTimeout(ntTick,6000);document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')setTimeout(ntTick,1500);});
+function ntSheet(){var c=ntGet(),p=ntPerm(),on=p==='granted'&&c.on;
+  var st=p==='unsupported'?'Este navegador no permite notificaciones. Instala Nido en la pantalla de inicio e inténtalo de nuevo.':(p==='denied'?'Las notificaciones están bloqueadas para Nido. Actívalas en los ajustes del teléfono (Ajustes → Apps → Nido → Notificaciones).':(p==='granted'?(c.on?'Activadas en este teléfono.':'Desactivadas.'):'Aún no están activadas en este teléfono.'));
+  return '<div class="sheetbg" data-a="ntclose"><div class="sheet tall" role="dialog" aria-label="Notificaciones">'+sheetTop('Notificaciones')+
+  '<div style="font-size:14px;color:var(--ink2)">'+st+'</div>'+
+  (p==='default'?'<button class="btn" style="height:50px" data-a="ntask">Activar avisos en este teléfono</button>':'')+
+  (p==='granted'?'<div class="list">'+'<div class="row" style="align-items:center"><div class="grow"><b style="font-size:14px">Avisos activados</b></div><button class="sw'+(c.on?' on':'')+'" role="switch" aria-checked="'+c.on+'" data-a="ntt" data-v="on" aria-label="Avisos activados"></button></div>'+
+   NT.map(function(x){return '<div class="row" style="align-items:center"><div class="grow"><b style="font-size:14px">'+x[1]+'</b><span class="lbl" style="font-size:12px">'+x[2]+'</span></div><button class="sw'+(c[x[0]]?' on':'')+'" role="switch" aria-checked="'+c[x[0]]+'" data-a="ntt" data-v="'+x[0]+'" aria-label="'+x[1]+'"></button></div>';}).join('')+'</div><button class="btn sec" data-a="nttest">Probar un aviso</button>':'')+
+  '<div class="mthelp">Los avisos aparecen en la pantalla del teléfono mientras Nido está abierta o en segundo plano. Se activan solo en este dispositivo.</div>'+
+  '<button class="btn" style="height:50px" data-a="ntclose">Listo</button></div></div>';}
 function otherWho(){return whoMe()==='Mamá'?'Papá':'Mamá';}
 function tarMine(t){var m=whoMe();return t.who===m||t.who==='Ambos';}
 function tarPendMine(){return (S.tareas||[]).filter(function(t){return !t.done&&tarMine(t);}).length;}
@@ -1768,6 +1796,7 @@ function mas(){var SB=masSub();
   setRow('spark','Acciones rápidas',qkGet().length+' activas','qkopen')+
   setRow('trash','Limpiar datos de prueba',(S.cfg&&S.cfg.test)?'Modo de prueba':'Protegido','tab','lim')+
   setRow('swap','Cambios recientes',(uLoad(),UNDO.length)+' para deshacer','tab','hist')+
+  setRow('bell','Notificaciones en el teléfono',(ntPerm()==='granted'&&ntGet().on)?'Activadas':'Desactivadas','ntopen')+
   setRow('image','Paleta de colores',palCur()[1],'palopen')+
   setRow('sun','Apariencia',({auto:'Automática',light:'Clara',dark:'Oscura'})[S.theme]||'Automática','themecyc')+
   (isStandalone()?'':setRow('up','Instalar la app','Disponible','inst')+(S.instHelp?'<div style="padding:0 16px 14px;font-size:13px;color:var(--ink2)">'+instHelpTxt()+'</div>':''))+
@@ -1979,6 +2008,7 @@ function render(){
   if(S.vuSheet)h+=vuSheet();
   if(S.tsh)h+=tsSheet();
   if(S.palSheet)h+=palSheet();
+  if(S.ntSheet)h+=ntSheet();
   if(S.nsSheet)h+=nsSheet();
   if(S.tarSheet)h+=tarSheet();
   if(S.rgSheet)h+=rgSheet();
@@ -2181,6 +2211,11 @@ document.addEventListener('click',function(e){
   else if(a==='agp')set({agP:S.agP===v?'':v});
   else if(a==='tarp')set({tarP:S.tarP===v?'':v});
   else if(a==='tarhide')set({tarHide:!S.tarHide});
+  else if(a==='ntopen'){S.ntSheet=true;render();}
+  else if(a==='ntclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.ntSheet=false;render();}
+  else if(a==='ntask'){if(!('Notification' in window)){toast('Este navegador no permite notificaciones');return;}Notification.requestPermission().then(function(r){if(r==='granted'){var c=ntGet();c.on=true;ntSet(c);ntShow({id:'bienvenida',t:'Nido',b:'Listo: te avisaremos de lo importante.',tab:'hoy'});}render();});}
+  else if(a==='ntt'){var c2=ntGet();c2[v]=!c2[v];ntSet(c2);render();}
+  else if(a==='nttest'){ntShow({id:'prueba-'+Date.now(),t:'Nido · aviso de prueba',b:'Así te llegarán los recordatorios.',tab:'hoy'});}
   else if(a==='palopen'){S.palSheet=true;render();}
   else if(a==='palclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.palSheet=false;render();}
   else if(a==='palset'){palSet(v);render();}
@@ -2304,7 +2339,7 @@ function nidoBoot(){S.sel=idxOf(todayIso());S.dia0=todayIso();
       .catch(function(e){console.error(e);hideLoading();showLogin(e&&e.code==='permission-denied'?'Tu cuenta no tiene permiso. Revisa las reglas de Firestore.':'No se pudieron cargar los datos ('+(e&&e.code||'error')+').');});});
 }
 
-if('serviceWorker' in navigator){navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='nueva-version'&&!document.getElementById('nidoUpd')){var d=document.createElement('div');d.id='nidoUpd';d.setAttribute('role','status');d.style.cssText='position:fixed;left:12px;right:12px;bottom:92px;z-index:99998;background:#2E1A47;color:#fff;padding:12px 14px;border-radius:14px;font:600 14px/1.3 system-ui,sans-serif;display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.3)';d.innerHTML='<span style="flex:1">Hay una versión nueva de Nido</span><button style="border:0;border-radius:10px;padding:9px 14px;font:inherit;font-weight:800;background:#fff;color:#2E1A47;cursor:pointer" onclick="location.reload()">Actualizar</button>';document.body.appendChild(d);}});}
+if('serviceWorker' in navigator){navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='abrir'&&e.data.tab&&T[e.data.tab]){S.tab=e.data.tab;render();window.scrollTo(0,0);}if(e.data&&e.data.type==='nueva-version'&&!document.getElementById('nidoUpd')){var d=document.createElement('div');d.id='nidoUpd';d.setAttribute('role','status');d.style.cssText='position:fixed;left:12px;right:12px;bottom:92px;z-index:99998;background:#2E1A47;color:#fff;padding:12px 14px;border-radius:14px;font:600 14px/1.3 system-ui,sans-serif;display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.3)';d.innerHTML='<span style="flex:1">Hay una versión nueva de Nido</span><button style="border:0;border-radius:10px;padding:9px 14px;font:inherit;font-weight:800;background:#fff;color:#2E1A47;cursor:pointer" onclick="location.reload()">Actualizar</button>';document.body.appendChild(d);}});}
 
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window._ip=e;if(FB&&FB.ready)render();});
 window.addEventListener('appinstalled',function(){window._ip=null;toast('Nido instalada');});

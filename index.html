@@ -885,6 +885,13 @@ function wlStage(debeP,tot,cats){var open=!!S.wOpen,f=S.gf,cap='Saldo 50/50 · '
   '<button class="mbbag" data-a="wtog" aria-expanded="'+open+'" aria-label="'+(open?'Cerrar':'Abrir')+' la billetera">'+wlSVG()+'</button>'+
   '<div class="mbhint">'+(open?'Anota el gasto aquí abajo.':'<b>'+who+'</b> · toca la billetera para anotar un gasto')+'</div>'+
   '<div class="mbprep">Pagó papá <b>'+money(tot['Papá']||0)+'</b> · Pagó mamá <b>'+money(tot['Mamá']||0)+'</b></div></div>'+form;}
+function penGasto(){for(var i=S.gastos.length-1;i>=0;i--)if(S.gastos[i].cat==='Pensión'&&!S.gastos[i].ej)return S.gastos[i];return null;}
+function penVoucher(){var g=S.pension?penGasto():null;
+  if(!g)return '<div class="lbl" style="font-size:12px;margin-top:-6px">Cuando marques la pensión como pagada, aquí subes el comprobante de la transferencia.</div>';
+  var ph=(g.ph||[]).map(phById).filter(Boolean);
+  return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:-4px">'+ph.map(function(x){return '<img src="'+x.url+'" alt="Comprobante de pensión" style="width:52px;height:52px;border-radius:10px;object-fit:cover">';}).join('')+
+    '<label class="btn sec upl" style="flex:1;min-width:170px">'+ic('camera',18)+(ph.length?'Agregar otro comprobante':'Subir comprobante')+'<input type="file" accept="image/*" capture="environment" data-photo="pen" data-label="Comprobante de pensión" style="display:none"></label>'+
+    (ph.length?'<span class="chip cp">Con comprobante</span>':'<span class="chip cm">Falta comprobante</span>')+'</div>';}
 function gas_0(){
   var G=S.gastos.filter(function(g){return inF(g.iso);});
   var ex=G.filter(function(g){return g.cat==='Extraordinario 50/50';});
@@ -895,7 +902,7 @@ function gas_0(){
   var gf=S.gf;
   return wlStage(debeP,tot,cats)+
   dateFilter()+
-  '<section><h2>Aportes de papá</h2><div class="card" style="display:flex;flex-direction:column;gap:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><b style="font-size:15px">Pensión de alimentos</b><div class="lbl">$500.000 = 6,971459 UTM (sep 2026) · desde oct 2026 · del 1 al 5 · Cuenta Vista BancoEstado de mamá</div></div><button class="btn'+(S.pension?' ok':'')+'" data-a="pension">'+(S.pension?'Pagada ✓':'Marcar pagada')+'</button></div><div style="height:1px;background:var(--sep)"></div>'+
+  '<section><h2>Aportes de papá</h2><div class="card" style="display:flex;flex-direction:column;gap:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><b style="font-size:15px">Pensión de alimentos</b><div class="lbl">$500.000 = 6,971459 UTM (sep 2026) · desde oct 2026 · del 1 al 5 · Cuenta Vista BancoEstado de mamá</div></div><button class="btn'+(S.pension?' ok':'')+'" data-a="pension">'+(S.pension?'Pagada ✓':'Marcar pagada')+'</button></div>'+penVoucher()+'<div style="height:1px;background:var(--sep)"></div>'+
   '<div><div style="display:flex;justify-content:space-between;margin-bottom:8px"><b style="font-size:15px">Vestuario y calzado</b><span class="lbl">'+money(vest)+' de $50.000</span></div><div class="prog"><div style="width:'+Math.min(100,vest/500)+'%"></div></div></div></div></section>'+
   '<section><h2>Movimientos del período</h2>'+(G.length?'<div class="list">'+G.slice().sort(function(a,b){return a.iso<b.iso?1:-1;}).map(function(g){var ph=(g.ph||[]).map(phById).filter(Boolean);return '<div class="row"><div class="grow"><b style="font-size:14px">'+g.t+'</b><span class="lbl" style="font-size:12px">'+fdate(g.iso)+' · '+g.cat+' · pagó '+g.pago+'</span><span class="chip '+(g.comp||ph.length?'cp':'cm')+'">'+(g.comp||ph.length?'Con comprobante':'Falta comprobante')+'</span>'+(ph.length?'<div style="display:flex;gap:6px;margin-top:4px">'+ph.map(function(x){return '<img src="'+x.url+'" alt="Comprobante" style="width:48px;height:48px;border-radius:8px;object-fit:cover">';}).join('')+'</div>':'')+'</div><div style="text-align:right"><b style="font-size:14px">'+money(g.monto)+'</b>'+(g.cat==='Extraordinario 50/50'?'<div class="lbl" style="font-size:12px">50%: '+money(g.monto/2)+'</div>':'')+'</div>'+delb('gasto',S.gastos.indexOf(g),g.t)+'</div>';}).join('')+'</div>':emptyCard('gastos','Sin gastos en este período','Cuando registres un gasto aparece aquí con su comprobante.'))+'</section>'+
   '<section><h2>Próximos</h2>'+rows([['Cumpleaños de Agusta · [fecha]','Papá mín. $100.000'],['Cumpleaños de Rafaella · [fecha]','Papá mín. $100.000']])+'</section>';
@@ -1952,7 +1959,7 @@ document.addEventListener('click',function(e){
   else if(a==='rut')set({rut:v});
   else if(a==='chk'){S.checks[v]=!S.checks[v];if(S.checks[v]){var rr=RUT.filter(function(x){return x[0]===v;})[0];logA(whoMe(),'Rutina',rr?rr[1]:v);}render();}
   else if(a==='kid')set({child:v});
-  else if(a==='pension'){if(!S.pension){S.gastos.push({iso:todayIso(),t:'Pensión de alimentos',cat:'Pensión',pago:'Papá',monto:500000,comp:true,ph:[]});logA('Papá','Pago','Pensión de alimentos $500.000');}else{for(var gi=S.gastos.length-1;gi>=0;gi--)if(S.gastos[gi].cat==='Pensión'&&!S.gastos[gi].ej){S.gastos.splice(gi,1);break;}}set({pension:!S.pension});}
+  else if(a==='pension'){if(!S.pension){S.gastos.push({iso:todayIso(),t:'Pensión de alimentos',cat:'Pensión',pago:'Papá',monto:500000,comp:false,ph:[]});logA('Papá','Pago','Pensión de alimentos $500.000');}else{for(var gi=S.gastos.length-1;gi>=0;gi--)if(S.gastos[gi].cat==='Pensión'&&!S.gastos[gi].ej){S.gastos.splice(gi,1);break;}}set({pension:!S.pension});}
   else if(a==='em')set({em:true,emType:null});
   else if(a==='emclose'||a==='emclose2')set({em:false});
   else if(a==='emtype')set({emType:v});
@@ -2138,7 +2145,7 @@ document.addEventListener('change',function(e){var D=e.target.dataset||{};
   if(D.photo||D.nbfile||D.bfile){var fs=[].slice.call(e.target.files||[]);if(!fs.length)return;var left=fs.length,cnt=0;
     fs.forEach(function(f){var isImg=/^image\//.test(f.type);
       var done=function(url,w,h){var ph=null;if(url&&D.photo&&D.photo.indexOf('moc:')===0){S.photos=S.photos.filter(function(x){return x.k!==D.photo;});}if(url){ph={id:'ph'+(++S.phid),k:D.photo||'bit',url:url,w:w,h:h,label:D.photo?(D.label||'Foto'):'Bitácora · '+f.name,at:stamp(),iso:todayIso(),hm:nowHM(),who:whoMe()};S.photos.push(ph);cnt++;if(D.photo&&D.photo.indexOf('moc:')===0){var mkk=D.photo.split('|')[1];if(mkk&&!(S.alist||{})[bagDay()+'|'+mkk]){if(S.cf&&S.cf.items)S.alMiss=S.cf.items.filter(function(x){return !x.ok;}).map(function(x){return x.id;});S.cf=null;setTimeout(function(){fireAction('alset',mkk);},0);}}}
-        if(D.photo){if(ph){if(D.photo==='gas:nuevo')S.gf.ph.push(ph.id);else if(D.photo.indexOf('rg:')===0){logA(whoMe(),S.rgf.tipo,rgText(),[ph.id]);S.rgSheet=false;}else logA(whoMe(),D.photo.indexOf('act:')===0?D.photo.slice(4):(D.photo.indexOf('dia:')===0?'Diario':'Registro fotográfico'),D.photo.indexOf('act:')===0?(S.af2.t.trim()||'Foto de respaldo'):ph.label,[ph.id]);}}
+        if(D.photo){if(ph){if(D.photo==='gas:nuevo')S.gf.ph.push(ph.id);else if(D.photo==='pen'){var pg=penGasto();if(pg){pg.ph=(pg.ph||[]).concat([ph.id]);pg.comp=true;}logA(whoMe(),'Pago','Comprobante de pensión de alimentos',[ph.id]);}else if(D.photo.indexOf('rg:')===0){logA(whoMe(),S.rgf.tipo,rgText(),[ph.id]);S.rgSheet=false;}else logA(whoMe(),D.photo.indexOf('act:')===0?D.photo.slice(4):(D.photo.indexOf('dia:')===0?'Diario':'Registro fotográfico'),D.photo.indexOf('act:')===0?(S.af2.t.trim()||'Foto de respaldo'):ph.label,[ph.id]);}}
         else if(D.nbfile){S.nb.files.push({n:f.name,url:url,pid:ph&&ph.id});}
         else{S.bit[+D.bfile].files.push({n:f.name,url:url,pid:ph&&ph.id});}
         if(--left===0){if(D.photo)toast(cnt>1?cnt+' fotos guardadas':'Foto guardada con fecha y hora');else render();}};

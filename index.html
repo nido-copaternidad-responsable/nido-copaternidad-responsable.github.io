@@ -1709,9 +1709,9 @@ function masSub(){var me2=whoMe(),ti=todayIso(),n;
     bit:pm?pm+' por firmar':'Todo firmado',act:S.log.length+' registros',vac:vp?vp+' por responder':(S.vacs.length?S.vacs.length+' propuesta'+(S.vacs.length>1?'s':''):'Sin propuestas'),acu:'Transacción revisada',esc:nsn?nsn+' día'+(nsn>1?'s':'')+' sin clases':(nh?'Feriado: '+fdate(nh):'Sin feriados'),
     gas:S.pension?'Pensión pagada':'Pensión por pagar',tra:'Horario y alertas',ana:'Cómo se repartió',ask:'Pregunta lo que necesites',inf:'PDF para el tribunal'};}
 function mas(){var SB=masSub();
-  var G=[['Entre los dos','var(--yt)','var(--yd)',[['tar','check','Tareas',tarPendMine()]]],['Las niñas','var(--agt)','var(--ag)',[['fic','fic','Fichas'],['sal','heart','Salud'],['dia','book','Diario'],['moc','backpack','Mochila'],['rut','rut','Rutinas'],['alb','image','Álbum']]],
-    ['Acuerdos y registros','var(--pt)','var(--p)',[['bit','pen','Bitácora',pendingMine()],['act','list','Actividades'],['vac','sun','Vacaciones'],['acu','note','El acuerdo'],['esc','school','Colegio y feriados']]],
-    ['Dinero y trabajo','var(--mt)','var(--m)',[['gas','gas','Gastos'],['tra','bag','Trabajo']]],
+  var G=[['Las niñas','var(--agt)','var(--ag)',[['fic','fic','Fichas'],['sal','heart','Salud'],['moc','backpack','Mochila'],['rut','rut','Rutinas'],['alb','image','Álbum']]],
+    ['Acuerdos y registros','var(--pt)','var(--p)',[['bit','pen','Bitácora',pendingMine()],['vac','sun','Vacaciones'],['acu','note','El acuerdo'],['esc','school','Colegio y feriados']]],
+    ['Dinero y trabajo','var(--mt)','var(--m)',[['tra','bag','Trabajo']]],
     ['Análisis e informes','var(--abt)','var(--ab)',[['ana','scale','Análisis'],['ask','spark','Asistente'],['inf','report','Informe tribunal']]]];
   return G.map(function(g){return '<section><h2>'+g[0]+'</h2><div class="mcs">'+g[3].map(function(t){return '<button class="mc" data-a="tab" data-v="'+t[0]+'"><span class="mct">'+t[2]+'</span><span class="mcs1">'+(SB[t[0]]||'')+'</span><span class="mci" style="background:'+g[1]+';color:'+g[2]+'">'+ic(t[1],24)+'</span>'+(t[3]?'<i class="bd">'+t[3]+'</i>':'')+'</button>';}).join('')+'</div></section>';}).join('')+
   '<section><h2>Ajustes</h2>'+perfilHead()+'<div class="list">'+

@@ -698,7 +698,7 @@ function dateFilterFull(){var f=S.flt;
 }
 var PN={papa:'Papá',abm:'Abuela materna',abp:'Abuela paterna',mama:'Mamá'};
 function MK(dow){return PN[S.work.morn[dow]||'papa'];}
-function PK(dow){return PN[S.work.pick[dow]||'papa'];}
+function PK(dow){return PN[S.work.pick[dow]||(dow===0||dow===5?'mama':'papa')];}
 function recibe(ev,dow){var k=PK(dow);if(k==='Papá')return;if(k==='Mamá'&&dow===2){ev.push([S.work.wedDrop,'Mamá las deja en casa de papá','Mamá']);return;}ev.push([hhmm(tm(finD(dow))+(+S.work.viaje||0)),'Papá las recibe al salir del trabajo','Papá']);}
 function chipC(w){return w==='Papá'?'cp':(w==='Mamá'?'cm':'ca');}
 function dayInfo(i){
@@ -715,7 +715,7 @@ function dayInfo(i){
   else if(type==='finde'){ if(dow===4){ev.push([S.work.salidaA,'Retiro de Agusta · inicia fin de semana',PK(dow)]);ev.push([S.work.salidaR,'Retiro de Rafaella',PK(dow)]);recibe(ev,dow);ev.push(['Noche','Duermen en casa de papá',P]);}
     else if(dow===5)ev.push(['Todo el día','Fin de semana con papá',P]);
     else{ev.push(['Mañana','Con papá',P]);ev.push(['[hora]','Regreso a casa de mamá (horario acordado)',P]);} }
-  else{ if(dow>=5)ev.push(['Todo el día','Fin de semana con mamá',M]); ev.push(['Desde 19:00','Videollamada con papá',M]); }
+  else{ if(dow>=5)ev.push(['Todo el día','Fin de semana con mamá',M]); if(dow===0||dow===4){var kq=PK(dow===0?0:5);ev.push([pickT(dow)[0],'Retiro de Agusta',kq]);ev.push([pickT(dow)[1],'Retiro de Rafaella',kq]);} ev.push(['Desde 19:00','Videollamada con papá',M]); }
   var iso0=isoOf(d),ovr=S.ov&&S.ov[iso0],hol0=HOL[iso0],nsl=(S.nosch||[]).filter(function(x){return x.iso===iso0;}),nsA=nsl.filter(function(x){return x.kids==='Ambas';})[0],hol=hol0||(dow<=4&&nsA?'Sin clases · '+nsA.why:undefined);
   var nsWho=function(x){return x.care==='Papá'?P:(x.care==='Mamá'?M:(/Abuela/.test(x.care)?x.care:(type==='mama'?M:P)));};
   var nsTxt=function(x){return x.care==='Por definir'?' · cuidado por definir':' · las cuida '+x.care.toLowerCase();};
@@ -1005,7 +1005,7 @@ function trabajo_0(){
   '<section><h2>Horario temprano (martes y jueves)</h2><div class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="row" style="grid-column:1/-1;align-items:center;padding:0;border:none"><div class="grow"><b style="font-size:14px">Usar horario temprano</b><span class="lbl" style="font-size:12px">Entras antes y sales antes para retirarlas</span></div><button class="sw'+(S.work.temp.on?' on':'')+'" role="switch" aria-checked="'+S.work.temp.on+'" aria-label="Usar horario temprano" data-a="tempon"></button></div>'+
    '<label class="fld">Entrada<input class="inp" type="time" data-t="ini" value="'+S.work.temp.ini+'"></label><label class="fld">Salida<input class="inp" type="time" data-t="fin" value="'+S.work.temp.fin+'"></label><label class="fld">Retiro Agusta<input class="inp" type="time" data-t="pA" value="'+S.work.temp.pA+'"></label><label class="fld">Retiro Rafaella<input class="inp" type="time" data-t="pR" value="'+S.work.temp.pR+'"></label>'+
    '<div class="row" style="grid-column:1/-1;align-items:center;padding:0;border:none"><div class="grow"><b style="font-size:14px">Aprobado por mi empleador</b><span class="lbl" style="font-size:12px">Lo vas a pedir</span></div><button class="sw'+(S.work.temp.aprob?' on':'')+'" role="switch" aria-checked="'+S.work.temp.aprob+'" aria-label="Aprobado por mi empleador" data-a="tempap"></button></div></div></section>'+
-  '<section><h2>¿Quién retira en la tarde?</h2><div class="list">'+[[1,'Martes'],[2,'Miércoles'],[3,'Jueves'],[4,'Viernes (finde papá)']].map(function(r){var v=S.work.pick[r[0]]||'papa';return '<div class="row" style="align-items:center"><span style="font-size:14px;font-weight:600">'+r[1]+'</span><select class="inp" style="width:190px" data-p="'+r[0]+'">'+Object.keys(PN).map(function(k){return '<option value="'+k+'"'+(k===v?' selected':'')+'>'+PN[k]+'</option>';}).join('')+'</select></div>';}).join('')+'</div><div class="lbl" style="font-size:12px;margin-top:8px">Al cambiar quién retira, se recalculan choques, alertas y el calendario.</div></section>'+
+  '<section><h2>¿Quién retira en la tarde?</h2><div class="list">'+[[0,'Lunes'],[1,'Martes'],[2,'Miércoles'],[3,'Jueves'],[4,'Viernes (finde papá)'],[5,'Viernes (finde mamá)']].map(function(r){var v=S.work.pick[r[0]]||(r[0]===0||r[0]===5?'mama':'papa');return '<div class="row" style="align-items:center"><span style="font-size:14px;font-weight:600">'+r[1]+'</span><select class="inp" style="width:190px" data-p="'+r[0]+'">'+Object.keys(PN).map(function(k){return '<option value="'+k+'"'+(k===v?' selected':'')+'>'+PN[k]+'</option>';}).join('')+'</select></div>';}).join('')+'</div><div class="lbl" style="font-size:12px;margin-top:8px">Al cambiar quién retira, se recalculan choques, alertas y el calendario.</div></section>'+
   '<section><h2>Horarios laborales</h2>'+hlBody(function(){return '<div class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
    '<label class="fld">Entrada<input class="inp" type="time" data-w="ini" value="'+W.ini+'"></label>'+
    '<label class="fld">Salida<input class="inp" type="time" data-w="fin" value="'+W.fin+'"></label>'+

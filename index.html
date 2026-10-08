@@ -1144,7 +1144,7 @@ function purgeMats(){var t=todayIso(),n=S.mats.length,ch=false;
   S.mats.forEach(function(m){if(m.st===2&&!m.ent){m.ent=t;ch=true;}});
   S.mats=S.mats.filter(function(m){return !(m.st===2&&m.tipo!=='fijo'&&m.ent&&m.ent<t);});
   if(S.mats.length!==n){Object.keys(S.alist||{}).forEach(function(k){S.alist[k].mats=[];});return true;}return ch;}
-document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&typeof FB!=='undefined'&&FB.ready&&purgeMats())render();});
+document.addEventListener('visibilitychange',function(){if(document.visibilityState!=='visible')return;var nd=S.dia0&&S.dia0!==todayIso();if(nd){S.dia0=todayIso();S.sel=idxOf(todayIso());}if(typeof FB!=='undefined'&&FB.ready&&(purgeMats()||nd))render();});
 function alSet(k){var iso=bagDay(),L=mbItems(k),mats=[],nm=k==='agusta'?'Agusta':'Rafaella',miss=S.alMiss||[],names=[],fn=[];S.alMiss=null;
   L.forEach(function(x){var key=x.id.slice(2),isM=miss.indexOf(x.id)>=0;
     if(isM){if(x.id.charAt(0)==='b')delete S.bag[key];else delete S.pk[key];fn.push(x.t);return;}
@@ -2168,7 +2168,7 @@ render=function(){_nidoRender();if(FB.ready)schedulePush();};
 vistaSel=function(){return '<span style="display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap"><b>'+S.vista+'</b><button class="btn sec" style="height:34px;font-size:13px" data-a="logout">Cerrar sesión</button></span>';};
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-a="logout"]');if(b){firebase.auth().signOut().then(function(){location.reload();});}},true);
 
-function nidoBoot(){
+function nidoBoot(){S.sel=idxOf(todayIso());S.dia0=todayIso();
   if(typeof firebase==='undefined'){document.body.insertAdjacentHTML('beforeend','<div class="nlog"><div class="nbox"><h1>Nido</h1><p class="nsub">No se pudo cargar la conexión. Revisa tu internet y recarga la página.</p></div></div>');return;}
   firebase.initializeApp(NIDO_CFG);FB.db=firebase.firestore();try{FB.db.settings({experimentalAutoDetectLongPolling:true,merge:true});}catch(e){}
   try{FB.db.enablePersistence({synchronizeTabs:true}).catch(function(){});}catch(e){}

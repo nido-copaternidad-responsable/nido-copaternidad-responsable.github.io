@@ -521,6 +521,13 @@ nav .fabw{order:-1;justify-content:flex-start;margin-bottom:10px}
 .cdc{padding:10px 12px}.cdc .big{font-size:23px}
 .llc{gap:8px;padding:12px}.llk{gap:2px;padding:8px 10px}.llh{margin-bottom:0}.lla{border-top:none;padding-top:2px}.llc>.btn.sec{margin-top:4px!important;min-height:38px;height:38px}
 .cdot{width:7px;height:7px;border-radius:50%;display:block}.cda .cbar{display:none}
+.wls{--rise:0px}.wls .mbbody{transform-origin:150px 232px}.wls .mbcount{font-size:15px}
+.wlform{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin-top:10px;animation:wlin .35s cubic-bezier(.3,1.3,.5,1)}
+@keyframes wlin{from{opacity:0;transform:translateY(-12px)}}
+.wlamt{display:flex;align-items:center;gap:6px;background:var(--seg);border-radius:16px;padding:6px 16px}.wlamt span{font-family:'Fraunces',Georgia,serif;font-size:34px;color:var(--p)}.wlamt input{flex:1;min-width:0;border:none;background:none;font:inherit;font-family:'Fraunces',Georgia,serif;font-size:38px;font-weight:600;color:var(--ink);outline:none}
+.wlcoin{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:#FFD25E;border:3px solid #D9A02A;color:#9A6A10;font-weight:800;font-size:20px}
+.chp svg{margin-right:6px;vertical-align:-3px}
+.mbfly:has(.wlcoin){background:none;box-shadow:none}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -850,6 +857,34 @@ function fic_0(){var k=KIDS[S.child];
   '<section><h2>Contactos de emergencia</h2>'+rows([['Papá · Philip','[teléfono]'],['Mamá · Javiera','[teléfono]'],['[Familiar de confianza]','[teléfono]']])+'</section>';
 }
 function gas(){return foldAll(gas_0(),{'Registrar gasto':{k:'gre',i:'plus',t:'p',p:'',o:true},'Aportes de papá':{k:'gap',i:'gas',t:'y',p:S.pension?'Pensión pagada':'Pensión por pagar',ok:S.pension},'Movimientos del período':{k:'gmo',i:'list',t:'m',p:S.gastos.filter(function(g){return inF(g.iso);}).length+' movimientos',ok:true,o:true},'Próximos':{k:'gpr',i:'cal',t:'r',p:'2 fechas',ok:true}});}
+var WLI={'Extraordinario 50/50':'swap','Pensión':'gas','Vestimenta (papá)':'shirt','Útiles y buzo (papá)':'clip','Cumpleaños':'spark','Otro':'star'};
+function wlSVG(){return '<svg class="mbsvg" viewBox="0 0 300 250" aria-hidden="true"><defs><clipPath id="wllens"><path d="M50 82Q150 66 250 82L250 136Q150 150 50 136Z"/></clipPath></defs>'+
+  '<ellipse class="mbshadow" cx="150" cy="240" rx="112" ry="8"/><g class="mbbody">'+
+  '<rect fill="var(--bag-d)" x="22" y="66" width="256" height="166" rx="38"/>'+
+  '<rect fill="var(--bag)" x="26" y="62" width="248" height="164" rx="36"/>'+
+  '<path class="mblens" fill="#3A2A33" d="M50 82Q150 66 250 82L250 136Q150 150 50 136Z"/>'+
+  '<g clip-path="url(#wllens)"><g class="mbpeek">'+
+   '<rect x="64" y="92" width="96" height="56" rx="7" fill="#8FD1A6" stroke="#4E9B72" stroke-width="2.5" transform="rotate(-5 112 120)"/><circle cx="112" cy="120" r="14" fill="none" stroke="#4E9B72" stroke-width="2.5" transform="rotate(-5 112 120)"/><text x="112" y="126" text-anchor="middle" font-size="18" font-weight="800" fill="#3B7F5A" transform="rotate(-5 112 120)">$</text>'+
+   '<rect x="150" y="88" width="92" height="56" rx="7" fill="#A8DDB9" stroke="#4E9B72" stroke-width="2.5" transform="rotate(4 196 116)"/><circle cx="196" cy="116" r="14" fill="none" stroke="#4E9B72" stroke-width="2.5" transform="rotate(4 196 116)"/><text x="196" y="122" text-anchor="middle" font-size="18" font-weight="800" fill="#3B7F5A" transform="rotate(4 196 116)">$</text>'+
+   '<rect x="206" y="100" width="46" height="34" rx="6" fill="#FFD25E" stroke="#D9A02A" stroke-width="2"/><rect x="206" y="108" width="46" height="8" fill="#D9A02A"/></g></g>'+
+  '<g class="mbflap"><path fill="var(--bag-l)" d="M26 98Q26 62 66 62L234 62Q274 62 274 98L274 128Q274 156 242 156L58 156Q26 156 26 128Z"/>'+
+  '<path class="mbstitch" d="M42 128Q42 142 62 142L238 142Q258 142 258 128"/></g>'+
+  '<g class="mbname"><circle cx="150" cy="104" r="26" fill="#FFD25E" stroke="#D9A02A" stroke-width="3"/><circle cx="150" cy="104" r="19" fill="none" stroke="#D9A02A" stroke-width="2" stroke-dasharray="3 4"/><text x="150" y="114" text-anchor="middle" font-size="28" font-weight="800" fill="#9A6A10" font-family="DM Sans,sans-serif">$</text></g>'+
+  '<rect fill="var(--bag-d)" x="26" y="158" width="248" height="68" rx="30"/>'+
+  '<rect fill="#FFE08A" x="246" y="150" width="30" height="26" rx="9"/><circle cx="261" cy="163" r="5" fill="#D9A02A"/>'+
+  mbFace(120,196,.85)+
+  '<rect id="mbmouth" x="130" y="70" width="40" height="10" fill="none"/></g></svg>';}
+function wlStage(debeP,tot,cats){var open=!!S.wOpen,f=S.gf,cap='Saldo 50/50 · '+fLabel(),who=debeP>0?'Papá le debe a mamá':(debeP<0?'Mamá le debe a papá':'Sin saldo pendiente');
+  var form=open?'<div class="wlform"><div class="qlbl">¿Qué tipo de gasto es?</div><div class="chps">'+cats.map(function(c){return '<button class="chp'+(f.cat===c?' on':'')+'" data-a="wcat" data-v="'+c+'">'+ic(WLI[c]||'star',16)+c+'</button>';}).join('')+'</div>'+
+    '<div class="wlamt"><span>$</span><input type="number" inputmode="numeric" placeholder="0" data-g="monto" value="'+f.monto+'" aria-label="Monto"></div>'+
+    '<input class="inp" type="text" placeholder="¿En qué fue? (ej: consulta pediatra)" data-g="t" value="'+f.t.replace(/"/g,'&quot;')+'">'+
+    (f.ph.length?'<div style="display:flex;gap:6px">'+f.ph.map(phById).filter(Boolean).map(function(x){return '<img src="'+x.url+'" alt="Comprobante" style="width:56px;height:56px;border-radius:10px;object-fit:cover">';}).join('')+'</div>':'')+
+    '<div style="display:flex;gap:8px"><label class="btn sec upl" style="flex:1">'+ic('camera',18)+'Foto boleta<input type="file" accept="image/*" capture="environment" data-photo="gas:nuevo" data-label="Comprobante de gasto"></label><button class="btn" style="flex:1" data-a="addgasto">Guardar gasto</button></div>'+
+    '<div class="lbl" style="font-size:12px">Extraordinarios: se avisa por correo con respaldo y el otro paga su 50% dentro de 30 días.</div></div>':'';
+  return '<div class="mbs wls'+(open?' open':'')+'" style="--bag:#8E5BC8;--bag-d:#5B2A8A;--bag-l:#B58BE0;--rise:0px"><div class="mbcap"><span>'+cap+'</span></div><span class="mbcount">'+money(Math.abs(debeP))+'</span>'+
+  '<button class="mbbag" data-a="wtog" aria-expanded="'+open+'" aria-label="'+(open?'Cerrar':'Abrir')+' la billetera">'+wlSVG()+'</button>'+
+  '<div class="mbhint">'+(open?'Anota el gasto aquí abajo.':'<b>'+who+'</b> · toca la billetera para anotar un gasto')+'</div>'+
+  '<div class="mbprep">Pagó papá <b>'+money(tot['Papá']||0)+'</b> · Pagó mamá <b>'+money(tot['Mamá']||0)+'</b></div></div>'+form;}
 function gas_0(){
   var G=S.gastos.filter(function(g){return inF(g.iso);});
   var ex=G.filter(function(g){return g.cat==='Extraordinario 50/50';});
@@ -858,11 +893,8 @@ function gas_0(){
   var vest=G.filter(function(g){return g.cat==='Vestimenta (papá)';}).reduce(function(a,g){return a+g.monto;},0);
   var cats=['Extraordinario 50/50','Pensión','Vestimenta (papá)','Útiles y buzo (papá)','Cumpleaños','Otro'];
   var gf=S.gf;
-  return '<div class="card" style="background:var(--hc);border-color:var(--hc);color:var(--onhc)"><div class="cap" style="color:#B9C3C6">Saldo 50/50 · '+fLabel()+'</div><div style="font-family:Fraunces,serif;font-size:30px;font-weight:600">'+money(Math.abs(debeP))+'</div><div style="font-size:14px;color:#DCE3E5">'+(debeP>0?'Papá le debe a mamá':(debeP<0?'Mamá le debe a papá':'Sin saldo pendiente'))+'</div><div style="display:flex;gap:16px;margin-top:10px;font-size:13px;color:#DCE3E5"><span>Pagó papá: <b style="color:#fff">'+money(tot['Papá']||0)+'</b></span><span>Pagó mamá: <b style="color:#fff">'+money(tot['Mamá']||0)+'</b></span></div></div>'+
+  return wlStage(debeP,tot,cats)+
   dateFilter()+
-  '<section><h2>Registrar gasto</h2><div class="card" style="display:flex;flex-direction:column;gap:10px"><input class="inp" type="text" placeholder="Concepto (ej: consulta pediatra)" data-g="t" value="'+gf.t.replace(/"/g,'&quot;')+'"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input class="inp" type="number" inputmode="numeric" placeholder="Monto $" data-g="monto" value="'+gf.monto+'"><select class="inp" data-g="cat">'+cats.map(function(c){return '<option'+(gf.cat===c?' selected':'')+'>'+c+'</option>';}).join('')+'</select></div>'+
-  (gf.ph.length?'<div style="display:flex;gap:6px">'+gf.ph.map(phById).filter(Boolean).map(function(x){return '<img src="'+x.url+'" alt="Comprobante" style="width:56px;height:56px;border-radius:10px;object-fit:cover">';}).join('')+'</div>':'')+
-  '<div style="display:flex;gap:8px"><label class="btn sec upl" style="flex:1">'+ic('camera',18)+'Foto boleta<input type="file" accept="image/*" capture="environment" data-photo="gas:nuevo" data-label="Comprobante de gasto"></label><button class="btn" style="flex:1" data-a="addgasto">Guardar gasto</button></div><div class="lbl" style="font-size:12px">Extraordinarios: se avisa por correo con respaldo y el otro paga su 50% dentro de 30 días.</div></div></section>'+
   '<section><h2>Aportes de papá</h2><div class="card" style="display:flex;flex-direction:column;gap:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><b style="font-size:15px">Pensión de alimentos</b><div class="lbl">$500.000 = 6,971459 UTM (sep 2026) · desde oct 2026 · del 1 al 5 · Cuenta Vista BancoEstado de mamá</div></div><button class="btn'+(S.pension?' ok':'')+'" data-a="pension">'+(S.pension?'Pagada ✓':'Marcar pagada')+'</button></div><div style="height:1px;background:var(--sep)"></div>'+
   '<div><div style="display:flex;justify-content:space-between;margin-bottom:8px"><b style="font-size:15px">Vestuario y calzado</b><span class="lbl">'+money(vest)+' de $50.000</span></div><div class="prog"><div style="width:'+Math.min(100,vest/500)+'%"></div></div></div></div></section>'+
   '<section><h2>Movimientos del período</h2>'+(G.length?'<div class="list">'+G.slice().sort(function(a,b){return a.iso<b.iso?1:-1;}).map(function(g){var ph=(g.ph||[]).map(phById).filter(Boolean);return '<div class="row"><div class="grow"><b style="font-size:14px">'+g.t+'</b><span class="lbl" style="font-size:12px">'+fdate(g.iso)+' · '+g.cat+' · pagó '+g.pago+'</span><span class="chip '+(g.comp||ph.length?'cp':'cm')+'">'+(g.comp||ph.length?'Con comprobante':'Falta comprobante')+'</span>'+(ph.length?'<div style="display:flex;gap:6px;margin-top:4px">'+ph.map(function(x){return '<img src="'+x.url+'" alt="Comprobante" style="width:48px;height:48px;border-radius:8px;object-fit:cover">';}).join('')+'</div>':'')+'</div><div style="text-align:right"><b style="font-size:14px">'+money(g.monto)+'</b>'+(g.cat==='Extraordinario 50/50'?'<div class="lbl" style="font-size:12px">50%: '+money(g.monto/2)+'</div>':'')+'</div>'+delb('gasto',S.gastos.indexOf(g),g.t)+'</div>';}).join('')+'</div>':emptyCard('gastos','Sin gastos en este período','Cuando registres un gasto aparece aquí con su comprobante.'))+'</section>'+
@@ -1971,7 +2003,9 @@ document.addEventListener('click',function(e){
   else if(a==='dfq'){var t=new Date(),f=S.flt;if(v==='hoy'){f.mode='dia';f.dia=isoOf(t);}else{f.mode='rango';var d0=new Date(t),d1=new Date(t);if(v==='sem'){var w=(t.getDay()+6)%7;d0.setDate(t.getDate()-w);d1.setDate(d0.getDate()+6);}else if(v==='mes'){d0=new Date(t.getFullYear(),t.getMonth(),1);d1=new Date(t.getFullYear(),t.getMonth()+1,0);}else{d0.setDate(t.getDate()-29);}f.desde=isoOf(d0);f.hasta=isoOf(d1);}var ix=idxOf(f.mode==='dia'?f.dia:f.desde);if(ix>=0&&ix<35)S.sel=ix;render();}
   else if(a==='aw')set({actWho:v});
   else if(a==='addact'){if(!S.af2.t.trim()){toast('Escribe el detalle');return;}logA(whoMe(),S.af2.tipo,S.af2.t.trim());S.af2.t='';toast('Registro guardado');}
-  else if(a==='addgasto'){var g=S.gf,mo=+String(g.monto).replace(/\D/g,'');if(!g.t.trim()||!mo){toast('Escribe concepto y monto');return;}S.gastos.push({iso:todayIso(),t:g.t.trim(),cat:g.cat,pago:whoMe(),monto:mo,comp:g.ph.length>0,ph:g.ph.slice()});logA(whoMe(),'Gasto',g.t.trim()+' '+money(mo),g.ph.slice());S.gf={t:'',monto:'',cat:g.cat,ph:[]};toast('Gasto guardado'+(g.cat==='Extraordinario 50/50'?' · '+other()+' recibe el aviso':''));}
+  else if(a==='wtog'){S.wOpen=!S.wOpen;render();mbSquish();}
+  else if(a==='wcat'){S.gf.cat=v;render();}
+  else if(a==='addgasto'){var wb=document.querySelector('.wlform [data-a="addgasto"]'),wr=wb?wb.getBoundingClientRect():null,g=S.gf,mo=+String(g.monto).replace(/\D/g,'');if(!g.t.trim()||!mo){toast('Escribe concepto y monto');return;}S.gastos.push({iso:todayIso(),t:g.t.trim(),cat:g.cat,pago:whoMe(),monto:mo,comp:g.ph.length>0,ph:g.ph.slice()});logA(whoMe(),'Gasto',g.t.trim()+' '+money(mo),g.ph.slice());S.gf={t:'',monto:'',cat:g.cat,ph:[]};toast('Gasto guardado'+(g.cat==='Extraordinario 50/50'?' · '+other()+' recibe el aviso':''));setTimeout(function(){mbFly(wr,'<span class="wlcoin">$</span>');},30);setTimeout(function(){S.wOpen=false;render();mbConfetti();},800);}
   else if(a==='infopt'){S.inf[v]=!S.inf[v];render();}
   else if(a==='infwho')set({infWho:v});
   else if(a==='genpdf'){genPDF();}
@@ -2007,7 +2041,7 @@ document.addEventListener('click',function(e){
   else if(a==='fab')set({fab:true});
   else if(a==='fabclose'||a==='fabclose2')set({fab:false});
   else if(a==='fabgo'&&v==='rg'){S.fab=false;S.rgSheet=true;S.rgf={tipo:'',kid:'Ambas',t:''};render();}
-  else if(a==='fabgo'){S.fab=false;if(v==='swapnow'){var ti2=idxOf(todayIso());S.tab='cal';S.sel=ti2;S.swf={iso:todayIso(),tipo:'pide',comp:'',motivo:''};}else if(v==='tarea'){S.tab='tar';S.tarf={t:'',who:whoMe()==='Mamá'?'Mamá':'Papá',iso:''};S.tarOther=false;S.tarSheet=true;}else S.tab=v;render();window.scrollTo(0,0);}
+  else if(a==='fabgo'){S.fab=false;if(v==='swapnow'){var ti2=idxOf(todayIso());S.tab='cal';S.sel=ti2;S.swf={iso:todayIso(),tipo:'pide',comp:'',motivo:''};}else if(v==='tarea'){S.tab='tar';S.tarf={t:'',who:whoMe()==='Mamá'?'Mamá':'Papá',iso:''};S.tarOther=false;S.tarSheet=true;}else{S.tab=v;if(v==='gas')S.wOpen=true;}render();window.scrollTo(0,0);}
   else if(a==='bell')set({bell:true});
   else if(a==='bellclose'||a==='bellclose2')set({bell:false});
   else if(a==='bellcfg'){S.bell=false;S.tab='avi';render();}

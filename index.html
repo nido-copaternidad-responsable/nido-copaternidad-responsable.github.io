@@ -1840,6 +1840,7 @@ function mas(){var SB=masSub();
   setRow('bell','Avisos y recordatorios',avisosList().length?avisosList().length+' activos':'Al día','tab','avi')+
   setRow('spark','Acciones rápidas',qkGet().length+' activas','qkopen')+
   ((S.cfg&&S.cfg.test)?setRow('spark','Iniciar versión final',finEj().n+' ejemplos por quitar','finopen'):'')+
+  ((S.cfg&&S.cfg.test)?'':'<div class="row setr" style="align-items:center"><span class="seti">'+ic('check',20)+'</span><span class="setl">Versión final iniciada</span><span class="setv">'+(S.cfg&&S.cfg.final?fdate(S.cfg.final):'activa')+'</span></div>')+
   setRow('trash','Limpiar datos de prueba',(S.cfg&&S.cfg.test)?'Modo de prueba':'Protegido','tab','lim')+
   setRow('swap','Cambios recientes',(uLoad(),UNDO.length)+' para deshacer','tab','hist')+
   setRow('bell','Notificaciones en el teléfono',ntPerm()==='granted'?'Activadas':'Falta activarlas','ntopen')+

@@ -712,7 +712,7 @@ function dayInfo(i){
   nsl.forEach(function(x){if(x===nsA&&!hol0&&dow<=4)return;ev.push(['Colegio','Sin clases: '+x.why+' ('+x.kids+')'+nsTxt(x),nsWho(x)]);});
   (S.sch||[]).forEach(function(x){if(x.iso===iso0)ev.push(['Colegio',x.t+' ('+x.kid+')',type==='mama'?M:P]);});
   (S.ter||[]).forEach(function(t){if(t.dia!==dow||(t.skip||[]).indexOf(iso0)>=0)return;var hm=tm(t.hora),w=t.casa&&t.casa!=='auto'?(t.casa==='Papá'?P:M):(type==='mama'?M:(type==='tarde'?(hm>=960&&hm<tm(S.work.entrega||'21:00')?P:M):(type==='noche'?(hm>=tm(S.work.wedDrop)?P:M):P)));
-    ev.push([t.hora,'Terapia en casa: '+t.quien+' ('+(t.kid==='agusta'?'Agusta':'Rafaella')+') · en casa de '+(w===P?'papá':'mamá'),w]);});
+    ev.push([t.hora,'Terapia en casa: '+terLbl(t)+' ('+(t.kid==='agusta'?'Agusta':'Rafaella')+') · en casa de '+(w===P?'papá':'mamá'),w]);});
   if(ovr){type=ovr==='mama'?'mama':'noche';ev=[['Todo el día','Cambio acordado: el día queda con '+(ovr==='mama'?'mamá':'papá'),ovr==='mama'?M:P]];}
   return {hol:hol,ns:nsl,swap:!!ovr,d:d,dow:dow,type:type,ev:ev,who:type==='mama'?'Con mamá':(type==='tarde'?'Tarde con papá':'Duermen con papá'),
     label:dias[dow]+' '+d.getDate()+' de '+meses[d.getMonth()]};
@@ -1138,7 +1138,7 @@ function delGet(t,i){var A={ter:(S.ter||[]),jav:javL(),hp:{0:{},1:{},2:{},3:{},4
   if(t==='swap'){return S.swaps.filter(function(w){return w.id===i;})[0]||null;}if(t==='foto'){return S.photos.filter(function(x){return x.id===i;})[0]||null;}
   return A[t]?A[t][+i]||null:null;}
 function delName(t,i){var it=delGet(t,i);if(!it)return '';
-  switch(t){case 'gasto':return it.t+' ('+money(it.monto)+')';case 'dia':return 'nota del '+fdate(it.iso)+(it.t?': '+it.t.slice(0,30):'');case 'mat':case 'prod':case 'sch':case 'vuel':return it.t;case 'ter':return 'la terapia «'+it.quien+'»';case 'jav':return 'el horario del '+it[0].toLowerCase()+' de mamá';case 'red':return it[0];case 'hp':return 'el horario del '+DNL[+i]+' (el día vuelve a tu horario general)';
+  switch(t){case 'gasto':return it.t+' ('+money(it.monto)+')';case 'dia':return 'nota del '+fdate(it.iso)+(it.t?': '+it.t.slice(0,30):'');case 'mat':case 'prod':case 'sch':case 'vuel':return it.t;case 'ter':return 'la terapia «'+terLbl(it)+'»';case 'jav':return 'el horario del '+it[0].toLowerCase()+' de mamá';case 'red':return it[0];case 'hp':return 'el horario del '+DNL[+i]+' (el día vuelve a tu horario general)';
     case 'vac':return 'vacaciones '+fdate(it.desde)+' al '+fdate(it.hasta);case 'swap':return 'cambio del '+fdate(it.iso);case 'med':return it.n;case 'aten':return it.motivo;
     case 'msg':return 'mensaje «'+String(it.t).slice(0,34)+'»';case 'bit':return it.t;case 'foto':return 'foto «'+it.label+'»';}return '';}
 function delItem(t,i){var it=delGet(t,i);if(!it)return false;
@@ -1326,8 +1326,8 @@ function ntNom(r){return r==='Papá'?'Philip':'Javiera';}
 function ntDue(){var L=[],c=ntGet(),me2=whoMe();if(me2!=='Papá'&&me2!=='Mamá')return L;
   var ot=me2==='Papá'?'Mamá':'Papá',ti=idxOf(todayIso()),now=tm(nowHM());
   (S.ter||[]).forEach(function(t){var ni=terNext(t);if(ni===null)return;var iso=isoOf(dayInfo(ni).d),w=terWho(t,ni),casa=(w.who==='Papá'||w.who==='Mamá')?'en casa de '+(w.who==='Papá'?'papá':'mamá'):'(ojo: '+w.warn+')',h=tm(t.hora);
-    if(ni===ti+1&&now>=1080)L.push({id:'ter-'+t.id+'-'+iso+'-d',t:'Mañana hay terapia en casa',b:t.quien+' de '+terNom(t.kid)+' · '+t.hora+' '+casa+'.',tab:'sal'});
-    if(ni===ti&&now>=h-60&&now<h)L.push({id:'ter-'+t.id+'-'+iso+'-h',t:'En 1 hora llega la terapia',b:t.quien+' de '+terNom(t.kid)+' a las '+t.hora+' '+casa+'.',tab:'sal'});});
+    if(ni===ti+1&&now>=1080)L.push({id:'ter-'+t.id+'-'+iso+'-d',t:'Mañana hay terapia en casa',b:terLbl(t)+' de '+terNom(t.kid)+' · '+t.hora+' '+casa+'.',tab:'sal'});
+    if(ni===ti&&now>=h-60&&now<h)L.push({id:'ter-'+t.id+'-'+iso+'-h',t:'En 1 hora llega la terapia',b:terLbl(t)+' de '+terNom(t.kid)+' a las '+t.hora+' '+casa+'.',tab:'sal'});});
   [me2,ot].forEach(function(r){var own=r===me2,on=own?true:c.otro,sub=own?'':(r+' aún no ha ');
     if(!on)return;
     if(c.mochila&&now>=1140&&now<1380){var ni=nextSchoolIdx();if(ni>ti&&nightOwnerI(ni-1)===r){var iso=isoOf(dayInfo(ni).d);['agusta','rafaella'].forEach(function(k){if(!(S.alist||{})[iso+'|'+k]&&!nsFor(iso,k)){var nm=k==='agusta'?'Agusta':'Rafaella';L.push({id:'moc-'+k,t:own?'Mochila sin alistar':'Mochila de '+nm+' sin alistar',b:own?'Aún no has registrado la mochila de '+nm+' para mañana. Prepárala con tiempo.':r+' aún no ha registrado la mochila de '+nm+' para mañana.',tab:'moc'});}});}}
@@ -1406,13 +1406,16 @@ function finRun(){var e=finEj(),has=function(a,b){return a.indexOf(b)>=0;};
   logA(whoMe(),'Sistema','Se inició la versión final: se quitaron '+e.n+' datos de ejemplo y se activó el bloqueo de registros');}
 /* ===== Terapias en casa ===== */
 var TERQ=['Terapeuta ocupacional','Psicopedagoga','Fonoaudióloga','Psicóloga','Kinesióloga','Otra'];
+var TERPROF=[['Terapeuta ocupacional','Vicente'],['Psicopedagoga','Rocío']];
+function terLbl(t){return t.quien+(t.nombre?' '+t.nombre:'');}
 function terNom(k){return k==='agusta'?'Agusta':'Rafaella';}
 function terNext(t){var ti=idxOf(todayIso()),now=tm(nowHM());for(var i=ti;i<ti+60;i++){var x=dayInfo(i),iso=isoOf(x.d);if(x.dow===t.dia&&(t.skip||[]).indexOf(iso)<0&&!(i===ti&&now>tm(t.hora)))return i;}return null;}
 function terWho(t,i){if(t.casa&&t.casa!=='auto')return {who:t.casa,fix:true};var h=tm(t.hora),B=dayBlocks(i).filter(function(b){return h>=b[0]&&h<b[1];})[0];var w=B?B[2]:'Mamá';return {who:w,warn:(w!=='Papá'&&w!=='Mamá')?('a esa hora están '+(w==='Colegio'?'en el colegio':'con la '+w.toLowerCase())):''};}
 function terSheet(){var f=S.terf,hp=function(a,b,c,d){return '<button class="chp'+(a?' on':'')+'" data-a="'+b+'" data-v="'+c+'">'+d+'</button>';},dn=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
   var pre='';try{var ti=idxOf(todayIso()),pi=null;for(var i=ti;i<ti+14;i++){if(dayInfo(i).dow===f.dia){pi=i;break;}}if(pi!==null){var w=terWho({hora:f.hora,casa:f.casa},pi);pre='Cada '+DNL[f.dia]+' a las '+f.hora+' · '+(w.fix?'en casa de '+(w.who==='Papá'?'papá':'mamá'):'según el régimen: '+(w.who==='Papá'||w.who==='Mamá'?'casa de '+(w.who==='Papá'?'papá':'mamá'):w.warn));}}catch(e){}
   return '<div class="sheetbg" data-a="terclose"><div class="sheet tall" role="dialog" aria-label="Terapia en casa">'+sheetTop('Terapia en casa')+
-  '<div class="qlbl">¿Quién es?</div><div class="chps">'+TERQ.map(function(q){return hp(f.quien===q,'terq',q,q);}).join('')+'</div>'+(TERQ.indexOf(f.quien)<0||f.quien==='Otra'?'<input class="inp" type="text" placeholder="Nombre o especialidad" data-ter="otra" value="'+String(f.otra||'').replace(/"/g,'&quot;')+'">':'')+
+  '<div class="qlbl">Profesionales</div><div class="chps">'+TERPROF.map(function(p){return hp(f.quien===p[0]&&f.nombre===p[1],'terp',p[0]+'|'+p[1],p[1]+' · '+p[0]);}).join('')+'</div><div class="qlbl">¿Quién es?</div><div class="chps">'+TERQ.map(function(q){return hp(f.quien===q,'terq',q,q);}).join('')+'</div>'+(TERQ.indexOf(f.quien)<0||f.quien==='Otra'?'<input class="inp" type="text" placeholder="Nombre o especialidad" data-ter="otra" value="'+String(f.otra||'').replace(/"/g,'&quot;')+'">':'')+
+  '<label class="fld">Nombre <span class="lbl" style="font-weight:400">(opcional)</span><input class="inp" type="text" placeholder="Ej: Vicente" data-ter="nombre" value="'+String(f.nombre||'').replace(/"/g,'&quot;')+'"></label>'+
   '<div class="qlbl">¿Qué día de la semana?</div><div class="chps">'+dn.map(function(d,i){return hp(f.dia===i,'terd',i,d);}).join('')+'</div>'+
   '<label class="fld">Hora de la visita<input class="inp" type="time" data-ter="hora" value="'+f.hora+'"></label>'+
   '<div class="qlbl">¿En qué casa?</div><div class="chps">'+hp(f.casa==='auto','terc','auto','Según el régimen')+hp(f.casa==='Papá','terc','Papá','Casa de papá')+hp(f.casa==='Mamá','terc','Mamá','Casa de mamá')+'</div>'+
@@ -1421,7 +1424,7 @@ function terSheet(){var f=S.terf,hp=function(a,b,c,d){return '<button class="chp
   '<button class="btn" style="height:50px" data-a="tersave">Guardar</button><button class="btn sec" style="border:none" data-a="terclose">Cancelar</button></div></div>';}
 function terSec(){var k=S.child,L=(S.ter||[]).map(function(t,i){return [t,i];}).filter(function(x){return x[0].kid===k;});
   return '<section><h2>Terapias en casa</h2>'+(L.length?'<div style="display:flex;flex-direction:column;gap:10px">'+L.map(function(x){var t=x[0],i=x[1],ni=terNext(t),w=ni!==null?terWho(t,ni):null,iso=ni!==null?isoOf(dayInfo(ni).d):'';
-    return '<div class="card" style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><button data-a="teredit" data-v="'+i+'" style="background:none;border:none;font:inherit;color:inherit;text-align:left;padding:0;flex:1"><b style="font-size:15px">'+t.quien+'</b><div class="lbl">Cada '+DNL[t.dia]+' · '+t.hora+' · '+(t.casa==='auto'?'casa según régimen':'casa de '+(t.casa==='Papá'?'papá':'mamá'))+'</div></button>'+delb('ter',i,t.quien)+'</div>'+
+    return '<div class="card" style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><button data-a="teredit" data-v="'+i+'" style="background:none;border:none;font:inherit;color:inherit;text-align:left;padding:0;flex:1"><b style="font-size:15px">'+t.quien+(t.nombre?' · '+t.nombre:'')+'</b><div class="lbl">Cada '+DNL[t.dia]+' · '+t.hora+' · '+(t.casa==='auto'?'casa según régimen':'casa de '+(t.casa==='Papá'?'papá':'mamá'))+'</div></button>'+delb('ter',i,terLbl(t))+'</div>'+
       (ni!==null?'<div style="padding:10px 12px;background:var(--pt);border-radius:12px;font-size:14px"><b style="color:var(--pd)">Próxima: '+fdate(iso)+' · '+t.hora+'</b><div style="color:var(--ink2)">'+(w.who==='Papá'||w.who==='Mamá'?'En casa de '+(w.who==='Papá'?'papá':'mamá')+'. Debe recibirla '+w.who+'.':'<span style="color:var(--rd)">Ojo: '+w.warn+'.</span>')+'</div></div><button class="btn sec" data-a="terskip" data-v="'+i+'" style="height:40px;font-size:13px">No habrá esta visita</button>':'<div class="lbl">Sin próximas fechas.</div>')+'</div>';}).join('')+'</div>':'<div class="card lbl">'+terNom(k)+' no tiene terapias en casa registradas.</div>')+
   '<button class="addb" data-a="teradd">'+ic('plus',18)+'Agregar terapia en casa</button></section>';}
 function otherWho(){return whoMe()==='Mamá'?'Papá':'Mamá';}
@@ -2297,17 +2300,18 @@ document.addEventListener('click',function(e){
   else if(a==='ntoff'){try{localStorage.setItem('nido_nt_off','1');}catch(e){}render();}
   else if(a==='ntt'){var c2=ntGet();c2[v]=!c2[v];ntSet(c2);render();}
   else if(a==='nttest'){ntShow({id:'prueba-'+Date.now(),t:'Nido · aviso de prueba',b:'Así te llegarán los recordatorios.',tab:'hoy'});}
-  else if(a==='teradd'){S.terf={id:'',i:-1,kid:S.child,quien:'Terapeuta ocupacional',otra:'',dia:1,hora:'16:00',casa:'auto',skip:[]};render();}
+  else if(a==='teradd'){S.terf={id:'',i:-1,kid:S.child,quien:'Terapeuta ocupacional',nombre:'',otra:'',dia:1,hora:'16:00',casa:'auto',skip:[]};render();}
   else if(a==='teredit'){var te=S.ter[+v];if(te){S.terf=JSON.parse(JSON.stringify(te));S.terf.i=+v;S.terf.otra=TERQ.indexOf(te.quien)<0?te.quien:'';if(TERQ.indexOf(te.quien)<0)S.terf.quien='Otra';render();}}
   else if(a==='terclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.terf=null;render();}
   else if(a==='terq'){S.terf.quien=v;render();}
+  else if(a==='terp'){var pq=v.split('|');S.terf.quien=pq[0];S.terf.nombre=pq[1];render();}
   else if(a==='terd'){S.terf.dia=+v;render();}
   else if(a==='terc'){S.terf.casa=v;render();}
   else if(a==='terun'){S.terf.skip=(S.terf.skip||[]).filter(function(x){return x!==v;});render();}
   else if(a==='tersave'){var tf2=S.terf,nm2=tf2.quien==='Otra'?(tf2.otra||'').trim():tf2.quien;if(!nm2){toast('Escribe quién es');return;}if(!tf2.hora){toast('Elige la hora');return;}
-    var rec={id:tf2.id||('t'+Date.now()),kid:tf2.kid,quien:nm2,dia:tf2.dia,hora:tf2.hora,casa:tf2.casa,skip:tf2.skip||[]};S.ter=S.ter||[];if(tf2.i>=0&&S.ter[tf2.i])S.ter[tf2.i]=rec;else S.ter.push(rec);
-    logA(whoMe(),'Salud','Terapia en casa '+(tf2.i>=0?'actualizada':'agregada')+': '+nm2+' de '+terNom(rec.kid)+', cada '+DNL[rec.dia]+' a las '+rec.hora);S.terf=null;toast('Terapia guardada · '+other()+' la verá');render();}
-  else if(a==='terskip'){var ts2=S.ter[+v];if(ts2){var ni2=terNext(ts2);if(ni2!==null){var iso2=isoOf(dayInfo(ni2).d);ts2.skip=(ts2.skip||[]).concat([iso2]);logA(whoMe(),'Salud','No habrá la visita de '+ts2.quien+' del '+fdate(iso2));toast('Anotado: no habrá visita el '+fdate(iso2));}}render();}
+    var rec={id:tf2.id||('t'+Date.now()),kid:tf2.kid,quien:nm2,nombre:(tf2.nombre||'').trim(),dia:tf2.dia,hora:tf2.hora,casa:tf2.casa,skip:tf2.skip||[]};S.ter=S.ter||[];if(tf2.i>=0&&S.ter[tf2.i])S.ter[tf2.i]=rec;else S.ter.push(rec);
+    logA(whoMe(),'Salud','Terapia en casa '+(tf2.i>=0?'actualizada':'agregada')+': '+terLbl(rec)+' de '+terNom(rec.kid)+', cada '+DNL[rec.dia]+' a las '+rec.hora);S.terf=null;toast('Terapia guardada · '+other()+' la verá');render();}
+  else if(a==='terskip'){var ts2=S.ter[+v];if(ts2){var ni2=terNext(ts2);if(ni2!==null){var iso2=isoOf(dayInfo(ni2).d);ts2.skip=(ts2.skip||[]).concat([iso2]);logA(whoMe(),'Salud','No habrá la visita de '+terLbl(ts2)+' del '+fdate(iso2));toast('Anotado: no habrá visita el '+fdate(iso2));}}render();}
   else if(a==='finopen'){S.finf='';S.finSheet=true;render();}
   else if(a==='finclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.finSheet=false;render();}
   else if(a==='finrun'){if((S.finf||'').trim().toUpperCase()!=='INICIAR')return;finRun();S.finSheet=false;toast('Versión final iniciada: ejemplos quitados y registros protegidos');render();}

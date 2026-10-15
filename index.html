@@ -1379,6 +1379,25 @@ function deudaCard(){var x=gasDeuda();if(!x.n||Math.round(x.d)===0)return '';var
 function wlPrev(){var f=S.gf,mo=+String(f.monto).replace(/\D/g,''),pg=f.pago||whoMe();return (f.cat==='Extraordinario 50/50'&&mo>0)?(pg==='Papá'?'Mamá':'Papá')+' le debe '+money(mo/2)+' a '+(pg==='Papá'?'papá':'mamá'):'';}
 function gasMenuTxt(){var d=0;S.gastos.filter(function(g){return inF(g.iso)&&g.cat==='Extraordinario 50/50'&&!g.saldado;}).forEach(function(g){d+=g.pago==='Mamá'?g.monto/2:-g.monto/2;});
   return d>0?'Papá le debe '+money(d)+' a mamá':(d<0?'Mamá le debe '+money(-d)+' a papá':'Al día · registra un pago y su comprobante');}
+/* ===== Iniciar versión final: quita solo los ejemplos y activa el bloqueo ===== */
+var SEED_MATS=['[Material pedido por el colegio]|2026-10-02','Pañales y toallitas húmedas|2026-10-05','Delantal marcado con nombre|2026-10-07'],SEED_VUE=['Polerón de Agusta','Chaleco y muda de Rafaella','Botella de agua'];
+function finEj(){var g=S.gastos.filter(function(x){return x.ej;}),m=S.msgs.filter(function(x){return x.ej;}),d=S.diario.filter(function(x){return x.ej;}),sc=S.sch.filter(function(x){return x.ej;}),
+  ma=S.mats.filter(function(x){return SEED_MATS.indexOf(x.t+'|'+x.f)>=0;}),vu=S.vuelta.filter(function(x){return SEED_VUE.indexOf(x.t)>=0;}),me=S.meds.filter(function(x){return /ejemplo/i.test(x.n);});
+  return {g:g,m:m,d:d,sc:sc,ma:ma,vu:vu,me:me,n:g.length+m.length+d.length+sc.length+ma.length+vu.length+me.length};}
+function finSheet(){var e=finEj(),f=S.finf||'',ok=f.trim().toUpperCase()==='INICIAR',rows=[['Gastos de ejemplo',e.g.length],['Mensajes de ejemplo',e.m.length],['Notas de diario de ejemplo',e.d.length],['Eventos escolares de ejemplo',e.sc.length],['Materiales de ejemplo',e.ma.length],['Va y vuelve de ejemplo',e.vu.length],['Medicamentos de ejemplo',e.me.length]].filter(function(r){return r[1]>0;});
+  return '<div class="sheetbg" data-a="finclose"><div class="sheet tall" role="dialog" aria-label="Iniciar versión final">'+sheetTop('Iniciar versión final')+
+  '<div style="font-size:14px;color:var(--ink2)">Se quitan <b>solo los datos de ejemplo</b>. Lo que ustedes ya cargaron se queda, y desde ese momento los gastos y pagos se pueden borrar solo durante 1 hora.</div>'+
+  (rows.length?'<div class="list">'+rows.map(function(r){return '<div class="row"><span style="font-size:14px">'+r[0]+'</span><b>'+r[1]+'</b></div>';}).join('')+'</div>':'<div class="lbl" style="font-size:13px">No quedan datos de ejemplo por quitar.</div>')+
+  '<div class="mthelp">Los gastos y pagos reales que no tengan hora registrada tendrán 1 hora desde ahora para corregirse. La bitácora, el registro y las fotos no se tocan.</div>'+
+  '<div class="qlbl">Escribe INICIAR para confirmar</div><input class="inp" type="text" data-fin="1" autocapitalize="characters" placeholder="INICIAR" value="'+f.replace(/"/g,'&quot;')+'">'+
+  '<button id="finrun" class="btn" style="height:50px" data-a="finrun"'+(ok?'':' disabled')+'>Iniciar versión final</button><button class="btn sec" style="border:none" data-a="finclose">Cancelar</button></div></div>';}
+function finRun(){var e=finEj(),has=function(a,b){return a.indexOf(b)>=0;};
+  S.gastos=S.gastos.filter(function(x){return !has(e.g,x);});S.msgs=S.msgs.filter(function(x){return !has(e.m,x);});S.diario=S.diario.filter(function(x){return !has(e.d,x);});S.sch=S.sch.filter(function(x){return !has(e.sc,x);});
+  S.mats=S.mats.filter(function(x){return !has(e.ma,x);});S.vuelta=S.vuelta.filter(function(x){return !has(e.vu,x);});S.meds=S.meds.filter(function(x){return !has(e.me,x);});
+  var now=Date.now();S.gastos.forEach(function(g){if(!g.ts)g.ts=now;if(g.saldado&&!g.saldado.ts)g.saldado.ts=now;});
+  S.pension=S.gastos.some(function(g){return g.cat==='Pensión'&&String(g.iso).slice(0,7)===todayIso().slice(0,7);});
+  S.cfg=S.cfg||{};S.cfg.test=false;S.cfg.final=todayIso();
+  logA(whoMe(),'Sistema','Se inició la versión final: se quitaron '+e.n+' datos de ejemplo y se activó el bloqueo de registros');}
 function otherWho(){return whoMe()==='Mamá'?'Papá':'Mamá';}
 function tarMine(t){var m=whoMe();return t.who===m||t.who==='Ambos';}
 function tarPendMine(){return (S.tareas||[]).filter(function(t){return !t.done&&tarMine(t);}).length;}
@@ -1820,6 +1839,7 @@ function mas(){var SB=masSub();
   setRow('image','Perfiles y fotos','4 perfiles','tab','per')+
   setRow('bell','Avisos y recordatorios',avisosList().length?avisosList().length+' activos':'Al día','tab','avi')+
   setRow('spark','Acciones rápidas',qkGet().length+' activas','qkopen')+
+  ((S.cfg&&S.cfg.test)?setRow('spark','Iniciar versión final',finEj().n+' ejemplos por quitar','finopen'):'')+
   setRow('trash','Limpiar datos de prueba',(S.cfg&&S.cfg.test)?'Modo de prueba':'Protegido','tab','lim')+
   setRow('swap','Cambios recientes',(uLoad(),UNDO.length)+' para deshacer','tab','hist')+
   setRow('bell','Notificaciones en el teléfono',ntPerm()==='granted'?'Activadas':'Falta activarlas','ntopen')+
@@ -2032,6 +2052,7 @@ function render(){
   if(S.vuSheet)h+=vuSheet();
   if(S.tsh)h+=tsSheet();
   if(S.palSheet)h+=palSheet();
+  if(S.finSheet)h+=finSheet();
   if(S.ntSheet)h+=ntSheet();
   if(S.nsSheet)h+=nsSheet();
   if(S.tarSheet)h+=tarSheet();
@@ -2247,6 +2268,9 @@ document.addEventListener('click',function(e){
   else if(a==='ntoff'){try{localStorage.setItem('nido_nt_off','1');}catch(e){}render();}
   else if(a==='ntt'){var c2=ntGet();c2[v]=!c2[v];ntSet(c2);render();}
   else if(a==='nttest'){ntShow({id:'prueba-'+Date.now(),t:'Nido · aviso de prueba',b:'Así te llegarán los recordatorios.',tab:'hoy'});}
+  else if(a==='finopen'){S.finf='';S.finSheet=true;render();}
+  else if(a==='finclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.finSheet=false;render();}
+  else if(a==='finrun'){if((S.finf||'').trim().toUpperCase()!=='INICIAR')return;finRun();S.finSheet=false;toast('Versión final iniciada: ejemplos quitados y registros protegidos');render();}
   else if(a==='palopen'){S.palSheet=true;render();}
   else if(a==='palclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.palSheet=false;render();}
   else if(a==='palset'){palSet(v);render();}
@@ -2259,14 +2283,14 @@ document.addEventListener('click',function(e){
   else if(a==='share')toast('Resumen enviado a '+other()+' (demo)');
   else if(a==='gasto')toast('Aquí se sube la boleta o foto (demo)');
 });
-document.addEventListener('input',function(e){var D=e.target.dataset||{};if(D.vu){S.vuf[D.vu]=e.target.value;return;}if(D.clr){S.clr=S.clr||{sel:{},txt:''};S.clr[D.clr]=e.target.value;var lb=document.getElementById('limrun');if(lb)lb.disabled=!(limOn().length>0&&e.target.value.trim().toUpperCase()==='BORRAR');return;}if(D.tf){S.tarf[D.tf]=e.target.value;return;}if(D.ts&&S.tsh){S.tsh[D.ts]=e.target.value;return;}if(D.rg){S.rgf[D.rg]=e.target.value;return;}if(D.sm){S.semf[D.sm]=e.target.value;return;}if(D.q){S.qdraft=e.target.value;return;}if(D.dd){S.ddraft[D.dd]=e.target.value;return;}if(D.sc){S.schf[D.sc]=e.target.value;return;}if(D.vf==='dest'){S.vf.dest=e.target.value;return;}if(D.c){S.cdraft=e.target.value;return;}if(D.sw&&S.swf){S.swf[D.sw]=e.target.value;return;}if(D.ed&&S.edit){S.edit.txt=e.target.value;return;}if(D.g){S.gf[D.g]=e.target.value;var wp=document.getElementById('wlprev');if(wp)wp.textContent=wlPrev();return;}if(D.a2){S.af2[D.a2]=e.target.value;if(D.a2==='tipo')render();return;}if(D.nb&&S.nb){S.nb[D.nb]=e.target.value;if(D.nb==='tipo'||D.nb==='contra')render();return;}if(D.m){S.mfm[D.m]=e.target.value;return;}if(D.af){S.af[D.af]=e.target.value;return;}if(e.target.dataset&&e.target.dataset.f==='txt')S.mf.txt=e.target.value;if(e.target.dataset&&e.target.dataset.f==='pf')S.pf=e.target.value;});
+document.addEventListener('input',function(e){var D=e.target.dataset||{};if(D.vu){S.vuf[D.vu]=e.target.value;return;}if(D.clr){S.clr=S.clr||{sel:{},txt:''};S.clr[D.clr]=e.target.value;var lb=document.getElementById('limrun');if(lb)lb.disabled=!(limOn().length>0&&e.target.value.trim().toUpperCase()==='BORRAR');return;}if(D.tf){S.tarf[D.tf]=e.target.value;return;}if(D.ts&&S.tsh){S.tsh[D.ts]=e.target.value;return;}if(D.rg){S.rgf[D.rg]=e.target.value;return;}if(D.sm){S.semf[D.sm]=e.target.value;return;}if(D.q){S.qdraft=e.target.value;return;}if(D.dd){S.ddraft[D.dd]=e.target.value;return;}if(D.sc){S.schf[D.sc]=e.target.value;return;}if(D.vf==='dest'){S.vf.dest=e.target.value;return;}if(D.c){S.cdraft=e.target.value;return;}if(D.sw&&S.swf){S.swf[D.sw]=e.target.value;return;}if(D.ed&&S.edit){S.edit.txt=e.target.value;return;}if(D.fin){S.finf=e.target.value;var fb=document.getElementById('finrun');if(fb)fb.disabled=e.target.value.trim().toUpperCase()!=='INICIAR';return;}if(D.g){S.gf[D.g]=e.target.value;var wp=document.getElementById('wlprev');if(wp)wp.textContent=wlPrev();return;}if(D.a2){S.af2[D.a2]=e.target.value;if(D.a2==='tipo')render();return;}if(D.nb&&S.nb){S.nb[D.nb]=e.target.value;if(D.nb==='tipo'||D.nb==='contra')render();return;}if(D.m){S.mfm[D.m]=e.target.value;return;}if(D.af){S.af[D.af]=e.target.value;return;}if(e.target.dataset&&e.target.dataset.f==='txt')S.mf.txt=e.target.value;if(e.target.dataset&&e.target.dataset.f==='pf')S.pf=e.target.value;});
 document.addEventListener('change',function(e){var D=e.target.dataset||{};
   if(D.vs){S.vista=e.target.value;S.tab='hoy';render();return;}
   if(D.sc){S.schf[D.sc]=e.target.value;return;}
   if(D.vf&&D.vf!=='dest'){if(e.target.value){S.vf[D.vf]=e.target.value;render();}return;}
   if(D.sw&&S.swf){S.swf[D.sw]=e.target.value;return;}
   if(D.df){if(e.target.value){S.flt[D.df]=e.target.value;var f=S.flt;if(f.desde>f.hasta){var tt=f.desde;f.desde=f.hasta;f.hasta=tt;}var ix=idxOf(D.df==='dia'?f.dia:f.desde);if(ix>=0&&ix<35)S.sel=ix;render();}return;}
-  if(D.g){S.gf[D.g]=e.target.value;var wp=document.getElementById('wlprev');if(wp)wp.textContent=wlPrev();return;}
+  if(D.fin){S.finf=e.target.value;var fb=document.getElementById('finrun');if(fb)fb.disabled=e.target.value.trim().toUpperCase()!=='INICIAR';return;}if(D.g){S.gf[D.g]=e.target.value;var wp=document.getElementById('wlprev');if(wp)wp.textContent=wlPrev();return;}
   if(D.photo&&D.photo.indexOf('av:')===0){var f0=e.target.files&&e.target.files[0];if(!f0)return;var kk=D.photo.slice(3);readSq(f0,function(u){if(u){S.avt[kk]=u;toast('Foto de '+AVN[kk]+' guardada');}});return;}
   if(D.photo&&S.fab)S.fab=false;
   if(D.photo||D.nbfile||D.bfile){var fs=[].slice.call(e.target.files||[]);if(!fs.length)return;var left=fs.length,cnt=0;

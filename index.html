@@ -544,7 +544,7 @@ nav .fabw{order:-1;justify-content:flex-start;margin-bottom:10px}
 <script>
 var S={tab:'hoy',sel:0,child:'agusta',rut:'rutina',call:false,approved:false,em:false,emType:null,pension:false,vista:'Philip',toast:'',wk:'papa',mkid:'agusta',sem:{agusta:{0:['Libro de la biblioteca'],2:['Zapatillas para educación física'],4:['Cuento o juguete para compartir']},rafaella:{0:['Pañales y toallitas para la semana'],4:['Traer de vuelta la muda usada']}},semf:{dia:'0',txt:''},pk:{},
 bag:{},alist:{},cfg:{test:true},vuSheet:false,vuf:{t:'',d:'En casa de papá'},clr:null,cf:null,alMiss:null,acc:{},tarP:'',tarHide:false,agP:'',tareas:[],tarf:{t:'',who:'Papá',iso:''},tarOther:false,tarFilter:'mias',nosch:[],nsf:{kids:'Ambas',iso:'',why:'Paro',care:'Por definir'},mfOther:false,nsOther:false,mf:{txt:'',kid:'agusta',fecha:'2026-10-02',tipo:'espo'},
-pantry:[{t:'Barras de cereal',k:'Ambas',st:0},{t:'Galletas',k:'Ambas',st:0},{t:'Yogurt',k:'Ambas',st:1},{t:'Leche',k:'Ambas',st:0},{t:'Pañales',k:'Rafaella',st:1},{t:'Toallitas húmedas',k:'Rafaella',st:2}],tpP:'mes',nav:{},hl:'p',hlEdit:false,jav:null,red:null,pf:'',pfh:{p:true,m:true},
+pantry:[{t:'Barras de cereal',k:'Ambas',st:0},{t:'Galletas',k:'Ambas',st:0},{t:'Yogurt',k:'Ambas',st:1},{t:'Leche',k:'Ambas',st:0},{t:'Pañales',k:'Rafaella',st:1},{t:'Toallitas húmedas',k:'Rafaella',st:2}],tpP:'mes',ter:[],terf:null,nav:{},hl:'p',hlEdit:false,jav:null,red:null,pf:'',pfh:{p:true,m:true},
 mats:[{t:'[Material pedido por el colegio]',k:'Agusta',f:'2026-10-02',st:0},{t:'Pañales y toallitas húmedas',k:'Rafaella',f:'2026-10-05',st:1},{t:'Delantal marcado con nombre',k:'Agusta',f:'2026-10-07',st:2}],
 vuelta:[{t:'Polerón de Agusta',d:'En casa de papá',ok:false},{t:'Chaleco y muda de Rafaella',d:'En casa de papá',ok:false},{t:'Botella de agua',d:'En casa de mamá',ok:true}],
 work:{ini:'08:30',fin:'17:00',llegada:'10:00',salidaA:'15:30',salidaR:'16:00',viaje:'30',pick:{1:'papa',2:'mama',3:'papa',4:'abm'},comp:{0:'19:15',4:'19:15'},compOn:true,wedDrop:'20:00',entrega:'21:00',temp:{on:true,aprob:false,dias:[1,3],ini:'06:30',fin:'15:00',pA:'16:00',pR:'16:30'},morn:{0:'papa',1:'mama',2:'papa',3:'mama',4:'papa'},authHasta:'10:00',jav9:false},
@@ -711,6 +711,8 @@ function dayInfo(i){
   if(hol&&dow<=4){ev=ev.filter(function(e){return !/^0/.test(e[0])&&!/Retiro de|colegio/.test(e[1]);});ev.unshift(['Todo el día',hol0?'Feriado: '+hol0+' · sin clases':'Sin clases: '+nsA.why+nsTxt(nsA),hol0?(type==='mama'?M:P):nsWho(nsA)]);}else if(hol){ev.unshift(['','Feriado: '+hol,type==='mama'?M:P]);}
   nsl.forEach(function(x){if(x===nsA&&!hol0&&dow<=4)return;ev.push(['Colegio','Sin clases: '+x.why+' ('+x.kids+')'+nsTxt(x),nsWho(x)]);});
   (S.sch||[]).forEach(function(x){if(x.iso===iso0)ev.push(['Colegio',x.t+' ('+x.kid+')',type==='mama'?M:P]);});
+  (S.ter||[]).forEach(function(t){if(t.dia!==dow||(t.skip||[]).indexOf(iso0)>=0)return;var hm=tm(t.hora),w=t.casa&&t.casa!=='auto'?(t.casa==='Papá'?P:M):(type==='mama'?M:(type==='tarde'?(hm>=960&&hm<tm(S.work.entrega||'21:00')?P:M):(type==='noche'?(hm>=tm(S.work.wedDrop)?P:M):P)));
+    ev.push([t.hora,'Terapia en casa: '+t.quien+' ('+(t.kid==='agusta'?'Agusta':'Rafaella')+') · en casa de '+(w===P?'papá':'mamá'),w]);});
   if(ovr){type=ovr==='mama'?'mama':'noche';ev=[['Todo el día','Cambio acordado: el día queda con '+(ovr==='mama'?'mamá':'papá'),ovr==='mama'?M:P]];}
   return {hol:hol,ns:nsl,swap:!!ovr,d:d,dow:dow,type:type,ev:ev,who:type==='mama'?'Con mamá':(type==='tarde'?'Tarde con papá':'Duermen con papá'),
     label:dias[dow]+' '+d.getDate()+' de '+meses[d.getMonth()]};
@@ -1132,11 +1134,11 @@ function gasEditable(g){if(!g)return false;if(gTest())return true;return !!g.ts&
 function payEditable(g){if(!g||!g.saldado)return false;if(gTest())return true;var q=g.saldado;return !!q.ts&&Date.now()-q.ts<3600000&&q.by===whoMe();}
 function canDel(t,i){if(t==='gasto')return gasEditable(S.gastos[+i]);return ({msg:1,bit:1,foto:1})[t]?!!(S.cfg&&S.cfg.test):true;}
 function delb(t,i,lab,cls){if(!canDel(t,i))return '';return '<button class="delb'+(cls?' '+cls:'')+'" data-a="del" data-v="'+t+'|'+i+'" aria-label="Eliminar'+(lab?' '+String(lab).replace(/"/g,''):'')+'">'+ic('trash',cls==='mini'?13:17)+'</button>';}
-function delGet(t,i){var A={jav:javL(),hp:{0:{},1:{},2:{},3:{},4:{}},red:redL(),vuel:S.vuelta,gasto:S.gastos,dia:S.diario,mat:S.mats,prod:S.pantry,sch:S.sch,vac:S.vacs,med:S.meds,aten:S.aten,msg:S.msgs,bit:S.bit};
+function delGet(t,i){var A={ter:(S.ter||[]),jav:javL(),hp:{0:{},1:{},2:{},3:{},4:{}},red:redL(),vuel:S.vuelta,gasto:S.gastos,dia:S.diario,mat:S.mats,prod:S.pantry,sch:S.sch,vac:S.vacs,med:S.meds,aten:S.aten,msg:S.msgs,bit:S.bit};
   if(t==='swap'){return S.swaps.filter(function(w){return w.id===i;})[0]||null;}if(t==='foto'){return S.photos.filter(function(x){return x.id===i;})[0]||null;}
   return A[t]?A[t][+i]||null:null;}
 function delName(t,i){var it=delGet(t,i);if(!it)return '';
-  switch(t){case 'gasto':return it.t+' ('+money(it.monto)+')';case 'dia':return 'nota del '+fdate(it.iso)+(it.t?': '+it.t.slice(0,30):'');case 'mat':case 'prod':case 'sch':case 'vuel':return it.t;case 'jav':return 'el horario del '+it[0].toLowerCase()+' de mamá';case 'red':return it[0];case 'hp':return 'el horario del '+DNL[+i]+' (el día vuelve a tu horario general)';
+  switch(t){case 'gasto':return it.t+' ('+money(it.monto)+')';case 'dia':return 'nota del '+fdate(it.iso)+(it.t?': '+it.t.slice(0,30):'');case 'mat':case 'prod':case 'sch':case 'vuel':return it.t;case 'ter':return 'la terapia «'+it.quien+'»';case 'jav':return 'el horario del '+it[0].toLowerCase()+' de mamá';case 'red':return it[0];case 'hp':return 'el horario del '+DNL[+i]+' (el día vuelve a tu horario general)';
     case 'vac':return 'vacaciones '+fdate(it.desde)+' al '+fdate(it.hasta);case 'swap':return 'cambio del '+fdate(it.iso);case 'med':return it.n;case 'aten':return it.motivo;
     case 'msg':return 'mensaje «'+String(it.t).slice(0,34)+'»';case 'bit':return it.t;case 'foto':return 'foto «'+it.label+'»';}return '';}
 function delItem(t,i){var it=delGet(t,i);if(!it)return false;
@@ -1148,6 +1150,7 @@ function delItem(t,i){var it=delGet(t,i);if(!it)return false;
   else if(t==='vuel')S.vuelta.splice(+i,1);
   else if(t==='sch')S.sch.splice(+i,1);
   else if(t==='jav')S.jav.splice(+i,1);
+  else if(t==='ter')S.ter.splice(+i,1);
   else if(t==='hp'){if(S.work.hp)delete S.work.hp[+i];}
   else if(t==='red')S.red.splice(+i,1);
   else if(t==='vac'){if(it.estado==='Aceptada'){for(var di=idxOf(it.desde);di<=idxOf(it.hasta);di++)delete S.ov[isoOf(dayInfo(di).d)];}S.vacs.splice(+i,1);}
@@ -1322,6 +1325,9 @@ function ntMark(id){var o=ntSent(),d=todayIso();Object.keys(o).forEach(function(
 function ntNom(r){return r==='Papá'?'Philip':'Javiera';}
 function ntDue(){var L=[],c=ntGet(),me2=whoMe();if(me2!=='Papá'&&me2!=='Mamá')return L;
   var ot=me2==='Papá'?'Mamá':'Papá',ti=idxOf(todayIso()),now=tm(nowHM());
+  (S.ter||[]).forEach(function(t){var ni=terNext(t);if(ni===null)return;var iso=isoOf(dayInfo(ni).d),w=terWho(t,ni),casa=(w.who==='Papá'||w.who==='Mamá')?'en casa de '+(w.who==='Papá'?'papá':'mamá'):'(ojo: '+w.warn+')',h=tm(t.hora);
+    if(ni===ti+1&&now>=1080)L.push({id:'ter-'+t.id+'-'+iso+'-d',t:'Mañana hay terapia en casa',b:t.quien+' de '+terNom(t.kid)+' · '+t.hora+' '+casa+'.',tab:'sal'});
+    if(ni===ti&&now>=h-60&&now<h)L.push({id:'ter-'+t.id+'-'+iso+'-h',t:'En 1 hora llega la terapia',b:t.quien+' de '+terNom(t.kid)+' a las '+t.hora+' '+casa+'.',tab:'sal'});});
   [me2,ot].forEach(function(r){var own=r===me2,on=own?true:c.otro,sub=own?'':(r+' aún no ha ');
     if(!on)return;
     if(c.mochila&&now>=1140&&now<1380){var ni=nextSchoolIdx();if(ni>ti&&nightOwnerI(ni-1)===r){var iso=isoOf(dayInfo(ni).d);['agusta','rafaella'].forEach(function(k){if(!(S.alist||{})[iso+'|'+k]&&!nsFor(iso,k)){var nm=k==='agusta'?'Agusta':'Rafaella';L.push({id:'moc-'+k,t:own?'Mochila sin alistar':'Mochila de '+nm+' sin alistar',b:own?'Aún no has registrado la mochila de '+nm+' para mañana. Prepárala con tiempo.':r+' aún no ha registrado la mochila de '+nm+' para mañana.',tab:'moc'});}});}}
@@ -1398,6 +1404,26 @@ function finRun(){var e=finEj(),has=function(a,b){return a.indexOf(b)>=0;};
   S.pension=S.gastos.some(function(g){return g.cat==='Pensión'&&String(g.iso).slice(0,7)===todayIso().slice(0,7);});
   S.cfg=S.cfg||{};S.cfg.test=false;S.cfg.final=todayIso();
   logA(whoMe(),'Sistema','Se inició la versión final: se quitaron '+e.n+' datos de ejemplo y se activó el bloqueo de registros');}
+/* ===== Terapias en casa ===== */
+var TERQ=['Terapeuta ocupacional','Psicopedagoga','Fonoaudióloga','Psicóloga','Kinesióloga','Otra'];
+function terNom(k){return k==='agusta'?'Agusta':'Rafaella';}
+function terNext(t){var ti=idxOf(todayIso()),now=tm(nowHM());for(var i=ti;i<ti+60;i++){var x=dayInfo(i),iso=isoOf(x.d);if(x.dow===t.dia&&(t.skip||[]).indexOf(iso)<0&&!(i===ti&&now>tm(t.hora)))return i;}return null;}
+function terWho(t,i){if(t.casa&&t.casa!=='auto')return {who:t.casa,fix:true};var h=tm(t.hora),B=dayBlocks(i).filter(function(b){return h>=b[0]&&h<b[1];})[0];var w=B?B[2]:'Mamá';return {who:w,warn:(w!=='Papá'&&w!=='Mamá')?('a esa hora están '+(w==='Colegio'?'en el colegio':'con la '+w.toLowerCase())):''};}
+function terSheet(){var f=S.terf,hp=function(a,b,c,d){return '<button class="chp'+(a?' on':'')+'" data-a="'+b+'" data-v="'+c+'">'+d+'</button>';},dn=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  var pre='';try{var ti=idxOf(todayIso()),pi=null;for(var i=ti;i<ti+14;i++){if(dayInfo(i).dow===f.dia){pi=i;break;}}if(pi!==null){var w=terWho({hora:f.hora,casa:f.casa},pi);pre='Cada '+DNL[f.dia]+' a las '+f.hora+' · '+(w.fix?'en casa de '+(w.who==='Papá'?'papá':'mamá'):'según el régimen: '+(w.who==='Papá'||w.who==='Mamá'?'casa de '+(w.who==='Papá'?'papá':'mamá'):w.warn));}}catch(e){}
+  return '<div class="sheetbg" data-a="terclose"><div class="sheet tall" role="dialog" aria-label="Terapia en casa">'+sheetTop('Terapia en casa')+
+  '<div class="qlbl">¿Quién es?</div><div class="chps">'+TERQ.map(function(q){return hp(f.quien===q,'terq',q,q);}).join('')+'</div>'+(TERQ.indexOf(f.quien)<0||f.quien==='Otra'?'<input class="inp" type="text" placeholder="Nombre o especialidad" data-ter="otra" value="'+String(f.otra||'').replace(/"/g,'&quot;')+'">':'')+
+  '<div class="qlbl">¿Qué día de la semana?</div><div class="chps">'+dn.map(function(d,i){return hp(f.dia===i,'terd',i,d);}).join('')+'</div>'+
+  '<label class="fld">Hora de la visita<input class="inp" type="time" data-ter="hora" value="'+f.hora+'"></label>'+
+  '<div class="qlbl">¿En qué casa?</div><div class="chps">'+hp(f.casa==='auto','terc','auto','Según el régimen')+hp(f.casa==='Papá','terc','Papá','Casa de papá')+hp(f.casa==='Mamá','terc','Mamá','Casa de mamá')+'</div>'+
+  (pre?'<div id="terpre" class="mthelp" style="font-weight:700;color:var(--pd)">'+pre+'</div>':'')+
+  ((f.skip||[]).length?'<div class="qlbl">Fechas saltadas <span class="lbl" style="font-weight:400">(toca para restaurar)</span></div><div class="chps">'+f.skip.map(function(x){return '<button class="chp" data-a="terun" data-v="'+x+'">'+fdate(x)+' ×</button>';}).join('')+'</div>':'')+
+  '<button class="btn" style="height:50px" data-a="tersave">Guardar</button><button class="btn sec" style="border:none" data-a="terclose">Cancelar</button></div></div>';}
+function terSec(){var k=S.child,L=(S.ter||[]).map(function(t,i){return [t,i];}).filter(function(x){return x[0].kid===k;});
+  return '<section><h2>Terapias en casa</h2>'+(L.length?'<div style="display:flex;flex-direction:column;gap:10px">'+L.map(function(x){var t=x[0],i=x[1],ni=terNext(t),w=ni!==null?terWho(t,ni):null,iso=ni!==null?isoOf(dayInfo(ni).d):'';
+    return '<div class="card" style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><button data-a="teredit" data-v="'+i+'" style="background:none;border:none;font:inherit;color:inherit;text-align:left;padding:0;flex:1"><b style="font-size:15px">'+t.quien+'</b><div class="lbl">Cada '+DNL[t.dia]+' · '+t.hora+' · '+(t.casa==='auto'?'casa según régimen':'casa de '+(t.casa==='Papá'?'papá':'mamá'))+'</div></button>'+delb('ter',i,t.quien)+'</div>'+
+      (ni!==null?'<div style="padding:10px 12px;background:var(--pt);border-radius:12px;font-size:14px"><b style="color:var(--pd)">Próxima: '+fdate(iso)+' · '+t.hora+'</b><div style="color:var(--ink2)">'+(w.who==='Papá'||w.who==='Mamá'?'En casa de '+(w.who==='Papá'?'papá':'mamá')+'. Debe recibirla '+w.who+'.':'<span style="color:var(--rd)">Ojo: '+w.warn+'.</span>')+'</div></div><button class="btn sec" data-a="terskip" data-v="'+i+'" style="height:40px;font-size:13px">No habrá esta visita</button>':'<div class="lbl">Sin próximas fechas.</div>')+'</div>';}).join('')+'</div>':'<div class="card lbl">'+terNom(k)+' no tiene terapias en casa registradas.</div>')+
+  '<button class="addb" data-a="teradd">'+ic('plus',18)+'Agregar terapia en casa</button></section>';}
 function otherWho(){return whoMe()==='Mamá'?'Papá':'Mamá';}
 function tarMine(t){var m=whoMe();return t.who===m||t.who==='Ambos';}
 function tarPendMine(){return (S.tareas||[]).filter(function(t){return !t.done&&tarMine(t);}).length;}
@@ -1507,11 +1533,12 @@ function bitacora(){
     return '<div class="card" style="padding:14px"><button data-a="bopen" data-v="'+i+'" style="width:100%;background:none;border:none;padding:0;text-align:left;font:inherit;color:inherit;display:flex;flex-direction:column;gap:6px"><span style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span class="cap">'+b.tipo+' · '+b.fecha+'</span>'+(b.files.length?'<span class="lbl" style="display:flex;align-items:center;gap:3px;font-size:12px">'+ic('clip',14)+b.files.length+'</span>':'')+'</span><b style="font-size:15px">'+b.t+'</b><span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="lbl" style="font-size:12px">Registró '+b.autor+'</span><span style="display:flex;gap:6px">'+(b.acta?'<span class="pill pg">Acta ✓</span>':'')+'<span class="pill '+st[1]+'">'+st[0]+'</span></span></span></button>'+body+'</div>';}).join('')+'</div>';
   return h;
 }
-function salud(){return foldAll(salud_0(),{'Medicamentos activos':{k:'smed',i:'heart',t:'r',p:S.meds.filter(function(m){return m.kid===S.child;}).length+' activos',ok:true,o:true},'Controles y vacunas':{k:'sctl',i:'cal',t:'p',p:'',ok:true},'Atenciones y documentos médicos':{k:'sate',i:'report',t:'m',p:'',ok:true}});}
+function salud(){return foldAll(salud_0(),{'Terapias en casa':{k:'ster',i:'heart',t:'p',p:(S.ter||[]).filter(function(t){return t.kid===S.child;}).length+' registradas',ok:true,o:true},'Medicamentos activos':{k:'smed',i:'heart',t:'r',p:S.meds.filter(function(m){return m.kid===S.child;}).length+' activos',ok:true,o:true},'Controles y vacunas':{k:'sctl',i:'cal',t:'p',p:'',ok:true},'Atenciones y documentos médicos':{k:'sate',i:'report',t:'m',p:'',ok:true}});}
 function salud_0(){
   var k=S.child,kn=k==='agusta'?'Agusta':'Rafaella';
   var meds=S.meds.map(function(m,i){return [m,i];}).filter(function(x){return x[0].kid===k;});
   var h='<div class="seg"><button class="'+(k==='agusta'?'on':'')+'" data-a="kid" data-v="agusta">'+kidAv('agusta')+'Agusta</button><button class="'+(k==='rafaella'?'on':'')+'" data-a="kid" data-v="rafaella">'+kidAv('rafaella')+'Rafaella</button></div>';
+  h+=terSec();
   h+='<section><h2>Medicamentos activos</h2>'+(meds.length?'<div style="display:flex;flex-direction:column;gap:10px">'+meds.map(function(x){var m=x[0],i=x[1],last=m.log.length?m.log[m.log.length-1]:null,next=last?hhmm((tm(last.h)+m.cada*60)%1440):'—';
     return '<div class="card" style="display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;gap:8px"><div><b style="font-size:15px">'+m.n+'</b><div class="lbl">'+m.dosis+' · cada '+m.cada+' h · hasta '+m.hasta+'</div></div><div style="display:flex;gap:6px;align-items:center">'+camBtn('sal:med'+i,'Receta '+m.n)+delb('med',i,m.n)+'</div></div>'+thumbs('sal:med'+i).replace('padding:0 0 10px 40px','')+
     '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg);border-radius:12px"><span style="font-size:14px">Próxima dosis</span><b style="font-size:17px;color:var(--p)">'+next+'</b></div>'+
@@ -2054,6 +2081,7 @@ function render(){
   if(S.tsh)h+=tsSheet();
   if(S.palSheet)h+=palSheet();
   if(S.finSheet)h+=finSheet();
+  if(S.terf)h+=terSheet();
   if(S.ntSheet)h+=ntSheet();
   if(S.nsSheet)h+=nsSheet();
   if(S.tarSheet)h+=tarSheet();
@@ -2269,6 +2297,17 @@ document.addEventListener('click',function(e){
   else if(a==='ntoff'){try{localStorage.setItem('nido_nt_off','1');}catch(e){}render();}
   else if(a==='ntt'){var c2=ntGet();c2[v]=!c2[v];ntSet(c2);render();}
   else if(a==='nttest'){ntShow({id:'prueba-'+Date.now(),t:'Nido · aviso de prueba',b:'Así te llegarán los recordatorios.',tab:'hoy'});}
+  else if(a==='teradd'){S.terf={id:'',i:-1,kid:S.child,quien:'Terapeuta ocupacional',otra:'',dia:1,hora:'16:00',casa:'auto',skip:[]};render();}
+  else if(a==='teredit'){var te=S.ter[+v];if(te){S.terf=JSON.parse(JSON.stringify(te));S.terf.i=+v;S.terf.otra=TERQ.indexOf(te.quien)<0?te.quien:'';if(TERQ.indexOf(te.quien)<0)S.terf.quien='Otra';render();}}
+  else if(a==='terclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.terf=null;render();}
+  else if(a==='terq'){S.terf.quien=v;render();}
+  else if(a==='terd'){S.terf.dia=+v;render();}
+  else if(a==='terc'){S.terf.casa=v;render();}
+  else if(a==='terun'){S.terf.skip=(S.terf.skip||[]).filter(function(x){return x!==v;});render();}
+  else if(a==='tersave'){var tf2=S.terf,nm2=tf2.quien==='Otra'?(tf2.otra||'').trim():tf2.quien;if(!nm2){toast('Escribe quién es');return;}if(!tf2.hora){toast('Elige la hora');return;}
+    var rec={id:tf2.id||('t'+Date.now()),kid:tf2.kid,quien:nm2,dia:tf2.dia,hora:tf2.hora,casa:tf2.casa,skip:tf2.skip||[]};S.ter=S.ter||[];if(tf2.i>=0&&S.ter[tf2.i])S.ter[tf2.i]=rec;else S.ter.push(rec);
+    logA(whoMe(),'Salud','Terapia en casa '+(tf2.i>=0?'actualizada':'agregada')+': '+nm2+' de '+terNom(rec.kid)+', cada '+DNL[rec.dia]+' a las '+rec.hora);S.terf=null;toast('Terapia guardada · '+other()+' la verá');render();}
+  else if(a==='terskip'){var ts2=S.ter[+v];if(ts2){var ni2=terNext(ts2);if(ni2!==null){var iso2=isoOf(dayInfo(ni2).d);ts2.skip=(ts2.skip||[]).concat([iso2]);logA(whoMe(),'Salud','No habrá la visita de '+ts2.quien+' del '+fdate(iso2));toast('Anotado: no habrá visita el '+fdate(iso2));}}render();}
   else if(a==='finopen'){S.finf='';S.finSheet=true;render();}
   else if(a==='finclose'){if(b.classList.contains('sheetbg')&&e.target!==b)return;S.finSheet=false;render();}
   else if(a==='finrun'){if((S.finf||'').trim().toUpperCase()!=='INICIAR')return;finRun();S.finSheet=false;toast('Versión final iniciada: ejemplos quitados y registros protegidos');render();}
@@ -2284,14 +2323,14 @@ document.addEventListener('click',function(e){
   else if(a==='share')toast('Resumen enviado a '+other()+' (demo)');
   else if(a==='gasto')toast('Aquí se sube la boleta o foto (demo)');
 });
-document.addEventListener('input',function(e){var D=e.target.dataset||{};if(D.vu){S.vuf[D.vu]=e.target.value;return;}if(D.clr){S.clr=S.clr||{sel:{},txt:''};S.clr[D.clr]=e.target.value;var lb=document.getElementById('limrun');if(lb)lb.disabled=!(limOn().length>0&&e.target.value.trim().toUpperCase()==='BORRAR');return;}if(D.tf){S.tarf[D.tf]=e.target.value;return;}if(D.ts&&S.tsh){S.tsh[D.ts]=e.target.value;return;}if(D.rg){S.rgf[D.rg]=e.target.value;return;}if(D.sm){S.semf[D.sm]=e.target.value;return;}if(D.q){S.qdraft=e.target.value;return;}if(D.dd){S.ddraft[D.dd]=e.target.value;return;}if(D.sc){S.schf[D.sc]=e.target.value;return;}if(D.vf==='dest'){S.vf.dest=e.target.value;return;}if(D.c){S.cdraft=e.target.value;return;}if(D.sw&&S.swf){S.swf[D.sw]=e.target.value;return;}if(D.ed&&S.edit){S.edit.txt=e.target.value;return;}if(D.fin){S.finf=e.target.value;var fb=document.getElementById('finrun');if(fb)fb.disabled=e.target.value.trim().toUpperCase()!=='INICIAR';return;}if(D.g){S.gf[D.g]=e.target.value;var wp=document.getElementById('wlprev');if(wp)wp.textContent=wlPrev();return;}if(D.a2){S.af2[D.a2]=e.target.value;if(D.a2==='tipo')render();return;}if(D.nb&&S.nb){S.nb[D.nb]=e.target.value;if(D.nb==='tipo'||D.nb==='contra')render();return;}if(D.m){S.mfm[D.m]=e.target.value;return;}if(D.af){S.af[D.af]=e.target.value;return;}if(e.target.dataset&&e.target.dataset.f==='txt')S.mf.txt=e.target.value;if(e.target.dataset&&e.target.dataset.f==='pf')S.pf=e.target.value;});
+document.addEventListener('input',function(e){var D=e.target.dataset||{};if(D.vu){S.vuf[D.vu]=e.target.value;return;}if(D.clr){S.clr=S.clr||{sel:{},txt:''};S.clr[D.clr]=e.target.value;var lb=document.getElementById('limrun');if(lb)lb.disabled=!(limOn().length>0&&e.target.value.trim().toUpperCase()==='BORRAR');return;}if(D.tf){S.tarf[D.tf]=e.target.value;return;}if(D.ts&&S.tsh){S.tsh[D.ts]=e.target.value;return;}if(D.rg){S.rgf[D.rg]=e.target.value;return;}if(D.sm){S.semf[D.sm]=e.target.value;return;}if(D.q){S.qdraft=e.target.value;return;}if(D.dd){S.ddraft[D.dd]=e.target.value;return;}if(D.sc){S.schf[D.sc]=e.target.value;return;}if(D.vf==='dest'){S.vf.dest=e.target.value;return;}if(D.c){S.cdraft=e.target.value;return;}if(D.sw&&S.swf){S.swf[D.sw]=e.target.value;return;}if(D.ed&&S.edit){S.edit.txt=e.target.value;return;}if(D.ter&&S.terf){S.terf[D.ter]=e.target.value;return;}if(D.fin){S.finf=e.target.value;var fb=document.getElementById('finrun');if(fb)fb.disabled=e.target.value.trim().toUpperCase()!=='INICIAR';return;}if(D.g){S.gf[D.g]=e.target.value;var wp=document.getElementById('wlprev');if(wp)wp.textContent=wlPrev();return;}if(D.a2){S.af2[D.a2]=e.target.value;if(D.a2==='tipo')render();return;}if(D.nb&&S.nb){S.nb[D.nb]=e.target.value;if(D.nb==='tipo'||D.nb==='contra')render();return;}if(D.m){S.mfm[D.m]=e.target.value;return;}if(D.af){S.af[D.af]=e.target.value;return;}if(e.target.dataset&&e.target.dataset.f==='txt')S.mf.txt=e.target.value;if(e.target.dataset&&e.target.dataset.f==='pf')S.pf=e.target.value;});
 document.addEventListener('change',function(e){var D=e.target.dataset||{};
   if(D.vs){S.vista=e.target.value;S.tab='hoy';render();return;}
   if(D.sc){S.schf[D.sc]=e.target.value;return;}
   if(D.vf&&D.vf!=='dest'){if(e.target.value){S.vf[D.vf]=e.target.value;render();}return;}
   if(D.sw&&S.swf){S.swf[D.sw]=e.target.value;return;}
   if(D.df){if(e.target.value){S.flt[D.df]=e.target.value;var f=S.flt;if(f.desde>f.hasta){var tt=f.desde;f.desde=f.hasta;f.hasta=tt;}var ix=idxOf(D.df==='dia'?f.dia:f.desde);if(ix>=0&&ix<35)S.sel=ix;render();}return;}
-  if(D.fin){S.finf=e.target.value;var fb=document.getElementById('finrun');if(fb)fb.disabled=e.target.value.trim().toUpperCase()!=='INICIAR';return;}if(D.g){S.gf[D.g]=e.target.value;var wp=document.getElementById('wlprev');if(wp)wp.textContent=wlPrev();return;}
+  if(D.ter&&S.terf){S.terf[D.ter]=e.target.value;return;}if(D.fin){S.finf=e.target.value;var fb=document.getElementById('finrun');if(fb)fb.disabled=e.target.value.trim().toUpperCase()!=='INICIAR';return;}if(D.g){S.gf[D.g]=e.target.value;var wp=document.getElementById('wlprev');if(wp)wp.textContent=wlPrev();return;}
   if(D.photo&&D.photo.indexOf('av:')===0){var f0=e.target.files&&e.target.files[0];if(!f0)return;var kk=D.photo.slice(3);readSq(f0,function(u){if(u){S.avt[kk]=u;toast('Foto de '+AVN[kk]+' guardada');}});return;}
   if(D.photo&&S.fab)S.fab=false;
   if(D.photo||D.nbfile||D.bfile){var fs=[].slice.call(e.target.files||[]);if(!fs.length)return;var left=fs.length,cnt=0;
@@ -2310,7 +2349,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.dat
 var NIDO_CFG={apiKey:"AIzaSyCTDL8onvTFFwsYgmNv7enRetNDOZP2Y24",authDomain:"nido-copartenidad-responsable.firebaseapp.com",projectId:"nido-copartenidad-responsable",storageBucket:"nido-copartenidad-responsable.firebasestorage.app",messagingSenderId:"581401693086",appId:"1:581401693086:web:c4a6eb1991457f69c3e48f"};
 var NIDO_USERS={"philip.fuentes93@gmail.com": "Philip", "javi.balma24@gmail.com": "Javiera"};
 var FAM='familias/nido';
-var SYNC_KEYS=['nav','jav','red','cfg','alist','tareas','nosch','pension','approved','call','sem','pk','bag','pantry','mats','vuelta','work','actaSeq','diario','sch','vacs','hcl','hc','swaps','ov','msgs','gastos','meds','aten','av','checks','qa','phid','lid','avt'];
+var SYNC_KEYS=['ter','nav','jav','red','cfg','alist','tareas','nosch','pension','approved','call','sem','pk','bag','pantry','mats','vuelta','work','actaSeq','diario','sch','vacs','hcl','hc','swaps','ov','msgs','gastos','meds','aten','av','checks','qa','phid','lid','avt'];
 var COLLS={log:'registro',bit:'bitacora',photos:'fotos'};
 var FB={db:null,ready:false,sent:{},seen:{log:{},bit:{},photos:{}},got:{},timer:null,pend:false};
 function fbBase(){return FB.db.doc(FAM);}
